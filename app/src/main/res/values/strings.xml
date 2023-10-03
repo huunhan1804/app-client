@@ -19,4 +19,10 @@
     <string name="re_send_otp">Re-send OTP</string>
     <string name="text_not_received_otp">Re-send otp after </string>
     <string name="text_verify">Verify</string>
+    <string name="forgot_password">FORGOT PASSWORD</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="reset_password">RESET PASSWORD</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="enter_otp_code">Enter OTP Code</string>
 </resources>

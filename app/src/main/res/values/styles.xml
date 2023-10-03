@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ErrorText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/color_app</item>
+    </style>
+</resources>

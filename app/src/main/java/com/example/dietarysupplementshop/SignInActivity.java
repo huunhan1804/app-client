@@ -1,16 +1,18 @@
 package com.example.dietarysupplementshop;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.network.LoginManager;
 import com.example.dietarysupplementshop.responses.LoginResponse;
 import com.google.android.gms.auth.api.Auth;
@@ -18,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 
@@ -34,7 +37,8 @@ public class SignInActivity extends AppCompatActivity {
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 9001;
 
-    EditText editTextEmail, editTextPassword;
+    private EditText editTextEmail, editTextPassword;
+    private TextInputLayout textInputLayoutEmail, textInputLayoutPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +58,31 @@ public class SignInActivity extends AppCompatActivity {
 
         // Thêm phần này để khởi tạo EditText
         editTextEmail = findViewById(R.id.editTextEmail);
+        textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
+        textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
+
+        editTextEmail.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String email = editTextEmail.getText().toString();
+                if (!Validation.isValidUsernameOrEmailOrPhone(email)) {
+                    textInputLayoutEmail.setError("Invalid username or phone number or email");
+                } else {
+                    textInputLayoutEmail.setError(null);
+                }
+            }
+        });
+
         editTextPassword = findViewById(R.id.editTextPassword);
+        editTextPassword.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String password = editTextPassword.getText().toString();
+                if (!Validation.isValidPassword(password)) {
+                    textInputLayoutPassword.setError("Password must be at least 8 characters long, including uppercase, lowercase, digits, and special characters.");
+                } else {
+                    textInputLayoutPassword.setError(null);
+                }
+            }
+        });
 
         btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
         btnGoogleSignIn.setOnClickListener(view -> {
@@ -68,7 +96,7 @@ public class SignInActivity extends AppCompatActivity {
             String email = editTextEmail.getText().toString().trim();
             String password = editTextPassword.getText().toString().trim();
 
-            if (isValidEmail(email) && isValidPassword(password)) {
+            if (Validation.isValidEmail(email) && Validation.isValidPassword(password)) {
                 // Gửi email và password cho API
                 LoginManager.getInstance().login(email, password, new Callback<LoginResponse>() {
                     @Override
@@ -112,10 +140,10 @@ public class SignInActivity extends AppCompatActivity {
                 });
             } else {
                 // Hiển thị thông báo lỗi cho người dùng
-                if (!isValidEmail(email)) {
+                if (!Validation.isValidEmail(email)) {
                     editTextEmail.setError("Email không hợp lệ");
                 }
-                if (!isValidPassword(password)) {
+                if (!Validation.isValidPassword(password)) {
                     editTextPassword.setError("Mật khẩu không hợp lệ");
                 }
             }
@@ -128,16 +156,6 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    private boolean isValidEmail(String email) {
-        String emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
-        return email.matches(emailPattern);
-    }
-
-    private boolean isValidPassword(String password) {
-        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
-        return password.matches(passwordPattern);
-    }
-
     // Hàm lưu refreshToken vào SharedPreferences
     private void saveRefreshTokenToSharedPreferences(String refreshToken) {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
@@ -145,7 +163,6 @@ public class SignInActivity extends AppCompatActivity {
         editor.putString("refreshToken", refreshToken);
         editor.apply();
     }
-
 
     // Hàm lưu token vào SharedPreferences
     private void saveTokenToSharedPreferences(String accessToken) {
@@ -160,8 +177,6 @@ public class SignInActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         return sharedPreferences.getString("accessToken", "");
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -182,5 +197,10 @@ public class SignInActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Đăng nhập bằng Google thất bại", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void forgotPasswordClick(View view) {
+        Intent forgotPasswordIntent = new Intent(this, ForgotPasswordActivity.class);
+        startActivity(forgotPasswordIntent);
     }
 }

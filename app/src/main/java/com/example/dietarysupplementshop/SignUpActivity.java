@@ -1,7 +1,6 @@
 package com.example.dietarysupplementshop;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,19 +10,21 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.dietarysupplementshop.constant.Validation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUpActivity extends AppCompatActivity {
 
     private ImageButton btnGoogleSignIn;
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 9001;
-
+    private TextInputLayout textInputLayoutEmail, textInputLayoutPassword, textInputLayoutFullName;
     private EditText editTextName;
     private EditText editTextEmail;
     private EditText editTextPassword;
@@ -34,6 +35,7 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
         // Khởi tạo GoogleSignInOptions
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -52,9 +54,46 @@ public class SignUpActivity extends AppCompatActivity {
             startActivityForResult(signInIntent, RC_SIGN_IN);
         });
 
+        textInputLayoutFullName = findViewById(R.id.textInputLayoutFullName);
+        textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
+        textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
+
         editTextName = findViewById(R.id.editTextFullName);
+        editTextName.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String name = editTextName.getText().toString();
+                if (!Validation.isValidName(name)) {
+                    textInputLayoutFullName.setError("Name cannot be empty");
+                } else {
+                    textInputLayoutFullName.setError(null);
+                }
+            }
+        });
+
         editTextEmail = findViewById(R.id.editTextEmail);
+        editTextEmail.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String email = editTextEmail.getText().toString();
+                if (!Validation.isValidEmailOrPhone(email)) {
+                    textInputLayoutEmail.setError("Invalid phone number or email");
+                } else {
+                    textInputLayoutEmail.setError(null);
+                }
+            }
+        });
+
         editTextPassword = findViewById(R.id.editTextPassword);
+        editTextPassword.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String password = editTextPassword.getText().toString();
+                if (!Validation.isValidPassword(password)) {
+                    textInputLayoutPassword.setError("Password must be at least 8 characters long, including uppercase, lowercase, digits, and special characters.");
+                } else {
+                    textInputLayoutPassword.setError(null);
+                }
+            }
+        });
+
         buttonSignUp = findViewById(R.id.buttonSignUp);
 
         // Xử lý sự kiện khi người dùng nhấn nút "Sign Up"
@@ -66,7 +105,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
 
-                if (isValidEmail(email) && isValidPassword(password) && isValidName(name)) {
+                if (Validation.isValidEmail(email) && Validation.isValidPassword(password) && Validation.isValidName(name)) {
                     // Name hợp lệ, thực hiện xử lý đăng ký ở đây (ví dụ: gửi dữ liệu đăng ký lên máy chủ)
 
                     // Chuyển người dùng đến trang đăng nhập hoặc màn hình chính
@@ -75,41 +114,25 @@ public class SignUpActivity extends AppCompatActivity {
                     finish(); // Đóng Activity hiện tại
                 } else {
                     // Hiển thị thông báo lỗi cho người dùng
-                    if (!isValidEmail(email)) {
-                        editTextEmail.setError("Email không hợp lệ");
+                    if (!Validation.isValidEmail(email)) {
+                        textInputLayoutEmail.setError("Email không hợp lệ");
                     }
-                    if (!isValidPassword(password)) {
-                        editTextPassword.setError("Mật khẩu không hợp lệ");
+                    if (!Validation.isValidPassword(password)) {
+                        textInputLayoutPassword.setError("Mật khẩu không hợp lệ");
                     }
 
-                    if (!isValidName(name)) {
-                        editTextName.setError("Tên không được để trống");
+                    if (!Validation.isValidName(name)) {
+                        textInputLayoutFullName.setError("Tên không được để trống");
                     }
                 }
             }
         });
-
 
         buttonSignInPage = findViewById(R.id.buttonSignInPage);
         buttonSignInPage.setOnClickListener(view -> {
             Intent signInIntent = new Intent(this, SignInActivity.class);
             startActivity(signInIntent);
         });
-    }
-
-    private boolean isValidName(String name) {
-        // Kiểm tra nếu Name không rỗng và không chỉ chứa khoảng trắng
-        return !TextUtils.isEmpty(name) && !name.trim().isEmpty();
-    }
-
-    private boolean isValidEmail(String email) {
-        String emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
-        return email.matches(emailPattern);
-    }
-
-    private boolean isValidPassword(String password) {
-        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
-        return password.matches(passwordPattern);
     }
 
     @Override

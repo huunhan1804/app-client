@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".SignInActivity">
 
     <ImageView
@@ -43,7 +42,7 @@
         android:layout_marginEnd="16dp"
         android:letterSpacing="0.05"
         android:text="Verify account"
-        android:textAlignment="textStart"
+        android:textAlignment="viewStart"
         android:textColor="@color/color_app"
         android:textSize="36sp"
         android:textStyle="bold" />
@@ -64,27 +63,34 @@
         android:textColor="@color/color_app"
         android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/editTextOTPCode"
-        android:layout_width="360dp"
-        android:layout_height="67dp"
-        android:layout_below="@id/textViewAlreadySendOTP"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutOTPCode"
+        android:layout_below="@+id/textViewAlreadySendOTP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:hint="Enter OTP Code"
-        android:textColor="#000000"
-        android:autofillHints=""
-        android:inputType="number"
-        tools:ignore="TextFields" />
+        app:errorEnabled="true"
+        app:errorTextAppearance="@style/ErrorText">
+
+        <EditText
+            android:id="@+id/editTextOTPCode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autofillHints=""
+            android:hint="@string/enter_otp_code"
+            android:inputType="number"
+            android:textColor="#000000"
+            tools:ignore="TextFields" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/buttonVerify"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:layout_below="@id/editTextOTPCode"
+        android:layout_below="@id/textInputLayoutOTPCode"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="16dp"

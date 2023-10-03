@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".SignInActivity">
 
     <ImageView
@@ -16,7 +14,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:layout_marginEnd="285dp"
         app:srcCompat="@drawable/logo"
         android:contentDescription="@string/logo_app" />
@@ -30,7 +27,6 @@
         android:layout_below="@+id/imageView2"
         android:background="#CCCCCC" />
 
-
     <TextView
         android:id="@+id/textViewAppName"
         android:layout_width="164dp"
@@ -43,42 +39,72 @@
         android:layout_marginEnd="221dp"
         android:letterSpacing="0.05"
         android:text="@string/sign_in"
-        android:textAlignment="center"
+        android:textAlignment="viewStart"
         android:textColor="@color/color_app"
         android:textSize="36sp"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/editTextEmail"
-        android:layout_width="360dp"
-        android:layout_height="67dp"
+    <!-- EditText for Email -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/textViewAppName"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:hint="@string/hint_login_id"
-        android:textColor="#000000"
-        android:autofillHints=""
-        android:inputType="text"
-        tools:ignore="TextFields" />
+        app:errorEnabled="true"
+        app:errorTextAppearance="@style/ErrorText">
 
-    <EditText
-        android:id="@+id/editTextPassword"
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_login_id"
+            android:textColor="#000000"
+            android:autofillHints=""
+            android:inputType="text"
+            tools:ignore="TextFields" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- EditText for Password -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutPassword"
         android:layout_width="match_parent"
-        android:layout_height="63dp"
-        android:layout_below="@id/editTextEmail"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textInputLayoutEmail"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword"
-        android:textColor="#000000"
-        android:autofillHints="" />
+        app:errorEnabled="true"
+        app:errorTextAppearance="@style/ErrorText">
 
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:textColor="#000000"
+            android:autofillHints="" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textViewForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textInputLayoutPassword"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/text_forgot_password"
+        android:textColor="@color/color_app"
+        android:onClick="forgotPasswordClick"
+        android:textStyle="bold" />
+
+    <!-- Button for Sign In -->
     <Button
         android:id="@+id/buttonSignIn"
         android:layout_width="match_parent"
@@ -94,6 +120,7 @@
         android:textColor="#FFFFFF"
         app:cornerRadius="3dp" />
 
+    <!-- GridLayout for Social Logins -->
     <GridLayout
         android:id="@+id/gridLayoutSocialLogin"
         android:layout_width="match_parent"
@@ -104,11 +131,11 @@
         android:layout_marginEnd="16dp"
         android:columnCount="3">
 
+        <!-- FrameLayout for Google Sign In -->
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_columnWeight="1"
-            >
+            android:layout_columnWeight="1">
 
             <ImageButton
                 android:id="@+id/btnGoogleSignIn"
@@ -123,11 +150,11 @@
 
         </FrameLayout>
 
+        <!-- FrameLayout for Facebook Sign In -->
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_columnWeight="1"
-            >
+            android:layout_columnWeight="1">
 
             <ImageButton
                 android:id="@+id/btnFacebookSignIn"
@@ -142,11 +169,11 @@
 
         </FrameLayout>
 
+        <!-- FrameLayout for GitHub Sign In -->
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_columnWeight="1"
-            >
+            android:layout_columnWeight="1">
 
             <ImageButton
                 android:id="@+id/btnGitSignIn2"
@@ -164,18 +191,7 @@
 
     </GridLayout>
 
-    <TextView
-        android:id="@+id/textViewForgotPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextPassword"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/text_forgot_password"
-        android:textColor="@color/color_app"
-        android:textStyle="bold" />
-
+    <!-- Button for Sign Up -->
     <Button
         android:id="@+id/buttonSignUpPage"
         android:layout_width="318dp"
