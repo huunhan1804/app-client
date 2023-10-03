@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">DietarySupplementShop</string>
+    <string name="text_sign_in">SIGN IN</string>
+    <string name="text_sign_up">SIGN UP</string>
+    <string name="text_forgot_password">Forgot password?</string>
+    <string name="hint_login_id">Username, Phone or Email address</string>
+    <string name="hint_signup_id">Phone or Email address</string>
+    <string name="hint_password">Password</string>
+    <string name="logo_app">Logo app</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="login_with_google">Login with google</string>
+    <string name="login_with_facebook">Login with facebook</string>
+    <string name="login_with_git">Login with git</string>
+    <string name="new_a_customer_sign_up">New a customer? Sign Up</string>
+    <string name="a_customer_login">Have an account? Sign In</string>
+    <string name="by_continuing_you_agreeing_to_our_terms_conditions"><![CDATA[By continuing, you agreeing to our Terms & Conditions]]></string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="name">Name</string>
+    <string name="re_send_otp">Re-send OTP</string>
+    <string name="text_not_received_otp">Re-send otp after </string>
+    <string name="text_verify">Verify</string>
+</resources>
