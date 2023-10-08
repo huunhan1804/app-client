@@ -21,6 +21,12 @@
         android:theme="@style/Theme.DietarySupplementShop"
         tools:targetApi="31">
         <activity
+            android:name=".SearchProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SignInActivity"
+            android:exported="false" />
+        <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
@@ -30,10 +36,9 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".SignInActivity"
+            android:name=".HomepageActivity"
             android:exported="true"
             android:launchMode="singleTask">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
