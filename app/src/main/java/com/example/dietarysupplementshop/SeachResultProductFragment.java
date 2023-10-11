@@ -11,10 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.example.dietarysupplementshop.adapter.Product2Adapter;
 import com.example.dietarysupplementshop.adapter.ProductAdapter;
+import com.example.dietarysupplementshop.interfaces.FilterDialogListener;
+import com.example.dietarysupplementshop.model.FilterItem;
 import com.example.dietarysupplementshop.model.Product;
 import com.google.android.gms.common.logging.Logger;
 
@@ -26,7 +29,7 @@ import java.util.List;
  * Use the {@link SeachResultProductFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SeachResultProductFragment extends Fragment {
+public class SeachResultProductFragment extends Fragment implements FilterDialogListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -86,7 +89,7 @@ public class SeachResultProductFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        productAdapter = new ProductAdapter(getListProduct());
+        productAdapter = new ProductAdapter(getListProduct(), requireContext());
         recyclerView.setAdapter(productAdapter);
 
         menuButton.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +112,15 @@ public class SeachResultProductFragment extends Fragment {
             }
         });
 
+        FrameLayout filterFrameLayout = view.findViewById(R.id.framelayoutFilter); // Đổi ID thành ID thật của bạn
+
+        filterFrameLayout.setOnClickListener(v -> {
+            FilterDialogFragment filterDialogFragment = new FilterDialogFragment();
+            filterDialogFragment.setFilterDialogListener(this);
+            filterDialogFragment.show(getChildFragmentManager(), "FilterDialogFragment");
+        });
+
+
         return view;
     }
 
@@ -125,6 +137,11 @@ public class SeachResultProductFragment extends Fragment {
 
     public void receiveSearchText(String searchText) {
         Log.d("MyTag", "Received search text: " + searchText);
+    }
+
+    @Override
+    public void onFiltersApplied(List<FilterItem> selectedFilters) {
+        Log.d("MyTag", "Received search text: " + selectedFilters.size());
     }
 
 }

@@ -126,7 +126,7 @@ public class HomeFragment extends Fragment {
         mBestSellerList.add(new Product(5, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
         mBestSellerList.add(new Product(6, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
 
-        productBestSellerAdapter = new ProductAdapter(mBestSellerList);
+        productBestSellerAdapter = new ProductAdapter( mBestSellerList, requireContext());
         rcvBestSeller.setAdapter(productBestSellerAdapter);
 
         mBestOrderList = new ArrayList<>();
@@ -137,7 +137,7 @@ public class HomeFragment extends Fragment {
         mBestOrderList.add(new Product(5, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
         mBestOrderList.add(new Product(6, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
 
-        productBestOrderAdapter = new ProductAdapter(mBestOrderList);
+        productBestOrderAdapter = new ProductAdapter(mBestOrderList, requireContext());
         rcvBestOrder.setAdapter(productBestOrderAdapter);
 
 

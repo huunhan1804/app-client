@@ -1,5 +1,7 @@
 package com.example.dietarysupplementshop.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dietarysupplementshop.ProductInfoActivity;
 import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.model.Product;
 import com.squareup.picasso.Picasso;
@@ -18,9 +21,11 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
     private final List<Product> productList;
+    private Context context;
 
-    public ProductAdapter(List<Product> productList) {
+    public ProductAdapter(List<Product> productList, Context context) {
         this.productList = productList;
+        this.context = context;
     }
 
     @NonNull
@@ -41,6 +46,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         Picasso.get()
                 .load(product.getImageUrl())
                 .into(holder.productImageView);
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Tạo Intent để chuyển từ Activity hiện tại sang Activity mới
+                Intent intent = new Intent(context, ProductInfoActivity.class);
+
+                // Truyền dữ liệu nếu cần
+                intent.putExtra("productId", product.getProductId());
+
+                // Khởi chạy Activity mới
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

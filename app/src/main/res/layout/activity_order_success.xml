@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_app"
+    tools:context=".OrderSuccessActivity">
+
+    <nl.dionsegijn.konfetti.xml.KonfettiView
+        android:id="@+id/konfettiView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/frameImageSuccess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="80dp"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/zoomImageView"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_button"
+            android:backgroundTint="#25D9D9D9" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_button"
+            android:backgroundTint="#14A367" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_button"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/check_ic" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/thankText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frameImageSuccess"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="Thank you for purchasing "
+        android:textAlignment="center"
+        android:textColor="#CAFFB1"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/detailText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/thankText"
+        android:layout_margin="25dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="Sucessfully!!! You can see the status of your item in order history "
+        android:textAlignment="center"
+        android:textColor="#CAFFB1"
+        android:textSize="26sp" />
+
+    <Button
+        android:id="@+id/btnOrderDetails"
+        android:layout_below="@+id/detailText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="25dp"
+        android:backgroundTint="#CAFFB1"
+        android:textColor="@color/color_app"
+        android:text="Order Details"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        />
+
+    <Button
+        android:id="@+id/btnContinueShopping"
+        android:layout_below="@+id/btnOrderDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/rounded_2_button"
+        android:textColor="#CAFFB1"
+        android:text="Continue Shopping"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        />
+</RelativeLayout>

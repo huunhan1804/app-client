@@ -1,8 +1,11 @@
 package com.example.dietarysupplementshop;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +31,9 @@ public class HomepageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        decorView.setSystemUiVisibility(uiOptions);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
@@ -97,6 +103,13 @@ public class HomepageActivity extends AppCompatActivity {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEARCH) {
                     // Xử lý khi người dùng bấm "Enter"
                     performSearch();
+
+                    // Ẩn bàn phím
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+
+                    // Bỏ focus ra khỏi ô văn bản
+                    searchEditText.clearFocus();
                     return true;
                 }
                 return false;
