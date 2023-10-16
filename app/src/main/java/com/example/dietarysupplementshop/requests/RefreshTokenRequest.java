@@ -1,11 +1,20 @@
 package com.example.dietarysupplementshop.requests;
 
-import com.google.gson.annotations.SerializedName;
-
 public class RefreshTokenRequest {
-    @SerializedName("token")
-    private String token;
-    public RefreshTokenRequest(String token) {
-        this.token = token;
+    private String refresh_token;
+
+    public RefreshTokenRequest(String refresh_token) {
+        this.refresh_token = refresh_token;
+    }
+
+    public RefreshTokenRequest() {
+    }
+
+    public String getRefresh_token() {
+        return refresh_token;
+    }
+
+    public void setRefresh_token(String refresh_token) {
+        this.refresh_token = refresh_token;
     }
 }

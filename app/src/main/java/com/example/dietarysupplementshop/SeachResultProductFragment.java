@@ -104,7 +104,7 @@ public class SeachResultProductFragment extends Fragment implements FilterDialog
         horizontalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                product2Adapter = new Product2Adapter(getListProduct());
+                product2Adapter = new Product2Adapter(getContext(),getListProduct());
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(linearLayoutManager);
                 recyclerView.setAdapter(product2Adapter);

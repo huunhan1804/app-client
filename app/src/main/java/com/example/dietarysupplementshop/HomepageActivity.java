@@ -1,6 +1,7 @@
 package com.example.dietarysupplementshop;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.dietarysupplementshop.adapter.ViewPagerAdapter;
+import com.example.dietarysupplementshop.token.TokenManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -36,6 +38,14 @@ public class HomepageActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
+
+        TokenManager tokenManager = new TokenManager(getApplicationContext());
+        String accessToken = tokenManager.getAccessToken();
+
+        if (accessToken == null) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+        }
 
         homeFragment = new HomeFragment();
         orderedFragment = new OrderedFragment();

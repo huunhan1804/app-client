@@ -3,8 +3,8 @@ package com.example.dietarysupplementshop;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +17,7 @@ import com.example.dietarysupplementshop.adapter.CategoryAdapter;
 import com.example.dietarysupplementshop.adapter.ProductAdapter;
 import com.example.dietarysupplementshop.model.Category;
 import com.example.dietarysupplementshop.model.Product;
+import com.example.dietarysupplementshop.viewModel.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,8 @@ public class HomeFragment extends Fragment {
     private List<Product> mBestOrderList;
     private ProductAdapter productBestSellerAdapter;
     private ProductAdapter productBestOrderAdapter;
+
+    private ProductViewModel productViewModel;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -82,66 +85,46 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        productViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(ProductViewModel.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
-        // Khởi tạo RecyclerView và danh sách danh mục
+
         rcvCategory = view.findViewById(R.id.categoryRecyclerView);
-
-
-        mCategoryList = new ArrayList<>();
-        mCategoryList.add(new Category("All", R.drawable.category_all));
-        mCategoryList.add(new Category("Liver", R.drawable.image_4));
-        mCategoryList.add(new Category("Eyes", R.drawable.category_eyes));
-        mCategoryList.add(new Category("Sleep", R.drawable.category_sleep));
-        mCategoryList.add(new Category("Weight", R.drawable.weight));
-        mCategoryList.add(new Category("Digestion", R.drawable.digestive_icon));
-        mCategoryList.add(new Category("High Blood", R.drawable.high_blood));
-        mCategoryList.add(new Category("Resistance", R.drawable.resistance_1));
-
-        // Khởi tạo và thiết lập Adapter cho RecyclerView
-        categoryAdapter = new CategoryAdapter(mCategoryList);
-        rcvCategory.setAdapter(categoryAdapter);
-
-        // Khởi tạo ImageSlider và danh sách hình ảnh trình chiếu
-        imageSlider = view.findViewById(R.id.imageSlider);
-        ArrayList<SlideModel> slideModels = new ArrayList<SlideModel>();
-        slideModels.add(new SlideModel(R.drawable.slide_1, ScaleTypes.FIT));
-        slideModels.add(new SlideModel(R.drawable.slide_2, ScaleTypes.FIT));
-
-        // Thiết lập danh sách hình ảnh trình chiếu cho ImageSlider
-        imageSlider.setImageList(slideModels, ScaleTypes.FIT);
-
         rcvBestSeller = view.findViewById(R.id.bestSellerRecyclerView);
         rcvBestOrder = view.findViewById(R.id.bestOrderRecyclerView);
-        mBestSellerList = new ArrayList<>();
-        mBestSellerList.add(new Product(1, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestSellerList.add(new Product(2, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestSellerList.add(new Product(3, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestSellerList.add(new Product(4, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestSellerList.add(new Product(5, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestSellerList.add(new Product(6, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
 
-        productBestSellerAdapter = new ProductAdapter( mBestSellerList, requireContext());
-        rcvBestSeller.setAdapter(productBestSellerAdapter);
+        imageSlider = view.findViewById(R.id.imageSlider);
+        ArrayList<SlideModel> slideModels = new ArrayList<>();
+        slideModels.add(new SlideModel(R.drawable.slide_1, ScaleTypes.FIT));
+        slideModels.add(new SlideModel(R.drawable.slide_2, ScaleTypes.FIT));
+        imageSlider.setImageList(slideModels, ScaleTypes.FIT);
 
-        mBestOrderList = new ArrayList<>();
-        mBestOrderList.add(new Product(1, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestOrderList.add(new Product(2, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestOrderList.add(new Product(3, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestOrderList.add(new Product(4, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestOrderList.add(new Product(5, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        mBestOrderList.add(new Product(6, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
+        productViewModel.getBestSellers().observe(getViewLifecycleOwner(), products -> {
+            mBestSellerList = products;
+            productBestSellerAdapter = new ProductAdapter(mBestSellerList, requireContext());
+            rcvBestSeller.setAdapter(productBestSellerAdapter);
+            productBestSellerAdapter.notifyDataSetChanged();
+        });
 
-        productBestOrderAdapter = new ProductAdapter(mBestOrderList, requireContext());
-        rcvBestOrder.setAdapter(productBestOrderAdapter);
+        productViewModel.getBestOrders().observe(getViewLifecycleOwner(), products -> {
+            mBestOrderList = products;
+            productBestOrderAdapter = new ProductAdapter(mBestOrderList, requireContext());
+            rcvBestOrder.setAdapter(productBestOrderAdapter);
+            productBestOrderAdapter.notifyDataSetChanged();
+        });
 
-
+        productViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
+            mCategoryList = categories;
+            categoryAdapter = new CategoryAdapter(mCategoryList);
+            rcvCategory.setAdapter(categoryAdapter);
+            categoryAdapter.notifyDataSetChanged();
+        });
 
         return view;
     }
+
 }

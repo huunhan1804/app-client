@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.model.Category;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -35,8 +36,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         if(category == null){
             return;
         }
-        holder.category_image.setImageResource(category.getImage());
-        holder.category_name.setText(category.getName());
+        holder.category_name.setText(category.getCategory_name());
+        Picasso.get()
+                .load(category.getCategory_url())
+                .into(holder.category_image);
+
     }
 
     @Override

@@ -2,14 +2,21 @@ package com.example.dietarysupplementshop;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dietarysupplementshop.constant.Validation;
+import com.example.dietarysupplementshop.responses.AuthenticateResponse;
+import com.example.dietarysupplementshop.services.AuthService;
+import com.example.dietarysupplementshop.services.OtpService;
+import com.example.dietarysupplementshop.token.TokenManager;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class Verify extends AppCompatActivity {
@@ -30,21 +37,42 @@ public class Verify extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify);
 
-        // Ánh xạ các thành phần giao diện
+        OtpService otpService = new OtpService();
+        TokenManager tokenManager = new TokenManager(getApplicationContext());
+        AuthService authService = new AuthService(tokenManager);
+
+        String name = getIntent().getStringExtra("name");
+        String email = getIntent().getStringExtra("email");
+        String password = getIntent().getStringExtra("password");
+
         buttonVerify = findViewById(R.id.buttonVerify);
         buttonResendCode = findViewById(R.id.buttonResendCode);
         countdownText = findViewById(R.id.countdown_text);
         textInputLayoutOTPCode = findViewById(R.id.textInputLayoutOTPCode);
         editTextOTPCode = findViewById(R.id.editTextOTPCode);
 
-        // Khởi tạo CountDownTimer
         timeLeftInMillis = COUNTDOWN_TIME;
         startCountdown();
 
         buttonResendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startCountdown();
+                otpService.sendOtpRegistration(email, new OtpService.OtpCallback() {
+                    @Override
+                    public void onSuccess(String successMessage) {
+                        Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
+                        startCountdown();
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        if(Integer.parseInt(errorMessage) == 409){
+                            Toast.makeText(getApplicationContext(), "Email is already exist!", Toast.LENGTH_SHORT).show();
+                        }  else if (Integer.parseInt(errorMessage) == 429){
+                            Toast.makeText(getApplicationContext(), "Otp is already sent!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 
@@ -64,7 +92,21 @@ public class Verify extends AppCompatActivity {
             public void onClick(View v) {
                 String otp = editTextOTPCode.getText().toString();
                 if(Validation.isValidOTP(otp)){
-                    //Code logic
+                    authService.registration(email, password, name, otp, new AuthService.AuthCallback() {
+                        @Override
+                        public void onSuccess(AuthenticateResponse response){
+                            Toast.makeText(getApplicationContext(), "Registration successfully!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
                     textInputLayoutOTPCode.setError("OTP code must be 6 digits.");
                 }
@@ -73,6 +115,7 @@ public class Verify extends AppCompatActivity {
     }
 
     private void startCountdown() {
+        buttonResendCode.setVisibility(View.GONE);
         CountDownTimer countDownTimer;
         countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
@@ -83,11 +126,10 @@ public class Verify extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                buttonVerify.setVisibility(View.INVISIBLE);
                 buttonResendCode.setVisibility(View.VISIBLE);
                 countdownText.setText("");
             }
-        }.start(); // Bắt đầu đếm ngược
+        }.start();
     }
 
     private void updateCountdownText() {

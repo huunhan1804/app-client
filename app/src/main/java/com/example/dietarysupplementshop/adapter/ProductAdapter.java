@@ -39,12 +39,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductAdapter.ProductViewHolder holder, int position) {
         Product product = productList.get(position);
 
-        holder.productNameTextView.setText(product.getProductName());
-        holder.productPriceTextView.setText(product.getProductPrice());
-        holder.productRatingBar.setRating(product.getRating());
+        holder.productNameTextView.setText(product.getProduct_name());
+        holder.productPriceTextView.setText(product.getProduct_price());
+        holder.productRatingBar.setRating(Float.parseFloat(String.valueOf(product.getRating())));
 
         Picasso.get()
-                .load(product.getImageUrl())
+                .load(product.getImage_url())
                 .into(holder.productImageView);
 
 
@@ -55,7 +55,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 Intent intent = new Intent(context, ProductInfoActivity.class);
 
                 // Truyền dữ liệu nếu cần
-                intent.putExtra("productId", product.getProductId());
+                intent.putExtra("productId", product.getProduct_id());
 
                 // Khởi chạy Activity mới
                 context.startActivity(intent);

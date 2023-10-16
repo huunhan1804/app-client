@@ -35,4 +35,10 @@
     <string name="best_seller">Best Seller</string>
     <string name="filter">Filter</string>
     <string name="icon">Icon</string>
+    <string name="order_information">Order Information</string>
+    <string name="back">back to previous activity</string>
+    <string name="select_city">Select City</string>
+    <string name="select_district">Select District</string>
+    <string name="select_ward">Select Ward</string>
+    <string name="enter_detail_address">Enter Detailed Address</string>
 </resources>

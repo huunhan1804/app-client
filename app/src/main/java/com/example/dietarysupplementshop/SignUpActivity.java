@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.dietarysupplementshop.constant.Validation;
+import com.example.dietarysupplementshop.services.OtpService;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -35,6 +36,7 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        OtpService otpService = new OtpService();
 
         // Khởi tạo GoogleSignInOptions
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -105,15 +107,27 @@ public class SignUpActivity extends AppCompatActivity {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
 
-                if (Validation.isValidEmail(email) && Validation.isValidPassword(password) && Validation.isValidName(name)) {
-                    // Name hợp lệ, thực hiện xử lý đăng ký ở đây (ví dụ: gửi dữ liệu đăng ký lên máy chủ)
+                if (Validation.isValidEmailOrPhone(email) && Validation.isValidName(name)) {
+                    otpService.sendOtpRegistration(email, new OtpService.OtpCallback() {
+                        @Override
+                        public void onSuccess(String successMessage) {
+                            Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(SignUpActivity.this, Verify.class);
+                            intent.putExtra("name", name);
+                            intent.putExtra("email", email);
+                            intent.putExtra("password", password);
+                            startActivity(intent);
+                        }
 
-                    // Chuyển người dùng đến trang đăng nhập hoặc màn hình chính
-                    Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
-                    startActivity(intent);
-                    finish(); // Đóng Activity hiện tại
+                        @Override
+                        public void onError(String errorMessage) {
+                            if(Integer.parseInt(errorMessage) == 409){
+                                editTextEmail.setError("Email is already exist!");
+                            }
+                        }
+                    });
+
                 } else {
-                    // Hiển thị thông báo lỗi cho người dùng
                     if (!Validation.isValidEmail(email)) {
                         textInputLayoutEmail.setError("Email không hợp lệ");
                     }

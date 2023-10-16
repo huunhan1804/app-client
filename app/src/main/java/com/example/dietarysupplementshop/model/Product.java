@@ -1,60 +1,60 @@
 package com.example.dietarysupplementshop.model;
 
 public class Product {
-    private int productId;
-    private String imageUrl;
-    private String productName;
-    private String productPrice;
-    private int rating;
+    private long product_id;
+    private String image_url;
+    private String product_name;
+    private String product_price;
+    private double rating;
 
     public Product() {
     }
 
-    public Product(int productId, String imageUrl, String productName, String productPrice, int rating) {
-        this.productId = productId;
-        this.imageUrl = imageUrl;
-        this.productName = productName;
-        this.productPrice = productPrice;
+    public Product(long product_id, String image_url, String product_name, String product_price, double rating) {
+        this.product_id = product_id;
+        this.image_url = image_url;
+        this.product_name = product_name;
+        this.product_price = product_price;
         this.rating = rating;
     }
 
-    public int getProductId() {
-        return productId;
+    public long getProduct_id() {
+        return product_id;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public void setProduct_id(long product_id) {
+        this.product_id = product_id;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImage_url() {
+        return image_url;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getProduct_name() {
+        return product_name;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
     }
 
-    public String getProductPrice() {
-        return productPrice;
+    public String getProduct_price() {
+        return product_price;
     }
 
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
+    public void setProduct_price(String product_price) {
+        this.product_price = product_price;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 }

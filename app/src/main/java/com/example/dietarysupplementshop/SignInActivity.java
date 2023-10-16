@@ -4,29 +4,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dietarysupplementshop.constant.Validation;
-import com.example.dietarysupplementshop.network.LoginManager;
-import com.example.dietarysupplementshop.responses.LoginResponse;
+import com.example.dietarysupplementshop.responses.AuthenticateResponse;
+import com.example.dietarysupplementshop.services.AuthService;
+import com.example.dietarysupplementshop.token.TokenManager;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -40,21 +39,16 @@ public class SignInActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword;
     private TextInputLayout textInputLayoutEmail, textInputLayoutPassword;
 
+    private TokenManager tokenManager;
+    private AuthService authService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        // Khởi tạo GoogleSignInOptions
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
 
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, connectionResult -> {
-                    // Xử lý khi có lỗi kết nối
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+        tokenManager = new TokenManager(getApplicationContext());
+        authService = new AuthService(tokenManager);
 
         // Thêm phần này để khởi tạo EditText
         editTextEmail = findViewById(R.id.editTextEmail);
@@ -85,62 +79,31 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
-        btnGoogleSignIn.setOnClickListener(view -> {
-            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-            startActivityForResult(signInIntent, RC_SIGN_IN);
-        });
 
         // handle sign in with email và password ở đây
         buttonSignIn = findViewById(R.id.buttonSignIn);
         buttonSignIn.setOnClickListener(view -> {
-            String email = editTextEmail.getText().toString().trim();
+            String loginId = editTextEmail.getText().toString().trim();
             String password = editTextPassword.getText().toString().trim();
 
-            if (Validation.isValidEmail(email) && Validation.isValidPassword(password)) {
-                // Gửi email và password cho API
-                LoginManager.getInstance().login(email, password, new Callback<LoginResponse>() {
+            if (Validation.isValidUsernameOrEmailOrPhone(loginId) && Validation.isValidPassword(password)) {
+                authService.authenticate(loginId, password, new AuthService.AuthCallback() {
                     @Override
-                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        if (response.isSuccessful()) {
-                            // Đăng nhập thành công, xử lý kết quả ở đây
-                            LoginResponse loginResponse = response.body();
-                            String newAccessToken = loginResponse.getData().getAccessToken();
-                            String newRefreshToken = loginResponse.getData().getRefreshToken();
-                            // Lưu accessToken mới
-                            saveTokenToSharedPreferences(newAccessToken);
-                            saveRefreshTokenToSharedPreferences(newRefreshToken);
-
-                            Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
-                            startActivity(intent);
-                            finish(); // Đóng Activity hiện tại
-                        } else {
-                            // Đăng nhập thất bại, xử lý lỗi ở đây
-                            int errorCode = response.code(); // Mã trạng thái HTTP
-                            String errorMessage = "Đăng nhập thất bại"; // Tin nhắn mặc định
-
-                            if (response.errorBody() != null) {
-                                try {
-                                    // Thử lấy nội dung lỗi từ phản hồi JSON nếu có
-                                    errorMessage = response.errorBody().string();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            // Hiển thị thông báo lỗi cho người dùng
-                            Toast.makeText(SignInActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                        }
+                    public void onSuccess(AuthenticateResponse response){
+                        Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
                     }
 
                     @Override
-                    public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        // Xử lý lỗi kết nối đến API ở đây
-                        Toast.makeText(SignInActivity.this, "Kết nối đến máy chủ thất bại", Toast.LENGTH_SHORT).show();
+                    public void onError(String errorMessage) {
+                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
                 // Hiển thị thông báo lỗi cho người dùng
-                if (!Validation.isValidEmail(email)) {
+                if (!Validation.isValidUsernameOrEmailOrPhone(loginId)) {
                     editTextEmail.setError("Email không hợp lệ");
                 }
                 if (!Validation.isValidPassword(password)) {
@@ -149,6 +112,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+
         buttonSignUpPage = findViewById(R.id.buttonSignUpPage);
         buttonSignUpPage.setOnClickListener(view -> {
             Intent signUpIntent = new Intent(this, SignUpActivity.class);
@@ -156,48 +120,8 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    // Hàm lưu refreshToken vào SharedPreferences
-    private void saveRefreshTokenToSharedPreferences(String refreshToken) {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("refreshToken", refreshToken);
-        editor.apply();
-    }
 
-    // Hàm lưu token vào SharedPreferences
-    private void saveTokenToSharedPreferences(String accessToken) {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("accessToken", accessToken);
-        editor.apply();
-    }
 
-    // Hàm lấy token từ SharedPreferences
-    private String getTokenFromSharedPreferences() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("accessToken", "");
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleGoogleSignInResult(result);
-        }
-    }
-
-    private void handleGoogleSignInResult(GoogleSignInResult result) {
-        if (result.isSuccess()) {
-            GoogleSignInAccount account = result.getSignInAccount();
-            String googleUserName = account.getDisplayName();
-            String googleEmail = account.getEmail();
-            // Xử lý thông tin đăng nhập bằng Google ở đây
-        } else {
-            Toast.makeText(this, "Đăng nhập bằng Google thất bại", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public void forgotPasswordClick(View view) {
         Intent forgotPasswordIntent = new Intent(this, ForgotPasswordActivity.class);

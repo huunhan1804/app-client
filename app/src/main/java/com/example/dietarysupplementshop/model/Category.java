@@ -2,30 +2,30 @@ package com.example.dietarysupplementshop.model;
 
 public class Category {
 
-    private String name;
-    private int image;
+    private String category_name;
+    private String category_url;
+
+    public Category(String category_name, String category_url) {
+        this.category_name = category_name;
+        this.category_url = category_url;
+    }
 
     public Category() {
     }
 
-    public Category(String name, int image) {
-        this.name = name;
-        this.image = image;
+    public String getCategory_name() {
+        return category_name;
     }
 
-    public String getName() {
-        return name;
+    public void setCategory_name(String category_name) {
+        this.category_name = category_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getCategory_url() {
+        return category_url;
     }
 
-    public int getImage() {
-        return image;
-    }
-
-    public void setImage(int image) {
-        this.image = image;
+    public void setCategory_url(String category_url) {
+        this.category_url = category_url;
     }
 }

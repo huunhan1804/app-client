@@ -11,10 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dietarysupplementshop.constant.Validation;
+import com.example.dietarysupplementshop.services.AuthService;
+import com.example.dietarysupplementshop.services.OtpService;
+import com.example.dietarysupplementshop.token.TokenManager;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
@@ -25,6 +29,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private TextView textViewCountdown;
 
     private Button buttonSignUpPage;
+    private Button buttonConfirm;
     private long timeLeftInMillis;
     private static final long COUNTDOWN_TIME = 60000;
 
@@ -34,6 +39,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_password);
         textViewCountdown = findViewById(R.id.textViewCountdown);
         btnSendOTP = findViewById(R.id.btnSendOTP);
+        buttonConfirm = findViewById(R.id.buttonConfirm);
 
         textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
         textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
@@ -44,6 +50,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
         editTextOTPCode = findViewById(R.id.editTextOTPCode);
+
+        OtpService otpService = new OtpService();
+        TokenManager tokenManager = new TokenManager(getApplicationContext());
+        AuthService authService = new AuthService(tokenManager);
 
         editTextEmail.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
@@ -62,9 +72,22 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 editTextEmail.setError("Invalid email");
                 return;
             }
-            btnSendOTP.setVisibility(View.INVISIBLE);
-            textViewCountdown.setVisibility(View.VISIBLE);
-            startCountdown();
+            otpService.sendOtpForgotPassword(email, new OtpService.OtpCallback() {
+                @Override
+                public void onSuccess(String successMessage) {
+                    Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
+                    btnSendOTP.setVisibility(View.INVISIBLE);
+                    textViewCountdown.setVisibility(View.VISIBLE);
+                    startCountdown();
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    if(Integer.parseInt(errorMessage) == 404){
+                        editTextEmail.setError("Account doesn't exist!");
+                    }
+                }
+            });
         });
 
         editTextPassword.setOnFocusChangeListener((v, hasFocus) -> {
@@ -97,6 +120,32 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     textInputLayoutOTPCode.setError("OTP code must be 6 digits.");
                 } else {
                     textInputLayoutOTPCode.setError(null);
+                }
+            }
+        });
+
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(Validation.isValidOTP(editTextOTPCode.getText().toString())
+                        && Validation.isValidPasswordMatch(editTextPassword.getText().toString(), editTextConfirmPassword.getText().toString())
+                        && Validation.isValidPassword(editTextPassword.getText().toString())
+                        && Validation.isValidEmailOrPhone(editTextEmail.getText().toString())
+                ) {
+                    authService.forgotPassword(editTextEmail.getText().toString(), editTextConfirmPassword.getText().toString(), editTextOTPCode.getText().toString(), new AuthService.ForgotPasswordCallBack() {
+                        @Override
+                        public void onSuccess(String successMessage) {
+                            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
