@@ -3,6 +3,7 @@ package com.example.dietarysupplementshop;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -14,6 +15,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.dietarysupplementshop.adapter.ViewPagerAdapter;
+import com.example.dietarysupplementshop.responses.AccountInformation;
+import com.example.dietarysupplementshop.services.AccountService;
 import com.example.dietarysupplementshop.token.TokenManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -46,6 +49,8 @@ public class HomepageActivity extends AppCompatActivity {
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
+
+
 
         homeFragment = new HomeFragment();
         orderedFragment = new OrderedFragment();
@@ -123,6 +128,20 @@ public class HomepageActivity extends AppCompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+
+
+        AccountService accountService = new AccountService();
+        accountService.currentUser(new AccountService.CurrentUserCallback() {
+            @Override
+            public void onSuccess(AccountInformation accountInformation) {
+                Log.d("Mytag", accountInformation.getAccountProfileDTO().getFullname());
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.d("Mytag", errorMessage);
             }
         });
     }

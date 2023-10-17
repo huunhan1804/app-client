@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:629620286353:android:9d44e1795b881634dfb030",
+        "mobilesdk_app_id": "1:629620286353:android:760108164b52fb9ddfb030",
         "android_client_info": {
           "package_name": "com.example.dietarysupplementshop"
         }
@@ -37,14 +37,6 @@
             {
               "client_id": "629620286353-0i0gmdlnp3kmpir202e3he9nqm0nvc2e.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "629620286353-qbtdaqudvei46ksol62cbomacktsoa18.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.quangqui.shop",
-                "app_store_id": "123456789"
-              }
             }
           ]
         }

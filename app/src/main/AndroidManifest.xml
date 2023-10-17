@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,6 +21,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.DietarySupplementShop"
         tools:targetApi="31">
         <activity
@@ -66,6 +68,27 @@
             </intent-filter>
         </activity>
 
+
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider244952738152136"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true" />
+
         <receiver
             android:name=".broadcast.SmsReceiver"
             android:exported="true">
@@ -73,10 +96,27 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".broadcast.LogoutReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.dietarysupplementshop.ACTION_LOGOUT" />
+            </intent-filter>
+        </receiver>
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBkF_n-0R1DEQ74MnRW6mNxJA4qQzdMwwk" />
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/><meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+        <service
+            android:name=".fcm.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

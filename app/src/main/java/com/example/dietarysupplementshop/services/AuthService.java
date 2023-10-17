@@ -2,6 +2,7 @@ package com.example.dietarysupplementshop.services;
 
 import android.util.Log;
 
+import com.example.dietarysupplementshop.MyApplication;
 import com.example.dietarysupplementshop.interfaces.AuthenticateAPI;
 import com.example.dietarysupplementshop.model.ResponseModel;
 import com.example.dietarysupplementshop.requests.AuthenticateRequest;
@@ -41,7 +42,11 @@ public class AuthService {
                     if (responseModel != null && responseModel.getStatus() == 200) {
                         AuthenticateResponse authResponse = responseModel.getData();
                         tokenManager.saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
-                        callback.onSuccess(authResponse);
+                        try {
+                            callback.onSuccess(authResponse);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     } else {
                         callback.onError(responseModel != null ? responseModel.getMessage() : "Authentication failed");
                     }
@@ -67,10 +72,15 @@ public class AuthService {
             public void onResponse(Call<ResponseModel<AuthenticateResponse>> call, Response<ResponseModel<AuthenticateResponse>> response) {
                 if (response.isSuccessful()) {
                     ResponseModel<AuthenticateResponse> responseModel = response.body();
-                    if (responseModel != null && responseModel.getStatus() == 0) {
+                    if (responseModel != null && responseModel.getStatus() == 200) {
                         AuthenticateResponse authResponse = responseModel.getData();
-                        tokenManager.saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
-                        callback.onSuccess(authResponse);
+                        MyApplication.getInstance().getTokenManager().clearTokens();
+                        MyApplication.getInstance().getTokenManager().saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
+                        try {
+                            callback.onSuccess(authResponse);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     } else {
                         callback.onError(responseModel != null ? responseModel.getMessage() : "Token refresh failed");
                     }
@@ -86,13 +96,21 @@ public class AuthService {
         });
     }
 
-    public retrofit2.Response<ResponseModel<AuthenticateResponse>> refreshAccessTokenSync(String refreshToken) throws IOException {
+    public AuthenticateResponse refreshAccessTokenSync(String refreshToken) throws IOException {
+        Log.d("Mytag", "goi refresh");
         RefreshTokenRequest request = new RefreshTokenRequest(refreshToken);
-        return authenticateAPI.refreshAccessToken(request).execute();
+        retrofit2.Response<ResponseModel<AuthenticateResponse>> response = authenticateAPI.refreshAccessToken(request).execute();
+
+        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 0) {
+            return response.body().getData();
+        } else {
+            return null;
+        }
     }
 
+
     public interface AuthCallback {
-        void onSuccess(AuthenticateResponse response);
+        void onSuccess(AuthenticateResponse response) throws IOException;
         void onError(String errorMessage);
     }
 
@@ -108,7 +126,11 @@ public class AuthService {
                     if (responseModel != null && responseModel.getStatus() == 200) {
                         AuthenticateResponse authResponse = responseModel.getData();
                         tokenManager.saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
-                        authCallback.onSuccess(authResponse);
+                        try {
+                            authCallback.onSuccess(authResponse);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     } else {
                         authCallback.onError(responseModel != null ? responseModel.getMessage() : "Authentication failed");
                     }
@@ -135,7 +157,11 @@ public class AuthService {
                     if (responseModel != null && responseModel.getStatus() == 200) {
                         AuthenticateResponse authResponse = responseModel.getData();
                         tokenManager.saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
-                        authCallback.onSuccess(authResponse);
+                        try {
+                            authCallback.onSuccess(authResponse);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     } else {
                         authCallback.onError(responseModel != null ? responseModel.getMessage() : "Authentication failed");
                     }

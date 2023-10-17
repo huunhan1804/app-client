@@ -3,6 +3,7 @@ package com.example.dietarysupplementshop;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -85,7 +86,7 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        productViewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(ProductViewModel.class);
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
     }
 
     @Override

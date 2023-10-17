@@ -1,40 +1,50 @@
 package com.example.dietarysupplementshop;
 
-import android.content.Context;
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.responses.AuthenticateResponse;
 import com.example.dietarysupplementshop.services.AuthService;
 import com.example.dietarysupplementshop.token.TokenManager;
-import com.google.android.gms.auth.api.Auth;
+import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.BeginSignInResult;
+import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 
+import okhttp3.Response;
+
 public class SignInActivity extends AppCompatActivity {
+    private static final int REQ_ONE_TAP = 2;  // Can be any integer unique to the Activity.
+    private boolean showOneTapUI = true;
+
+    private SignInClient oneTapClient;
+    private BeginSignInRequest signInRequest;
+    private BeginSignInRequest signUpRequest;
 
     private Button buttonSignIn;
     private ImageButton btnGoogleSignIn;
 
     private Button buttonSignUpPage;
-    private GoogleApiClient googleApiClient;
-    private static final int RC_SIGN_IN = 9001;
 
     private EditText editTextEmail, editTextPassword;
     private TextInputLayout textInputLayoutEmail, textInputLayoutPassword;
@@ -118,6 +128,89 @@ public class SignInActivity extends AppCompatActivity {
             Intent signUpIntent = new Intent(this, SignUpActivity.class);
             startActivity(signUpIntent);
         });
+
+
+        oneTapClient = Identity.getSignInClient(this);
+        signInRequest = BeginSignInRequest.builder()
+                .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
+                        .setSupported(true)
+                        .build())
+                .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                        .setSupported(true)
+                        // Your server's client ID, not your Android client ID.
+                        .setServerClientId(getString(R.string.default_web_client_id))
+                        // Only show accounts previously used to sign in.
+                        .setFilterByAuthorizedAccounts(true)
+                        .build())
+                // Automatically sign in when exactly one credential is retrieved.
+                .setAutoSelectEnabled(true)
+                .build();
+
+        signUpRequest = BeginSignInRequest.builder()
+                .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                        .setSupported(true)
+                        // Your server's client ID, not your Android client ID.
+                        .setServerClientId(getString(R.string.default_web_client_id))
+                        // Show all accounts on the device.
+                        .setFilterByAuthorizedAccounts(false)
+                        .build())
+                .build();
+
+        oneTapClient.beginSignIn(signUpRequest)
+                .addOnSuccessListener(this, new OnSuccessListener<BeginSignInResult>() {
+                    @Override
+                    public void onSuccess(BeginSignInResult result) {
+                        try {
+                            startIntentSenderForResult(
+                                    result.getPendingIntent().getIntentSender(), REQ_ONE_TAP,
+                                    null, 0, 0, 0);
+                        } catch (IntentSender.SendIntentException e) {
+                            Log.e(TAG, "Couldn't start One Tap UI: " + e.getLocalizedMessage());
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // No Google Accounts found. Just continue presenting the signed-out UI.
+                        Log.d(TAG, e.getLocalizedMessage());
+                    }
+                });
+
+         CallbackManager callbackManager = CallbackManager.Factory.create();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQ_ONE_TAP:
+                try {
+                    SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(data);
+                    String idToken = credential.getGoogleIdToken();
+                    if (idToken !=  null) {
+                        authService.authenticateGoogle(idToken, new AuthService.AuthCallback() {
+                            @Override
+                            public void onSuccess(AuthenticateResponse response){
+                                Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+
+                            @Override
+                            public void onError(String errorMessage) {
+                                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (ApiException e) {
+                    // ...
+                }
+                break;
+        }
     }
 
 

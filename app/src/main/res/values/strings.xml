@@ -41,4 +41,12 @@
     <string name="select_district">Select District</string>
     <string name="select_ward">Select Ward</string>
     <string name="enter_detail_address">Enter Detailed Address</string>
+
+
+
+    <string name="facebook_app_id">244952738152136</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">5055d8595d7935e51dc1b19b587b1829</string>
+
+
 </resources>
