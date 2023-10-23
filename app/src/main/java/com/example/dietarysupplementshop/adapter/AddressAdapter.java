@@ -1,5 +1,6 @@
 package com.example.dietarysupplementshop.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -22,10 +23,19 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     private List<Address> addressList;
     private Context context;
 
-    public AddressAdapter(Context context, List<Address> addressList) {
+    private Activity activity;
+
+    public AddressAdapter(Activity activity, Context context, List<Address> addressList) {
+        this.activity = activity;
         this.context = context;
         this.addressList = addressList;
     }
+
+    public void setData(List<Address> newAddressList) {
+        this.addressList = newAddressList;
+        notifyDataSetChanged();
+    }
+
 
     @NonNull
     @Override
@@ -40,7 +50,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         holder.fullnameTextView.setText(address.getFullname());
         holder.phoneTextView.setText(address.getPhone());
 
-        String addressInfo = address.getAddressDetail();
+        String addressInfo = address.getAddress_detail();
         if (addressInfo != null && !addressInfo.isEmpty()) {
             String[] parts = addressInfo.split(",", 2);
             if (parts.length > 1) {
@@ -55,7 +65,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             holder.addressTextView.setText("");
         }
 
-        if (address.isDefault()) {
+        if (address.getIs_default()) {
             holder.defaultAddressTextView.setVisibility(View.VISIBLE);
         } else {
             holder.defaultAddressTextView.setVisibility(View.GONE);
@@ -65,9 +75,10 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, AddressInfoActivity.class);
-                intent.putExtra("addressId", address.getAddressId());
+                intent.putExtra("addressId", address.getAddress_id());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
+                activity.finish();
             }
         });
     }

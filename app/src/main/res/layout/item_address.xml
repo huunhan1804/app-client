@@ -74,9 +74,9 @@
 
             <TextView
                 android:id="@+id/AddressTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="start|center_vertical"
                 android:text="Xã Tân Hưng, Huyện Cái Nước, Tỉnh Cà Mau"
                 android:textSize="14sp" />
 

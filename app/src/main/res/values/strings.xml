@@ -43,10 +43,17 @@
     <string name="enter_detail_address">Enter Detailed Address</string>
 
 
-
     <string name="facebook_app_id">244952738152136</string>
     <string name="fb_login_protocol_scheme">fb1234</string>
     <string name="facebook_client_token">5055d8595d7935e51dc1b19b587b1829</string>
+    <string name="edit_address">Edit Address</string>
+    <string name="current_location">Current Location</string>
+    <string name="default_address">Default Address</string>
+    <string name="save_address">Save Address</string>
+    <string name="your_address_detail">Your address detail</string>
+    <string name="your_phone">Your phone number</string>
+    <string name="your_name">Your name</string>
+    <string name="information_contact">Information Contact</string>
 
 
 </resources>

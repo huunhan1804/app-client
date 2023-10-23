@@ -19,7 +19,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="20dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <ImageView
                     android:layout_width="100dp"
@@ -29,13 +31,20 @@
                     android:backgroundTint="#14A367" />
 
                 <ImageView
+                    android:id="@+id/avatarImageView"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/circle_button"
-                    android:backgroundTint="@android:color/transparent"
-                    android:src="@drawable/user_icon" />
+                    android:layout_gravity="center" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/add_a_photo_24px"/>
             </FrameLayout>
+
 
             <EditText
                 android:id="@+id/fullnameText"
@@ -45,7 +54,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@null"
                 android:gravity="center"
-                android:text="Tran Quang Qui"
+                android:text=""
                 android:textColor="@color/color_app"
                 android:textSize="26sp"
                 android:textStyle="bold" />
@@ -90,7 +99,7 @@
                         android:gravity="center_vertical"
                         android:inputType="none"
                         android:maxLines="2"
-                        android:text="quitqce160195"
+                        android:text=""
                         android:textColor="#000"
                         android:textSize="16sp" />
 
@@ -140,7 +149,7 @@
                         android:gravity="center_vertical"
                         android:inputType="none"
                         android:maxLines="2"
-                        android:text="0123456789"
+                        android:text=""
                         android:textColor="#000"
                         android:textSize="16sp" />
 
@@ -189,7 +198,7 @@
                         android:gravity="center_vertical"
                         android:inputType="none"
                         android:maxLines="2"
-                        android:text="Male"
+                        android:text=""
                         android:textColor="#000"
                         android:textSize="16sp" />
 
@@ -238,7 +247,7 @@
                         android:gravity="center_vertical"
                         android:inputType="none"
                         android:maxLines="2"
-                        android:text="01/01/2000"
+                        android:text=""
                         android:textColor="#000"
                         android:textSize="16sp" />
 

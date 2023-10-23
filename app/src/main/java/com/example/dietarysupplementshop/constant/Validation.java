@@ -1,5 +1,9 @@
 package com.example.dietarysupplementshop.constant;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class Validation {
     public static boolean isValidEmail(String email) {
         String emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
@@ -40,6 +44,11 @@ public class Validation {
 
     public static boolean isValidName(String name) {
         return name != null && !name.trim().isEmpty();
+    }
+
+    public static String formatPriceToVND(double price) {
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        return numberFormat.format(price);
     }
 
 }

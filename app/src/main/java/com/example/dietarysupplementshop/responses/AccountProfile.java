@@ -1,16 +1,18 @@
 package com.example.dietarysupplementshop.responses;
 
+import java.util.Date;
+
 public class AccountProfile {
     private String fullname;
     private String email;
     private String phone;
     private String gender;
-    private String birthday;
+    private Date birthday;
 
     public AccountProfile() {
     }
 
-    public AccountProfile(String fullname, String email, String phone, String gender, String birthday) {
+    public AccountProfile(String fullname, String email, String phone, String gender, Date birthday) {
         this.fullname = fullname;
         this.email = email;
         this.phone = phone;
@@ -50,11 +52,11 @@ public class AccountProfile {
         this.gender = gender;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 }

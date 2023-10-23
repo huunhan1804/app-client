@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.dietarysupplementshop.MyApplication;
 import com.example.dietarysupplementshop.interfaces.AuthenticateAPI;
+import com.example.dietarysupplementshop.interfaces.RetrofitClient;
 import com.example.dietarysupplementshop.model.ResponseModel;
 import com.example.dietarysupplementshop.requests.AuthenticateRequest;
 import com.example.dietarysupplementshop.requests.AuthenticateSocialRequest;
@@ -11,7 +12,6 @@ import com.example.dietarysupplementshop.requests.ForgotPasswordRequest;
 import com.example.dietarysupplementshop.requests.RefreshTokenRequest;
 import com.example.dietarysupplementshop.requests.RegistrationRequest;
 import com.example.dietarysupplementshop.responses.AuthenticateResponse;
-import com.example.dietarysupplementshop.interfaces.RetrofitClient;
 import com.example.dietarysupplementshop.token.TokenManager;
 
 import java.io.IOException;
@@ -42,11 +42,7 @@ public class AuthService {
                     if (responseModel != null && responseModel.getStatus() == 200) {
                         AuthenticateResponse authResponse = responseModel.getData();
                         tokenManager.saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
-                        try {
-                            callback.onSuccess(authResponse);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        callback.onSuccess(responseModel.getMessage());
                     } else {
                         callback.onError(responseModel != null ? responseModel.getMessage() : "Authentication failed");
                     }
@@ -76,11 +72,7 @@ public class AuthService {
                         AuthenticateResponse authResponse = responseModel.getData();
                         MyApplication.getInstance().getTokenManager().clearTokens();
                         MyApplication.getInstance().getTokenManager().saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
-                        try {
-                            callback.onSuccess(authResponse);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        callback.onSuccess(responseModel.getMessage());
                     } else {
                         callback.onError(responseModel != null ? responseModel.getMessage() : "Token refresh failed");
                     }
@@ -110,12 +102,13 @@ public class AuthService {
 
 
     public interface AuthCallback {
-        void onSuccess(AuthenticateResponse response) throws IOException;
+        void onSuccess(String errorMessage);
+
         void onError(String errorMessage);
     }
 
 
-    public void registration(String loginId, String password, String fullname, String otp_code, final AuthCallback authCallback){
+    public void registration(String loginId, String password, String fullname, String otp_code, final AuthCallback authCallback) {
         RegistrationRequest registrationRequest = new RegistrationRequest(loginId, password, fullname, otp_code);
         Call<ResponseModel<AuthenticateResponse>> call = authenticateAPI.registration(registrationRequest);
         call.enqueue(new Callback<ResponseModel<AuthenticateResponse>>() {
@@ -126,11 +119,9 @@ public class AuthService {
                     if (responseModel != null && responseModel.getStatus() == 200) {
                         AuthenticateResponse authResponse = responseModel.getData();
                         tokenManager.saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
-                        try {
-                            authCallback.onSuccess(authResponse);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+
+                        authCallback.onSuccess(responseModel.getMessage());
+
                     } else {
                         authCallback.onError(responseModel != null ? responseModel.getMessage() : "Authentication failed");
                     }
@@ -146,7 +137,7 @@ public class AuthService {
         });
     }
 
-    public void authenticateGoogle(String idToken, final AuthCallback authCallback){
+    public void authenticateGoogle(String idToken, final AuthCallback authCallback) {
         AuthenticateSocialRequest authenticateSocialRequest = new AuthenticateSocialRequest(idToken);
         Call<ResponseModel<AuthenticateResponse>> call = authenticateAPI.authenticateGoogle(authenticateSocialRequest);
         call.enqueue(new Callback<ResponseModel<AuthenticateResponse>>() {
@@ -157,11 +148,8 @@ public class AuthService {
                     if (responseModel != null && responseModel.getStatus() == 200) {
                         AuthenticateResponse authResponse = responseModel.getData();
                         tokenManager.saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
-                        try {
-                            authCallback.onSuccess(authResponse);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        authCallback.onSuccess(responseModel.getMessage());
+
                     } else {
                         authCallback.onError(responseModel != null ? responseModel.getMessage() : "Authentication failed");
                     }
@@ -177,15 +165,15 @@ public class AuthService {
         });
     }
 
-    public void forgotPassword(String loginId,String new_password, String otp_code, final ForgotPasswordCallBack forgotPasswordCallBack){
+    public void forgotPassword(String loginId, String new_password, String otp_code, final ForgotPasswordCallBack forgotPasswordCallBack) {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(loginId, new_password, otp_code);
         Call<ResponseModel<String>> call = authenticateAPI.forgotPassword(forgotPasswordRequest);
         call.enqueue(new Callback<ResponseModel<String>>() {
             @Override
             public void onResponse(Call<ResponseModel<String>> call, Response<ResponseModel<String>> response) {
                 ResponseModel<String> responseModel = response.body();
-                if(response.isSuccessful()) {
-                    if(responseModel != null && responseModel.getStatus() == 200) {
+                if (response.isSuccessful()) {
+                    if (responseModel != null && responseModel.getStatus() == 200) {
                         forgotPasswordCallBack.onSuccess(responseModel.getMessage());
                     }
                 } else {
@@ -202,9 +190,9 @@ public class AuthService {
 
     public interface ForgotPasswordCallBack {
         void onSuccess(String successMessage);
+
         void onError(String errorMessage);
     }
-
 
 
 }

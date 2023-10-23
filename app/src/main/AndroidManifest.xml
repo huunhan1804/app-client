@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MyApplication"
@@ -21,12 +23,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.DietarySupplementShop"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".SearchResultActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            />
+        <activity
             android:name=".HomepageActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".AddressInfoActivity"
             android:exported="false" />
@@ -67,26 +75,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
 
-
-        <provider android:authorities="com.facebook.app.FacebookContentProvider244952738152136"
+        <provider
             android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider244952738152136"
             android:exported="true" />
 
         <receiver
@@ -104,12 +112,16 @@
             </intent-filter>
         </receiver>
 
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBkF_n-0R1DEQ74MnRW6mNxJA4qQzdMwwk" />
+            android:value="${MAPS_API_KEY}" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/><meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
         <service
             android:name=".fcm.MyFirebaseMessagingService"
             android:exported="false">

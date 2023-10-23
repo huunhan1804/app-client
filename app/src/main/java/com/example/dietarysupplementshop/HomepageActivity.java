@@ -1,22 +1,25 @@
 package com.example.dietarysupplementshop;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.dietarysupplementshop.adapter.ViewPagerAdapter;
-import com.example.dietarysupplementshop.responses.AccountInformation;
-import com.example.dietarysupplementshop.services.AccountService;
 import com.example.dietarysupplementshop.token.TokenManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -31,9 +34,12 @@ public class HomepageActivity extends AppCompatActivity {
 
     private TextInputLayout searchTextInputLayout;
     private TextInputEditText searchEditText;
+    private FrameLayout frameLayout;
+    LottieAnimationView animationView;
 
     private BottomNavigationView bottomNavigationView;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         View decorView = getWindow().getDecorView();
@@ -51,7 +57,6 @@ public class HomepageActivity extends AppCompatActivity {
         }
 
 
-
         homeFragment = new HomeFragment();
         orderedFragment = new OrderedFragment();
         cartFragment = new CartFragment();
@@ -62,7 +67,6 @@ public class HomepageActivity extends AppCompatActivity {
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         viewPager2.setAdapter(viewPagerAdapter);
-
         viewPager2.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -112,47 +116,47 @@ public class HomepageActivity extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
 
         // Đặt sự kiện cho phím "Enter"
-        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    // Xử lý khi người dùng bấm "Enter"
-                    performSearch();
-
-                    // Ẩn bàn phím
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-
-                    // Bỏ focus ra khỏi ô văn bản
-                    searchEditText.clearFocus();
-                    return true;
-                }
-                return false;
+        searchEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String searchText = searchEditText.getText().toString();
+                Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
+                intent.putExtra("SEARCH_TEXT",searchText );
+                startActivity(intent);
+                return true;
             }
+            return false;
         });
 
-
-        AccountService accountService = new AccountService();
-        accountService.currentUser(new AccountService.CurrentUserCallback() {
-            @Override
-            public void onSuccess(AccountInformation accountInformation) {
-                Log.d("Mytag", accountInformation.getAccountProfileDTO().getFullname());
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.homeView);
+        coordinatorLayout.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (searchEditText.isFocused()) {
+                    searchEditText.clearFocus();
+                }
+                hideKeyboard(v);
             }
-
-            @Override
-            public void onError(String errorMessage) {
-                Log.d("Mytag", errorMessage);
-            }
+            return false;
         });
     }
 
-    // Phương thức xử lý tìm kiếm
-    private void performSearch() {
-//        String searchText = searchEditText.getText().toString();
-//        Bundle bundle = new Bundle();
-//        bundle.putString("searchText", searchText);
-//        SeachResultProductFragment searchResultFragment = new SeachResultProductFragment();
-//        searchResultFragment.setArguments(bundle);
-        viewPager2.setCurrentItem(4);
+    public void showProgressBar() {
+        frameLayout = findViewById(R.id.frameLoading);
+        animationView = findViewById(R.id.animationView);
+        frameLayout.setVisibility(View.VISIBLE);
+        animationView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar() {
+        frameLayout = findViewById(R.id.frameLoading);
+        animationView = findViewById(R.id.animationView);
+        frameLayout.setVisibility(View.GONE);
+        animationView.setVisibility(View.GONE);
+    }
+
+    private void hideKeyboard(View view) {
+        if (view != null) {
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

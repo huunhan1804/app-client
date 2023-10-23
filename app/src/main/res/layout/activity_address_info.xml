@@ -41,7 +41,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="Edit Address"
                     android:textColor="@color/white"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -55,7 +54,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        >
 
         <TextView
             android:id="@+id/titleEditInfoContact"
@@ -66,7 +64,7 @@
             android:paddingTop="10dp"
             android:paddingEnd="25dp"
             android:paddingBottom="10dp"
-            android:text="Information Contact"
+            android:text="@string/information_contact"
             android:textSize="14sp" />
 
         <LinearLayout
@@ -77,7 +75,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/emailEditText"
+                android:id="@+id/fullNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@null"
@@ -86,7 +84,8 @@
                 android:maxLines="2"
                 android:paddingStart="25dp"
                 android:paddingEnd="25dp"
-                android:text="quitqce160195"
+                android:hint="@string/your_name"
+                android:text=""
                 android:textColor="#000"
                 android:textSize="18sp" />
 
@@ -103,11 +102,11 @@
                 android:background="@null"
                 android:clickable="false"
                 android:gravity="center_vertical"
-                android:inputType="none"
                 android:maxLines="2"
                 android:paddingStart="25dp"
                 android:paddingEnd="25dp"
-                android:text="0123456789"
+                android:hint="@string/your_phone"
+                android:text=""
                 android:textColor="#000"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -172,7 +171,7 @@
             android:maxLines="2"
             android:paddingStart="32dp"
             android:paddingEnd="25dp"
-            android:text="Ấp Phong Lưu"
+            android:hint="@string/your_address_detail"
             android:textColor="#000"
             android:textSize="14sp" />
 
@@ -187,10 +186,10 @@
             android:paddingTop="10dp"
             android:paddingEnd="25dp"
             android:paddingBottom="10dp"
-            android:text="Current Location"
+            android:text="@string/current_location"
             android:textSize="14sp" />
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
@@ -210,7 +209,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="25dp"
             android:checked="true"
-            android:text="Default Address" />
+            android:text="@string/default_address" />
 
         <Button
             android:id="@+id/saveChangesButton"
@@ -221,7 +220,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="25dp"
             android:background="@drawable/rounded_button"
-            android:text="Save" />
+            android:text="@string/save_address" />
 
 
     </RelativeLayout>

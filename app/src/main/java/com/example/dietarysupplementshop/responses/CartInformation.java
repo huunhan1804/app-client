@@ -1,5 +1,7 @@
 package com.example.dietarysupplementshop.responses;
 
+import com.example.dietarysupplementshop.model.CartItem;
+
 import java.util.List;
 
 public class CartInformation {

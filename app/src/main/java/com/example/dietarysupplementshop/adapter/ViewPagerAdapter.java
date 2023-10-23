@@ -2,20 +2,15 @@ package com.example.dietarysupplementshop.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Lifecycle;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.dietarysupplementshop.CartFragment;
 import com.example.dietarysupplementshop.HomeFragment;
 import com.example.dietarysupplementshop.OrderedFragment;
 import com.example.dietarysupplementshop.ProfileFragment;
-import com.example.dietarysupplementshop.SeachResultProductFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
-
 
     public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
@@ -28,13 +23,13 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 1: return new OrderedFragment();
             case 2: return new CartFragment();
             case 3: return new ProfileFragment();
-            case 4: return new SeachResultProductFragment();
             default: return new HomeFragment();
         }
     }
 
     @Override
     public int getCount() {
-        return 5;
+        return 4;
     }
+
 }

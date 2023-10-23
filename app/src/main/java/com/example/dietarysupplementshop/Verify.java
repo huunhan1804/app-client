@@ -88,29 +88,26 @@ public class Verify extends AppCompatActivity {
             }
         });
 
-        buttonVerify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String otp = editTextOTPCode.getText().toString();
-                if(Validation.isValidOTP(otp)){
-                    authService.registration(email, password, name, otp, new AuthService.AuthCallback() {
-                        @Override
-                        public void onSuccess(AuthenticateResponse response){
-                            Toast.makeText(getApplicationContext(), "Registration successfully!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        }
+        buttonVerify.setOnClickListener(v -> {
+            String otp = editTextOTPCode.getText().toString();
+            if(Validation.isValidOTP(otp)){
+                authService.registration(email, password, name, otp, new AuthService.AuthCallback() {
+                    @Override
+                    public void onSuccess(String successMessage){
+                        Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
 
-                        @Override
-                        public void onError(String errorMessage) {
-                            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    textInputLayoutOTPCode.setError("OTP code must be 6 digits.");
-                }
+                    @Override
+                    public void onError(String errorMessage) {
+                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                textInputLayoutOTPCode.setError("OTP code must be 6 digits.");
             }
         });
     }

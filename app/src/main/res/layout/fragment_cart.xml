@@ -130,8 +130,8 @@
                     android:id="@+id/totalItemText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
                     android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
                     android:layout_marginEnd="25dp"
                     android:text="Product in cart: 2 items"
                     android:textColor="#000"
@@ -142,8 +142,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/totalItemText"
-                    android:layout_marginTop="25dp"
                     android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
                     android:layout_marginEnd="25dp"
                     android:background="@drawable/rounded_button"
                     android:padding="16dp">
@@ -151,15 +151,15 @@
                     <LinearLayout
                         android:id="@+id/shippingFee"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:weightSum="2"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
                         <TextView
                             android:id="@+id/shippingFeeText"
                             android:layout_width="0dp"
-                            android:layout_height="40dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="start"
                             android:text="Shipping fee"
@@ -169,10 +169,10 @@
                         <TextView
                             android:id="@+id/shippingFeeValue"
                             android:layout_width="0dp"
-                            android:layout_height="40dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="end"
                             android:ellipsize="end"
+                            android:gravity="end"
                             android:maxLines="2"
                             android:text="20.000 đ"
                             android:textColor="#000"
@@ -180,33 +180,50 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/spacer2"
-                        android:layout_below="@+id/shippingFee"
+                    <ScrollView
+                        android:id="@+id/selectedItemsScrollView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/shippingFee">
+
+                        <LinearLayout
+                            android:id="@+id/selectedItemsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingTop="10dp">
+
+                        </LinearLayout>
+                    </ScrollView>
+
+                    <LinearLayout
+                        android:id="@+id/spacer2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/selectedItemsScrollView"
                         android:layout_gravity="center"
-                        android:weightSum="2"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="3dp"
                             android:layout_gravity="center_horizontal"
-                            android:backgroundTint="@color/color_app"
-                            android:background="#CCCCCC" />
+                            android:background="#CCCCCC"
+                            android:backgroundTint="@color/color_app" />
 
                     </LinearLayout>
 
 
                     <LinearLayout
                         android:id="@+id/total"
-                        android:layout_below="@+id/spacer2"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:layout_marginTop="5dp"
+                        android:layout_below="@+id/spacer2"
                         android:layout_gravity="center"
-                        android:weightSum="2"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
                         <TextView
                             android:id="@+id/totalText"
@@ -223,8 +240,8 @@
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:gravity="end"
                             android:ellipsize="end"
+                            android:gravity="end"
                             android:maxLines="2"
                             android:text="20.000 đ"
                             android:textColor="#000"
@@ -237,17 +254,16 @@
 
                 <Button
                     android:id="@+id/checkoutButton"
-                    android:layout_below="@+id/totalBill"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:layout_marginTop="25dp"
+                    android:layout_below="@+id/totalBill"
                     android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
                     android:layout_marginEnd="25dp"
                     android:backgroundTint="@color/color_app"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
                     android:text="Check out"
-                    />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cartItem"

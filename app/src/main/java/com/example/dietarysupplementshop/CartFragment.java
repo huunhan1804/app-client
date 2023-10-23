@@ -1,26 +1,40 @@
 package com.example.dietarysupplementshop;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dietarysupplementshop.adapter.CartItemAdapter;
+import com.example.dietarysupplementshop.adapter.FakeProductAdapter;
 import com.example.dietarysupplementshop.adapter.ProductAdapter;
+import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.model.CartItem;
 import com.example.dietarysupplementshop.model.Product;
+import com.example.dietarysupplementshop.requests.AddToCartRequest;
+import com.example.dietarysupplementshop.responses.AccountInformation;
+import com.example.dietarysupplementshop.responses.CartInformation;
+import com.example.dietarysupplementshop.viewModel.AccountViewModel;
+import com.example.dietarysupplementshop.viewModel.ProductViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +55,10 @@ public class CartFragment extends Fragment {
     private List<Product> relatedProduct;
 
     private RecyclerView rcvRelatedProduct;
+
+    private AccountViewModel accountViewModel;
+
+    private ProductViewModel productViewModel;
 
     RelativeLayout EmptyCartItem;
     RelativeLayout HaveCartItem;
@@ -84,6 +102,8 @@ public class CartFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        accountViewModel = MyApplication.getInstance().getAccountViewModel();
+        productViewModel =  MyApplication.getInstance().getProductViewModel();
     }
 
     @Override
@@ -91,55 +111,83 @@ public class CartFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
 
-        rcvRelatedProduct = view.findViewById(R.id.recyclerView);
-        relatedProduct = new ArrayList<>();
-        relatedProduct.add(new Product(1, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        relatedProduct.add(new Product(2, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        relatedProduct.add(new Product(3, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        relatedProduct.add(new Product(4, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        relatedProduct.add(new Product(5, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
-        relatedProduct.add(new Product(6, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫", 0));
 
-        productAdapter = new ProductAdapter(relatedProduct, getContext());
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        rcvRelatedProduct.setLayoutManager(gridLayoutManager);
-        rcvRelatedProduct.setAdapter(productAdapter);
+        rcvRelatedProduct = view.findViewById(R.id.recyclerView);
+        FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
+        rcvRelatedProduct.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        rcvRelatedProduct.setAdapter(fakeProductAdapter);
+        productViewModel.getListRelatedProduct(1).observe(getViewLifecycleOwner(), products -> {
+            relatedProduct = products;
+            productAdapter = new ProductAdapter(relatedProduct, getContext());
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+            rcvRelatedProduct.setLayoutManager(gridLayoutManager);
+            rcvRelatedProduct.setAdapter(productAdapter);
+        });
 
         cartRecyclerView = view.findViewById(R.id.cartItem);
-        cartItemList = new ArrayList<>();
-        cartItemList.add(new CartItem(1, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫"));
-        cartItemList.add(new CartItem(2, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫"));
-        cartItemList.add(new CartItem(3, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫"));
-        cartItemList.add(new CartItem(4, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫"));
-        cartItemList.add(new CartItem(5, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫"));
-        cartItemList.add(new CartItem(6, "https://dl.dropbox.com/s/t0tjm1ase3p9uj0/OIP.jpg?dl=0", "Cốm Tăng Cân Bạch Mai", "250.000 ₫"));
-        cartItemAdapter = new CartItemAdapter(cartItemList, getContext());
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        cartRecyclerView.setLayoutManager(linearLayoutManager);
-        cartRecyclerView.setAdapter(cartItemAdapter);
+        accountViewModel.getAccountInfoResource().observe(getViewLifecycleOwner(), resource -> {
+            if (resource != null) {
+                switch (resource.getStatus()) {
+                    case SUCCESS:
+                        ((HomepageActivity) getActivity()).hideProgressBar();
+                        if (resource.getData() != null) {
+                            AccountInformation accountInformations = resource.getData();
 
-        cartItemAdapter.setOnItemCheckedListener(new CartItemAdapter.OnItemCheckedListener() {
-            @Override
-            public void onItemChecked(CartItem product, boolean isChecked) {
-                // Xử lý sự kiện khi người dùng chọn/deselect sản phẩm
-                product.setSelected(isChecked);
+                            cartItemList = accountInformations.getCart_info().getCartItem();
+                            cartItemAdapter = new CartItemAdapter(cartItemList, getContext());
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                            cartRecyclerView.setLayoutManager(linearLayoutManager);
+                            cartRecyclerView.setAdapter(cartItemAdapter);
 
-                // Cập nhật tổng tiền
-                updateTotalPrice();
+                            cartItemAdapter.setOnItemCheckedListener((product, isChecked) -> {
+                                product.setSelected(isChecked);
+                                updateTotalPrice();
+                                updateUIBasedOnCartItems();
+                            });
 
-                // Kiểm tra và cập nhật giao diện dựa trên sự có mặt của sản phẩm trong giỏ hàng
-                updateUIBasedOnCartItems();
+                            cartItemAdapter.setOnQuantityChangeListener(new CartItemAdapter.OnQuantityChangeListener() {
+                                @Override
+                                public void onIncreaseChange(CartItem product, int increaseBy) {
+                                    accountViewModel.increaseCartItemQuantity(new AddToCartRequest(product.getProduct_info().getProduct_id(), product.getProduct_variant_info().getProduct_variant_id(), increaseBy));
+                                    updateTotalPrice();
+                                }
+
+                                @Override
+                                public void onDecreaseChange(CartItem product, int decreaseBy) {
+                                    accountViewModel.decreaseCartItemQuantity(new AddToCartRequest(product.getProduct_info().getProduct_id(), product.getProduct_variant_info().getProduct_variant_id(), decreaseBy));
+                                    updateTotalPrice();
+                                }
+
+                                @Override
+                                public void onDelete(CartItem product) {
+                                    accountViewModel.deleteCartItem(product.getCart_item_id());
+                                    updateTotalPrice();
+                                }
+                            });
+
+                            totalPriceTextView = view.findViewById(R.id.totalPriceTextView);
+                            totalItemText = view.findViewById(R.id.totalItemText);
+                            totalItemText.setText("Product in cart: "+ accountInformations.getCart_info().getTotal_item() + " items");
+
+                            shippingFeeValue = view.findViewById(R.id.shippingFeeValue);
+                            updateTotalPrice();
+
+                            EmptyCartItem = view.findViewById(R.id.EmptyCartItem);
+                            HaveCartItem = view.findViewById(R.id.HaveCartItem);
+                            updateUIBasedOnCartItems();
+
+                        }
+                        break;
+                    case ERROR:
+                        ((HomepageActivity) getActivity()).hideProgressBar();
+                        Toast.makeText(getContext(), resource.getMessage(), Toast.LENGTH_LONG).show();
+                        break;
+                    case LOADING:
+                        ((HomepageActivity) getActivity()).showProgressBar();
+                        break;
+                }
             }
         });
-        totalPriceTextView = view.findViewById(R.id.totalPriceTextView);
-        totalItemText = view.findViewById(R.id.totalItemText);
-        shippingFeeValue = view.findViewById(R.id.shippingFeeValue);
-        updateTotalPrice();
-
-        EmptyCartItem = view.findViewById(R.id.EmptyCartItem);
-        HaveCartItem = view.findViewById(R.id.HaveCartItem);
-        updateUIBasedOnCartItems();
-
 
         return view;
     }
@@ -148,16 +196,30 @@ public class CartFragment extends Fragment {
         String shippingFee = shippingFeeValue.getText().toString().replaceAll("[^\\d]+", "");
         double shippingFeeValue = Double.parseDouble(shippingFee);
         double total = shippingFeeValue;
+
+        LinearLayout selectedItemsContainer = getView().findViewById(R.id.selectedItemsContainer);
+        selectedItemsContainer.removeAllViews();
+
         for (CartItem product : cartItemList) {
             if (product.isSelected()) {
-                String priceCleaned = product.getProductPrice().replaceAll("[^\\d]+", "");
+                String priceCleaned = product.getProduct_variant_info().getSale_price().replaceAll("[^\\d]+", "");
                 double priceValue = Double.parseDouble(priceCleaned);
                 total += priceValue * product.getQuantity();
+
+                LinearLayout productItem = (LinearLayout) getLayoutInflater().inflate(R.layout.selected_product_item, null);
+
+                TextView productName = productItem.findViewById(R.id.productNameTextView);
+                TextView productQuantity = productItem.findViewById(R.id.productQuantityTextView);
+                TextView productPrice = productItem.findViewById(R.id.productPriceTextView);
+
+                productName.setText(product.getProduct_info().getProduct_name());
+                productQuantity.setText(product.getQuantity() + " x");
+
+                productPrice.setText(Validation.formatPriceToVND(priceValue * product.getQuantity()));
+                selectedItemsContainer.addView(productItem);
             }
         }
-        totalItemText.setText("Product in cart: "+ cartItemList.size()  + " items");
-        DecimalFormat decimalFormat = new DecimalFormat("#,###,###");
-        totalPriceTextView.setText("Total: " +decimalFormat.format(total));
+        totalPriceTextView.setText(Validation.formatPriceToVND(total));
     }
 
     private void updateUIBasedOnCartItems() {

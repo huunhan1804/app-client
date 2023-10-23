@@ -1,10 +1,13 @@
 package com.example.dietarysupplementshop.model;
 
+import com.example.dietarysupplementshop.responses.ProductInformation;
+import com.example.dietarysupplementshop.responses.ProductVariantDTO;
+
 public class CartItem {
-    private int productId;
-    private String imageUrl;
-    private String productName;
-    private String productPrice;
+
+    private Long cart_item_id;
+    private ProductInformation product_info;
+    private ProductVariantDTO product_variant_info;
     private int quantity;
     private String subTotal;
 
@@ -13,47 +16,44 @@ public class CartItem {
     public CartItem() {
     }
 
-    public CartItem(int productId, String imageUrl, String productName, String productPrice) {
-        this.productId = productId;
-        this.imageUrl = imageUrl;
-        this.productName = productName;
-        this.productPrice = productPrice;
+    public CartItem(Long cart_item_id, ProductInformation product_info, ProductVariantDTO product_variant_info, int quantity, String subTotal) {
+        this.cart_item_id = cart_item_id;
+        this.product_info = product_info;
+        this.product_variant_info = product_variant_info;
+        this.quantity = quantity;
+        this.subTotal = subTotal;
     }
 
-    public int getProductId() {
-        return productId;
+    public Long getCart_item_id() {
+        return cart_item_id;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public void setCart_item_id(Long cart_item_id) {
+        this.cart_item_id = cart_item_id;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public ProductInformation getProduct_info() {
+        return product_info;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setProduct_info(ProductInformation product_info) {
+        this.product_info = product_info;
     }
 
-    public String getProductName() {
-        return productName;
+    public ProductVariantDTO getProduct_variant_info() {
+        return product_variant_info;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setProduct_variant_info(ProductVariantDTO product_variant_info) {
+        this.product_variant_info = product_variant_info;
     }
 
-    public String getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
+    public void setSubTotal(String subTotal) {
+        this.subTotal = subTotal;
     }
 
     public int getQuantity() {
-        return 1;
+        return quantity;
     }
 
     public void setQuantity(int quantity) {

@@ -26,9 +26,14 @@ import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 
 import okhttp3.Response;
@@ -51,6 +56,8 @@ public class SignInActivity extends AppCompatActivity {
 
     private TokenManager tokenManager;
     private AuthService authService;
+
+    private static final int REQ_GOOGLE_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,38 +96,49 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
+        btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Gọi lại hàm đăng nhập One Tap mỗi khi nút btnGoogleSignIn được nhấn
+                oneTapClient.beginSignIn(signUpRequest)
+                        .addOnSuccessListener(SignInActivity.this, new OnSuccessListener<BeginSignInResult>() {
+                            @Override
+                            public void onSuccess(BeginSignInResult result) {
+                                try {
+                                    startIntentSenderForResult(
+                                            result.getPendingIntent().getIntentSender(), REQ_ONE_TAP,
+                                            null, 0, 0, 0);
+                                } catch (IntentSender.SendIntentException e) {
+                                    Log.e(TAG, "Couldn't start One Tap UI: " + e.getLocalizedMessage());
+                                }
+                            }
+                        })
+                        .addOnFailureListener(SignInActivity.this, new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.getLocalizedMessage());
+                            }
+                        });
+            }
+        });
 
         // handle sign in with email và password ở đây
         buttonSignIn = findViewById(R.id.buttonSignIn);
-        buttonSignIn.setOnClickListener(view -> {
-            String loginId = editTextEmail.getText().toString().trim();
-            String password = editTextPassword.getText().toString().trim();
 
-            if (Validation.isValidUsernameOrEmailOrPhone(loginId) && Validation.isValidPassword(password)) {
-                authService.authenticate(loginId, password, new AuthService.AuthCallback() {
-                    @Override
-                    public void onSuccess(AuthenticateResponse response){
-                        Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    }
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-                    @Override
-                    public void onError(String errorMessage) {
-                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
-                // Hiển thị thông báo lỗi cho người dùng
-                if (!Validation.isValidUsernameOrEmailOrPhone(loginId)) {
-                    editTextEmail.setError("Email không hợp lệ");
-                }
-                if (!Validation.isValidPassword(password)) {
-                    editTextPassword.setError("Mật khẩu không hợp lệ");
-                }
+        btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, REQ_GOOGLE_SIGN_IN);
             }
         });
+
 
 
         buttonSignUpPage = findViewById(R.id.buttonSignUpPage);
@@ -193,7 +211,8 @@ public class SignInActivity extends AppCompatActivity {
                     if (idToken !=  null) {
                         authService.authenticateGoogle(idToken, new AuthService.AuthCallback() {
                             @Override
-                            public void onSuccess(AuthenticateResponse response){
+                            public void onSuccess(String successMessage){
+                                Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
@@ -210,6 +229,31 @@ public class SignInActivity extends AppCompatActivity {
                     // ...
                 }
                 break;
+            case REQ_GOOGLE_SIGN_IN:
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    if (account != null) {
+                        String idToken = account.getIdToken();
+                        authService.authenticateGoogle(idToken, new AuthService.AuthCallback() {
+                            @Override
+                            public void onSuccess(String successMessage){
+                                Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+
+                            @Override
+                            public void onError(String errorMessage) {
+                                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (ApiException e) {
+                    Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+                }
         }
     }
 

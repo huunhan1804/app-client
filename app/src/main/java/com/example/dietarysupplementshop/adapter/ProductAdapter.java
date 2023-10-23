@@ -51,13 +51,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Tạo Intent để chuyển từ Activity hiện tại sang Activity mới
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-
-                // Truyền dữ liệu nếu cần
                 intent.putExtra("productId", product.getProduct_id());
-
-                // Khởi chạy Activity mới
                 context.startActivity(intent);
             }
         });

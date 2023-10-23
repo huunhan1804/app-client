@@ -1,20 +1,21 @@
 package com.example.dietarysupplementshop;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.dietarysupplementshop.adapter.CategoryAdapter;
+import com.example.dietarysupplementshop.adapter.FakeProductAdapter;
 import com.example.dietarysupplementshop.adapter.ProductAdapter;
 import com.example.dietarysupplementshop.model.Category;
 import com.example.dietarysupplementshop.model.Product;
@@ -53,6 +54,7 @@ public class HomeFragment extends Fragment {
 
     private ProductViewModel productViewModel;
 
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -86,13 +88,12 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        productViewModel = MyApplication.getInstance().getProductViewModel();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_home, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         rcvCategory = view.findViewById(R.id.categoryRecyclerView);
         rcvBestSeller = view.findViewById(R.id.bestSellerRecyclerView);
@@ -104,25 +105,30 @@ public class HomeFragment extends Fragment {
         slideModels.add(new SlideModel(R.drawable.slide_2, ScaleTypes.FIT));
         imageSlider.setImageList(slideModels, ScaleTypes.FIT);
 
+        FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
+        rcvBestSeller.setAdapter(fakeProductAdapter);
+        rcvBestOrder.setAdapter(fakeProductAdapter);
+
+//        rcvBestSeller.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
+//        rcvBestOrder.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
+
+
         productViewModel.getBestSellers().observe(getViewLifecycleOwner(), products -> {
             mBestSellerList = products;
-            productBestSellerAdapter = new ProductAdapter(mBestSellerList, requireContext());
-            rcvBestSeller.setAdapter(productBestSellerAdapter);
-            productBestSellerAdapter.notifyDataSetChanged();
+            ProductAdapter productAdapter = new ProductAdapter(mBestSellerList, requireContext());
+            rcvBestSeller.setAdapter(productAdapter);
         });
 
         productViewModel.getBestOrders().observe(getViewLifecycleOwner(), products -> {
             mBestOrderList = products;
             productBestOrderAdapter = new ProductAdapter(mBestOrderList, requireContext());
             rcvBestOrder.setAdapter(productBestOrderAdapter);
-            productBestOrderAdapter.notifyDataSetChanged();
         });
 
         productViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             mCategoryList = categories;
             categoryAdapter = new CategoryAdapter(mCategoryList);
             rcvCategory.setAdapter(categoryAdapter);
-            categoryAdapter.notifyDataSetChanged();
         });
 
         return view;

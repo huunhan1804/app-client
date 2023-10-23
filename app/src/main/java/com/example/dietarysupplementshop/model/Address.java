@@ -3,38 +3,29 @@ package com.example.dietarysupplementshop.model;
 import java.math.BigInteger;
 
 public class Address {
-    private long addressId;
+    private long address_id;
     private String fullname;
     private String phone;
-    private String addressDetail;
-
-    private boolean isDefault;
-
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
-    }
-
-    public Address(long addressId, String fullname, String phone, String addressDetail, boolean isDefault) {
-        this.addressId = addressId;
-        this.fullname = fullname;
-        this.phone = phone;
-        this.addressDetail = addressDetail;
-        this.isDefault = isDefault;
-    }
+    private String address_detail;
+    private boolean _default;
 
     public Address() {
     }
 
-    public long getAddressId() {
-        return addressId;
+    public Address(long address_id, String fullname, String phone, String address_detail, boolean is_default) {
+        this.address_id = address_id;
+        this.fullname = fullname;
+        this.phone = phone;
+        this.address_detail = address_detail;
+        this._default = is_default;
     }
 
-    public void setAddressId(long addressId) {
-        this.addressId = addressId;
+    public long getAddress_id() {
+        return address_id;
+    }
+
+    public void setAddress_id(long address_id) {
+        this.address_id = address_id;
     }
 
     public String getFullname() {
@@ -53,11 +44,19 @@ public class Address {
         this.phone = phone;
     }
 
-    public String getAddressDetail() {
-        return addressDetail;
+    public String getAddress_detail() {
+        return address_detail;
     }
 
-    public void setAddressDetail(String addressDetail) {
-        this.addressDetail = addressDetail;
+    public void setAddress_detail(String address_detail) {
+        this.address_detail = address_detail;
+    }
+
+    public boolean getIs_default() {
+        return _default;
+    }
+
+    public void setIs_default(boolean is_default) {
+        this._default = is_default;
     }
 }
