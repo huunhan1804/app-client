@@ -54,6 +54,7 @@
     <string name="your_phone">Your phone number</string>
     <string name="your_name">Your name</string>
     <string name="information_contact">Information Contact</string>
+    <string name="delete_search_history">Delete search history</string>
 
 
 </resources>

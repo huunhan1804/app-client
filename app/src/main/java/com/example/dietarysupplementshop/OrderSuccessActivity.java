@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.dietarysupplementshop.viewModel.AccountViewModel;
+
 import java.util.concurrent.TimeUnit;
 
 import nl.dionsegijn.konfetti.core.Party;
@@ -26,10 +28,16 @@ public class OrderSuccessActivity extends AppCompatActivity {
     private KonfettiView konfettiView = null;
     private Shape.DrawableShape drawableShape = null;
 
+    private AccountViewModel accountViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_success);
+
+        accountViewModel = MyApplication.getInstance().getAccountViewModel();
+        accountViewModel.reloadAccountInfo();
+        accountViewModel.reloadOrderList();
 
         final Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_heart);
         drawableShape = new Shape.DrawableShape(drawable, true, true);
@@ -57,24 +65,16 @@ public class OrderSuccessActivity extends AppCompatActivity {
         Button btnOrderDetails = findViewById(R.id.btnOrderDetails);
         Button btnContinueShopping = findViewById(R.id.btnContinueShopping);
 
-        btnOrderDetails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xử lý sự kiện khi người dùng nhấn nút "Order Details"
-                // Ví dụ: Chuyển đến một Activity khác
-                Intent intent = new Intent(OrderSuccessActivity.this, OrderDetailsActivity.class);
-                startActivity(intent);
-            }
+        btnOrderDetails.setOnClickListener(v -> {
+            Intent intent1 = new Intent(OrderSuccessActivity.this, OrderDetailsActivity.class);
+            intent1.putExtra("orderId", getIntent().getLongExtra("orderId", 0));
+            startActivity(intent1);
+            finish();
         });
 
-        btnContinueShopping.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xử lý sự kiện khi người dùng nhấn nút "Continue Shopping"
-                // Ví dụ: Chuyển đến một Activity khác
-                Intent intent = new Intent(OrderSuccessActivity.this, HomepageActivity.class);
-                startActivity(intent);
-            }
+        btnContinueShopping.setOnClickListener(v -> {
+            Intent intent = new Intent(OrderSuccessActivity.this, HomepageActivity.class);
+            startActivity(intent);
         });
 
     }

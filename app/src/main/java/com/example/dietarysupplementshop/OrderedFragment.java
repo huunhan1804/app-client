@@ -1,10 +1,12 @@
 package com.example.dietarysupplementshop;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,9 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dietarysupplementshop.adapter.OrderAdapter;
 import com.example.dietarysupplementshop.model.Order;
-import com.example.dietarysupplementshop.model.OrderDetail;
+import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ import java.util.List;
  * Use the {@link OrderedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OrderedFragment extends Fragment {
+public class OrderedFragment extends Fragment implements OrderAdapter.OrderActionListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,10 +34,10 @@ public class OrderedFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private AccountViewModel accountViewModel;
+
 
     private RecyclerView rcv_orders;
-
-    private List<Order> orderList;
 
     private TextView totalOrderText;
 
@@ -71,26 +72,7 @@ public class OrderedFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        orderList = new ArrayList<>();
-        orderList.add(new Order(1,"23/02/2023", "1.400.000 đ", "PENDING_PAYMENT", "Name: Trần Quang Quí, Phone: 0945605514, Address: Ấp Phong Lưu, Xã Tân Hưng, Huyện Cái Nước, Tỉnh Cà Mau", getOrderDetailExample()));
-        orderList.add(new Order(2,"23/02/2023", "1.400.000 đ", "PENDING_PAYMENT", "Name: Trần Quang Quí, Phone: 0945605514, Address: Ấp Phong Lưu, Xã Tân Hưng, Huyện Cái Nước, Tỉnh Cà Mau", getOrderDetailExample()));
-        orderList.add(new Order(3,"23/02/2023", "1.400.000 đ", "PENDING_PAYMENT", "Name: Trần Quang Quí, Phone: 0945605514, Address: Ấp Phong Lưu, Xã Tân Hưng, Huyện Cái Nước, Tỉnh Cà Mau", getOrderDetailExample()));
-        orderList.add(new Order(4,"23/02/2023", "1.400.000 đ", "PENDING_PAYMENT", "Name: Trần Quang Quí, Phone: 0945605514, Address: Ấp Phong Lưu, Xã Tân Hưng, Huyện Cái Nước, Tỉnh Cà Mau", getOrderDetailExample()));
-        orderList.add(new Order(5,"23/02/2023", "1.400.000 đ", "PENDING_PAYMENT", "Name: Trần Quang Quí, Phone: 0945605514, Address: Ấp Phong Lưu, Xã Tân Hưng, Huyện Cái Nước, Tỉnh Cà Mau", getOrderDetailExample()));
-        orderList.add(new Order(6,"23/02/2023", "1.400.000 đ", "PENDING_PAYMENT", "Name: Trần Quang Quí, Phone: 0945605514, Address: Ấp Phong Lưu, Xã Tân Hưng, Huyện Cái Nước, Tỉnh Cà Mau", getOrderDetailExample()));
-
-    }
-
-    public static List<OrderDetail> getOrderDetailExample(){
-        List<OrderDetail> orderDetails = new ArrayList<>();
-        orderDetails.add(new OrderDetail(1,1, "200.00 đ", "200.000 đ"));
-        orderDetails.add(new OrderDetail(2,1, "200.00 đ", "200.000 đ"));
-        orderDetails.add(new OrderDetail(3,1, "200.00 đ", "200.000 đ"));
-        orderDetails.add(new OrderDetail(4,1, "200.00 đ", "200.000 đ"));
-        orderDetails.add(new OrderDetail(5,1, "200.00 đ", "200.000 đ"));
-        orderDetails.add(new OrderDetail(6,1, "200.00 đ", "200.000 đ"));
-        orderDetails.add(new OrderDetail(7,1, "200.00 đ", "200.000 đ"));
-        return orderDetails;
+        accountViewModel = MyApplication.getInstance().getAccountViewModel();
     }
 
     @Override
@@ -100,22 +82,54 @@ public class OrderedFragment extends Fragment {
         rcv_orders = view.findViewById(R.id.rcv_orders);
         totalOrderText = view.findViewById(R.id.totalOrderText);
 
-        // Set up RecyclerView
-        orderAdapter = new OrderAdapter(getContext(), orderList);
-        rcv_orders.setLayoutManager(new LinearLayoutManager(getContext()));
-        rcv_orders.setAdapter(orderAdapter);
+        accountViewModel.getOrderListResource().observe(getViewLifecycleOwner(), resource -> {
+            if (resource != null) {
+                switch (resource.getStatus()) {
+                    case SUCCESS:
+                        ((HomepageActivity) getActivity()).hideProgressBar();
+                        if (resource.getData() != null) {
 
-        // Update total order text
-        totalOrderText.setText("Total order: " + orderList.size() + " order");
+                            orderAdapter = new OrderAdapter(resource.getData(),getContext(),this);
+                            rcv_orders.setLayoutManager(new LinearLayoutManager(getContext()));
+                            rcv_orders.setAdapter(orderAdapter);
 
-        // Show appropriate view based on order list size
-        if (orderList.size() == 0) {
-            view.findViewById(R.id.EmptyOrderItem).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.HaveOrderItem).setVisibility(View.GONE);
-        } else {
-            view.findViewById(R.id.EmptyOrderItem).setVisibility(View.GONE);
-            view.findViewById(R.id.HaveOrderItem).setVisibility(View.VISIBLE);
-        }
+                            // Update total order text
+                            totalOrderText.setText("Total order: " + resource.getData().size() + " order");
+
+                            // Show appropriate view based on order list size
+                            if (resource.getData().size() == 0) {
+                                view.findViewById(R.id.EmptyOrderItem).setVisibility(View.VISIBLE);
+                                view.findViewById(R.id.HaveOrderItem).setVisibility(View.GONE);
+                            } else {
+                                view.findViewById(R.id.EmptyOrderItem).setVisibility(View.GONE);
+                                view.findViewById(R.id.HaveOrderItem).setVisibility(View.VISIBLE);
+                            }
+                        }
+                    case ERROR:
+                        ((HomepageActivity) getActivity()).hideProgressBar();
+                        break;
+                    case LOADING:
+                        ((HomepageActivity) getActivity()).showProgressBar();
+                        break;
+                }
+            }
+        });
         return view;
+    }
+
+    @Override
+    public void onCancelOrderClicked(Order order) {
+        showDialogConfirmCancelOrder(order);
+    }
+
+    private void showDialogConfirmCancelOrder(Order order) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        builder.setTitle("Confirm Cancel Order");
+        builder.setMessage("Are you sure you want to cancel this order?");
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            accountViewModel.cancelOrder(order.getOrder_id());
+        });
+        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 }

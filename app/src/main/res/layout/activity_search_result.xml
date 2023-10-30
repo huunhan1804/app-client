@@ -5,7 +5,7 @@
     android:id="@+id/searchView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyAddressActivity">
+    tools:context=".SearchResultActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -75,82 +75,64 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="25dp"
             android:layout_marginEnd="25dp"
-            android:gravity="end"
             android:orientation="horizontal">
 
-            <FrameLayout
-                android:id="@+id/framelayoutFilter"
-                android:layout_width="90dp"
+            <TextView
+                android:id="@+id/titleCategory"
+                android:layout_gravity="start"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:layout_height="40dp"
-                android:background="@drawable/rounded_button"
-                android:backgroundTint="#80D9D9D9">
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/iconFilter"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginStart="15dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="TODO"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/filter_icon">
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="#80D9D9D9">
 
-                </ImageButton>
+                    <ImageButton
+                        android:id="@+id/iconHamburger"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="TODO"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/hamburger_icon" />
+                </FrameLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginEnd="15dp"
-                    android:clickable="false"
-                    android:text="@string/filter"
-                    android:textColor="@color/black" />
-            </FrameLayout>
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="#80D9D9D9">
 
-            <FrameLayout
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/rounded_button"
-                android:backgroundTint="#80D9D9D9">
-
-                <ImageButton
-                    android:id="@+id/iconHamburger"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="TODO"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/hamburger_icon">
-
-                </ImageButton>
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/rounded_button"
-                android:backgroundTint="#80D9D9D9">
-
-                <ImageButton
-                    android:id="@+id/iconMenu"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="TODO"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/menu_icon">
-
-                </ImageButton>
-            </FrameLayout>
+                    <ImageButton
+                        android:id="@+id/iconMenu"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="TODO"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/menu_icon" />
+                </FrameLayout>
+            </LinearLayout>
         </LinearLayout>
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/productRecyclerView"
@@ -163,6 +145,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </RelativeLayout>
+
     <FrameLayout
         android:id="@+id/frameLoading"
         android:layout_width="match_parent"

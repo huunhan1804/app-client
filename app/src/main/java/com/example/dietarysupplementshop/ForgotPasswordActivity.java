@@ -9,12 +9,14 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.services.AuthService;
 import com.example.dietarysupplementshop.services.OtpService;
@@ -72,9 +74,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 editTextEmail.setError("Invalid email");
                 return;
             }
+            showProgressBar();
             otpService.sendOtpForgotPassword(email, new OtpService.OtpCallback() {
                 @Override
                 public void onSuccess(String successMessage) {
+                    hideProgressBar();
                     Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
                     btnSendOTP.setVisibility(View.INVISIBLE);
                     textViewCountdown.setVisibility(View.VISIBLE);
@@ -83,6 +87,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(String errorMessage) {
+                    hideProgressBar();
                     if(Integer.parseInt(errorMessage) == 404){
                         editTextEmail.setError("Account doesn't exist!");
                     }
@@ -124,29 +129,29 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
 
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(Validation.isValidOTP(editTextOTPCode.getText().toString())
-                        && Validation.isValidPasswordMatch(editTextPassword.getText().toString(), editTextConfirmPassword.getText().toString())
-                        && Validation.isValidPassword(editTextPassword.getText().toString())
-                        && Validation.isValidEmailOrPhone(editTextEmail.getText().toString())
-                ) {
-                    authService.forgotPassword(editTextEmail.getText().toString(), editTextConfirmPassword.getText().toString(), editTextOTPCode.getText().toString(), new AuthService.ForgotPasswordCallBack() {
-                        @Override
-                        public void onSuccess(String successMessage) {
-                            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        }
+        buttonConfirm.setOnClickListener(view -> {
+            if(Validation.isValidOTP(editTextOTPCode.getText().toString())
+                    && Validation.isValidPasswordMatch(editTextPassword.getText().toString(), editTextConfirmPassword.getText().toString())
+                    && Validation.isValidPassword(editTextPassword.getText().toString())
+                    && Validation.isValidEmailOrPhone(editTextEmail.getText().toString())
+            ) {
+                showProgressBar();
+                authService.forgotPassword(editTextEmail.getText().toString(), editTextConfirmPassword.getText().toString(), editTextOTPCode.getText().toString(), new AuthService.ForgotPasswordCallBack() {
+                    @Override
+                    public void onSuccess(String successMessage) {
+                        hideProgressBar();
+                        Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
 
-                        @Override
-                        public void onError(String errorMessage) {
-                            Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onError(String errorMessage) {
+                        hideProgressBar();
+                        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -182,5 +187,19 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         int seconds = (int) (timeLeftInMillis / 1000) % 60;
         @SuppressLint("DefaultLocale") String timeLeftFormatted = String.format("%02d", seconds) + "s";
         textViewCountdown.setText(timeLeftFormatted);
+    }
+
+    public void showProgressBar() {
+        FrameLayout frameLayout = findViewById(R.id.frameLoading);
+        LottieAnimationView animationView = findViewById(R.id.animationView);
+        frameLayout.setVisibility(View.VISIBLE);
+        animationView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar() {
+        FrameLayout frameLayout = findViewById(R.id.frameLoading);
+        LottieAnimationView animationView = findViewById(R.id.animationView);
+        frameLayout.setVisibility(View.GONE);
+        animationView.setVisibility(View.GONE);
     }
 }

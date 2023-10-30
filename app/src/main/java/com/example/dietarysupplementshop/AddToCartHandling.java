@@ -68,50 +68,34 @@ public class AddToCartHandling {
         populateProductVariants(radioGroup, productInformation.getProduct_variant_list());
 
         Button continueButton = popupView.findViewById(R.id.continueButton);
-        continueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleContinueButtonClick();
-            }
-        });
+        continueButton.setOnClickListener(view -> handleContinueButtonClick());
 
         ImageButton backButton = popupView.findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closePopup();
-            }
-        });
+        backButton.setOnClickListener(view -> closePopup());
 
         ImageButton increaseQuantityButton = popupView.findViewById(R.id.increaseQuantityButton);
         ImageButton decreaseQuantityButton = popupView.findViewById(R.id.decreaseQuantityButton);
         quantityTextView = popupView.findViewById(R.id.quantityTextView);
 
-        increaseQuantityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int currentQuantity = Integer.parseInt(quantityTextView.getText().toString());
-                if (currentQuantity < productInformation.getQuantity_in_stock()) {
-                    currentQuantity++;
-                    quantityTextView.setText(String.valueOf(currentQuantity));
-                }
-                if (currentQuantity >= productInformation.getQuantity_in_stock()) {
-                    increaseQuantityButton.setVisibility(View.INVISIBLE);
-                }
+        increaseQuantityButton.setOnClickListener(view -> {
+            int currentQuantity = Integer.parseInt(quantityTextView.getText().toString());
+            if (currentQuantity < productInformation.getQuantity_in_stock()) {
+                currentQuantity++;
+                quantityTextView.setText(String.valueOf(currentQuantity));
+            }
+            if (currentQuantity >= productInformation.getQuantity_in_stock()) {
+                increaseQuantityButton.setVisibility(View.INVISIBLE);
             }
         });
 
-        decreaseQuantityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int currentQuantity = Integer.parseInt(quantityTextView.getText().toString());
-                if (currentQuantity > 1) {
-                    currentQuantity--;
-                    quantityTextView.setText(String.valueOf(currentQuantity));
-                }
-                if (currentQuantity < productInformation.getQuantity_in_stock()) {
-                    increaseQuantityButton.setVisibility(View.VISIBLE);
-                }
+        decreaseQuantityButton.setOnClickListener(view -> {
+            int currentQuantity = Integer.parseInt(quantityTextView.getText().toString());
+            if (currentQuantity > 1) {
+                currentQuantity--;
+                quantityTextView.setText(String.valueOf(currentQuantity));
+            }
+            if (currentQuantity < productInformation.getQuantity_in_stock()) {
+                increaseQuantityButton.setVisibility(View.VISIBLE);
             }
         });
 
@@ -124,12 +108,9 @@ public class AddToCartHandling {
             RadioButton radioButton = new RadioButton(context);
             radioButton.setText(variant.getProduct_variant_name());
             radioButton.setTag(variant);
-            radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        updateUIForVariant(variant);
-                    }
+            radioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    updateUIForVariant(variant);
                 }
             });
             radioGroup.addView(radioButton);
@@ -149,17 +130,14 @@ public class AddToCartHandling {
 
         // Update quantity buttons based on stock
         ImageButton increaseQuantityButton = popupView.findViewById(R.id.increaseQuantityButton);
-        increaseQuantityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int currentQuantity = Integer.parseInt(quantityTextView.getText().toString());
-                if (currentQuantity < variant.getQuantity_in_stock()) {
-                    currentQuantity++;
-                    quantityTextView.setText(String.valueOf(currentQuantity));
-                }
-                if (currentQuantity >= variant.getQuantity_in_stock()) {
-                    increaseQuantityButton.setVisibility(View.INVISIBLE);
-                }
+        increaseQuantityButton.setOnClickListener(view -> {
+            int currentQuantity = Integer.parseInt(quantityTextView.getText().toString());
+            if (currentQuantity < variant.getQuantity_in_stock()) {
+                currentQuantity++;
+                quantityTextView.setText(String.valueOf(currentQuantity));
+            }
+            if (currentQuantity >= variant.getQuantity_in_stock()) {
+                increaseQuantityButton.setVisibility(View.INVISIBLE);
             }
         });
     }

@@ -151,6 +151,30 @@ public class ProductRepository {
         return data;
     }
 
+    public LiveData<Resource<List<Product>>> getProductByCategory(Long categoryId) {
+        MutableLiveData<Resource<List<Product>>> data = new MutableLiveData<>();
+        data.setValue(Resource.loading(null));
+        productAPI.getListProductByCategory(categoryId).enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Type listType = new TypeToken<List<Product>>() {}.getType();
+                    List<Product> productList = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
+                    data.setValue(Resource.success(productList));
+                } else {
+                    handleErrorResponse(response, data);
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                data.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+        return data;
+    }
+
+
+
     private <T> void handleErrorResponse(Response<?> response, MutableLiveData<Resource<T>> data) {
         if (response.errorBody() != null && response.code() != 403 && response.code() != 401) {
             try {

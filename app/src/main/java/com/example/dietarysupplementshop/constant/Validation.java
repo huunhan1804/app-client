@@ -2,6 +2,8 @@ package com.example.dietarysupplementshop.constant;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class Validation {
@@ -50,5 +52,11 @@ public class Validation {
         NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         return numberFormat.format(price);
     }
+    public static String formatDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+        return sdf.format(date);
+    }
+
+
 
 }

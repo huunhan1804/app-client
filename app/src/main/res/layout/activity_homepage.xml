@@ -46,7 +46,7 @@
                         app:layout_constraintVertical_bias="0.5" />
 
                     <ImageView
-                        android:id="@+id/locationIcon"
+                        android:id="@+id/chatIcon"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:background="@drawable/circle_button"
@@ -61,7 +61,7 @@
                         app:layout_constraintVertical_bias="0.5" />
 
                     <ImageView
-                        android:id="@+id/chatIcon"
+                        android:id="@+id/locationIcon"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_marginEnd="10dp"
@@ -71,7 +71,7 @@
                         android:padding="7dp"
                         android:src="@drawable/location_icon"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/locationIcon"
+                        app:layout_constraintEnd_toStartOf="@+id/chatIcon"
                         app:layout_constraintHorizontal_bias="1"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.5" />

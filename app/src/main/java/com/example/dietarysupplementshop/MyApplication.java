@@ -11,11 +11,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.dietarysupplementshop.token.TokenManager;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 import com.example.dietarysupplementshop.viewModel.ProductViewModel;
+import com.example.dietarysupplementshop.viewModel.SearchHistoryViewModel;
 
 public class MyApplication extends Application {
     public static final String CHANNEL_ID = "push_notification_id";
     private static MyApplication instance;
     private TokenManager tokenManager;
+    private SearchHistoryViewModel searchHistoryViewModel;
 
     private AccountViewModel accountViewModel;
     private ProductViewModel productViewModel;
@@ -27,6 +29,7 @@ public class MyApplication extends Application {
         tokenManager = new TokenManager(getApplicationContext());
         accountViewModel = new AccountViewModel();
         productViewModel = new ProductViewModel();
+        searchHistoryViewModel = new SearchHistoryViewModel(this);
         createChannelNotification();
     }
 
@@ -55,5 +58,9 @@ public class MyApplication extends Application {
 
     public ProductViewModel getProductViewModel() {
         return productViewModel;
+    }
+
+    public SearchHistoryViewModel getSearchHistoryViewModel() {
+        return searchHistoryViewModel;
     }
 }

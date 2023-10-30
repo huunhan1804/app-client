@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment {
 
         productViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             mCategoryList = categories;
-            categoryAdapter = new CategoryAdapter(mCategoryList);
+            categoryAdapter = new CategoryAdapter(mCategoryList, getContext());
             rcvCategory.setAdapter(categoryAdapter);
         });
 

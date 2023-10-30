@@ -219,4 +219,22 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:cornerRadius="3dp" />
+
+    <FrameLayout
+        android:id="@+id/frameLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#1A000000"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        >
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            app:lottie_rawRes="@raw/loading"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"/>
+    </FrameLayout>
 </RelativeLayout>

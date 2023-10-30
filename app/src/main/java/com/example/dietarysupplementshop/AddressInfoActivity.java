@@ -20,15 +20,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.dietarysupplementshop.adapter.CartItemAdapter;
 import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.interfaces.AddressAPI;
 import com.example.dietarysupplementshop.interfaces.GeocodingApi;
 import com.example.dietarysupplementshop.model.Address;
+import com.example.dietarysupplementshop.model.CartItem;
 import com.example.dietarysupplementshop.model.District;
 import com.example.dietarysupplementshop.model.Province;
 import com.example.dietarysupplementshop.model.Ward;
+import com.example.dietarysupplementshop.requests.AddToCartRequest;
 import com.example.dietarysupplementshop.requests.UpdateAddressRequest;
+import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -78,7 +83,7 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address_info);
 
-        accountViewModel = new ViewModelProvider(this).get(AccountViewModel.class);
+        accountViewModel = MyApplication.getInstance().getAccountViewModel();
 
         initializeViews();
         validateInputs();
@@ -90,7 +95,20 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
             if (addressId != -1) {
                 titleActivity.setText("Edit Address");
                 accountViewModel.getInfoAddress(addressId).observe(this, address -> {
-                    setupRetrofit(() -> loadDataToView(address.getData()));
+                    if (address != null) {
+                        switch (address.getStatus()) {
+                            case SUCCESS:
+                                if (address.getData() != null) {
+                                    setupRetrofit(() -> loadDataToView(address.getData()));
+                                }
+                                break;
+                            case ERROR:
+                                Toast.makeText(getApplicationContext(), address.getMessage(), Toast.LENGTH_LONG).show();
+                                break;
+                            case LOADING:
+                                break;
+                        }
+                    }
                 });
                 saveChangesButton.setOnClickListener(view -> {
                     if (isValidInput()) {
@@ -254,7 +272,6 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onFailure(Call<List<Province>> call, Throwable t) {
                 provinces = null;
-                Toast.makeText(AddressInfoActivity.this, "Unable to get list province", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -449,8 +466,6 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
                 if (response.isSuccessful() && response.body() != null && !response.body().results.isEmpty()) {
                     String address = response.body().results.get(0).toString();
                     updateSpinnerWithAddress(address);
-                } else {
-                    Toast.makeText(AddressInfoActivity.this, "Unable to find address for the coordinates", Toast.LENGTH_SHORT).show();
                 }
             }
 

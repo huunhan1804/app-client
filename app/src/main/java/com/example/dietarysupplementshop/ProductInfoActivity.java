@@ -38,8 +38,11 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.dietarysupplementshop.adapter.FakeProductAdapter;
 import com.example.dietarysupplementshop.adapter.ProductAdapter;
+import com.example.dietarysupplementshop.model.Address;
+import com.example.dietarysupplementshop.model.OrderDetail;
 import com.example.dietarysupplementshop.model.Product;
 import com.example.dietarysupplementshop.requests.AddToCartRequest;
+import com.example.dietarysupplementshop.requests.OrderRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.responses.ProductInformation;
 import com.example.dietarysupplementshop.util.CircleAnimationUtil;
@@ -141,15 +144,13 @@ public class ProductInfoActivity extends AppCompatActivity {
                         TextView buyNowText = findViewById(R.id.buyNowText);
 
                         messengerIcon.setOnClickListener(view -> {
-                            showPopup(view);
+
                         });
 
                         cartIcon.setOnClickListener(view -> showPopupAddToCart(view, productInfo));
 
 
-                        buyNowText.setOnClickListener(view -> {
-                            showPopup(view);
-                        });
+                        buyNowText.setOnClickListener(view ->showPopupBuyNow(view, productInfo));
                     }
                 });
             }
@@ -206,43 +207,67 @@ public class ProductInfoActivity extends AppCompatActivity {
         });
     }
 
-    private void showPopup(View view) {
-        // inflate the layout of the popup window
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.buy_now_popup_layout, null);
+    private void showPopupBuyNow(View view, ProductInformation productInformation) {
+        accountViewModel.getAddressListResource().observe(this, resource -> {
+            switch (resource.getStatus()) {
+                case LOADING:
+                    showProgressBar();
+                    break;
+                case SUCCESS:
+                    hideProgressBar();
+                    if(resource.getData() != null){
+                        Address defaultAddress = resource.getData().stream()
+                                .filter(Address::getIs_default)
+                                .findFirst()
+                                .orElse(null);
 
-        // create the popup window
-        int width = LinearLayout.LayoutParams.MATCH_PARENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+                        if (defaultAddress != null) {
+                            // inflate the layout of the popup window
+                            LayoutInflater inflater = (LayoutInflater)
+                                    getSystemService(LAYOUT_INFLATER_SERVICE);
+                            View popupView = inflater.inflate(R.layout.buy_now_popup_layout, null);
 
-        // Set an animation for the popup to slide up from the bottom
-        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-        popupView.startAnimation(slideUp);
+                            // create the popup window
+                            int width = LinearLayout.LayoutParams.MATCH_PARENT;
+                            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                            boolean focusable = true; // lets taps outside the popup also dismiss it
+                            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window token
-        popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+                            // Set an animation for the popup to slide up from the bottom
+                            Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+                            popupView.startAnimation(slideUp);
 
-        PopupEventHandling popupHandler = new PopupEventHandling(this, popupView, REQUEST_CODE_POPUP);
-        popupHandler.setPopupWindow(popupWindow);
+                            // show the popup window
+                            // which view you pass in doesn't matter, it is only used for the window token
+                            popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
 
-        Context context = this;
-        popupHandler.setOnActivityResultListener((requestCode, resultCode, data) -> {
-            if (requestCode == REQUEST_CODE_POPUP && resultCode == RESULT_OK) {
-                if (data != null) {
-                    ShowPopUpConfirm(data, context, view);
-                }
+                            PopupEventHandling popupHandler = new PopupEventHandling(this, popupView, REQUEST_CODE_POPUP, productInformation, defaultAddress);
+                            popupHandler.setPopupWindow(popupWindow);
+
+                            Context context = this;
+                            popupHandler.setOnActivityResultListener((requestCode, resultCode, data) -> {
+                                if (requestCode == REQUEST_CODE_POPUP && resultCode == RESULT_OK) {
+                                    if (data != null) {
+                                        ShowPopUpConfirm(data, context, view);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    break;
+                case ERROR:
+                    hideProgressBar();
+                    Toast.makeText(this, resource.getMessage(), Toast.LENGTH_LONG).show();
+                    break;
             }
         });
-
 
     }
 
     private void ShowPopUpConfirm(Intent data, Context context, View view){
-        String productId =  data.getStringExtra("productId");
+        long productId =  data.getLongExtra("productId", 0);
+        long productVariantId =  data.getLongExtra("productVariantId", 0);
+        String productPrice = data.getStringExtra("productPrice");
         int quantity = data.getIntExtra("quantity", 0);
         String name =  data.getStringExtra("name");
         String phone =  data.getStringExtra("phone");
@@ -261,17 +286,40 @@ public class ProductInfoActivity extends AppCompatActivity {
 
         popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
 
-        ConfirmPopupHandling popupHandler = new ConfirmPopupHandling(context, popupView2, REQUEST_CODE_POPUP_CONFIRM, String.valueOf(quantity), "200.000 đ", name, phone, address);
+        ConfirmPopupHandling popupHandler = new ConfirmPopupHandling(context, popupView2, REQUEST_CODE_POPUP_CONFIRM, String.valueOf(quantity), productPrice, name, phone, address);
         popupHandler.setPopupWindow(popupWindow);
-        popupHandler.setOnActivityResultListener(new ConfirmPopupHandling.OnActivityResultListener() {
-            @Override
-            public void onActivityResult(int requestCode, int resultCode, Intent data) {
-                if (requestCode == REQUEST_CODE_POPUP_CONFIRM && resultCode == RESULT_OK) {
-                    if (data != null) {
-                        Log.d("MyTag", "Data: " + data.getStringExtra("address"));
-                        Intent intent = new Intent(context, OrderSuccessActivity.class);
-                        startActivity(intent);
-                    }
+        popupHandler.setOnActivityResultListener((requestCode, resultCode, data1) -> {
+            if (requestCode == REQUEST_CODE_POPUP_CONFIRM && resultCode == RESULT_OK) {
+                if (data1 != null) {
+                    String subTotal =  data1.getStringExtra("subTotal");
+                    String totalBill =  data1.getStringExtra("totalBill");
+                    String shippingInfo =  data1.getStringExtra("address");
+
+                    List<OrderDetail> orderDetail = new ArrayList<>();
+                    orderDetail.add(new OrderDetail(productId, productVariantId, quantity, productPrice, subTotal));
+                    OrderRequest orderRequest = new OrderRequest(shippingInfo, totalBill,orderDetail);
+                    accountViewModel.addOrder(orderRequest).observe(this, orderResource -> {
+                        if (orderResource != null) {
+                            switch (orderResource.getStatus()) {
+                                case LOADING:
+                                    showProgressBar();
+                                    break;
+                                case SUCCESS:
+                                    hideProgressBar();
+                                    if (orderResource.getData() != null) {
+                                        Intent intent = new Intent(context, OrderSuccessActivity.class);
+                                        intent.putExtra("orderId", orderResource.getData().getOrder_id());
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    break;
+                                case ERROR:
+                                    hideProgressBar();
+                                    Toast.makeText(this, orderResource.getMessage(), Toast.LENGTH_LONG).show();
+                                    break;
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -287,7 +335,7 @@ public class ProductInfoActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                Toast.makeText(ProductInfoActivity.this, "Continue Shopping...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProductInfoActivity.this, "Add to cart success!", Toast.LENGTH_SHORT).show();
             }
 
             @Override

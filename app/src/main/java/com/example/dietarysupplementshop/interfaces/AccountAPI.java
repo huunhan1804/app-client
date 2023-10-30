@@ -3,6 +3,8 @@ package com.example.dietarysupplementshop.interfaces;
 import com.example.dietarysupplementshop.model.ResponseModel;
 import com.example.dietarysupplementshop.requests.AddLoginIdRequest;
 import com.example.dietarysupplementshop.requests.AddToCartRequest;
+import com.example.dietarysupplementshop.requests.ChangePasswordRequest;
+import com.example.dietarysupplementshop.requests.UpdateAccountRequest;
 import com.example.dietarysupplementshop.requests.UpdateAvatarRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 
@@ -23,6 +25,12 @@ public interface AccountAPI {
 
     @POST("/api/account/add-login-id")
     Call<ResponseModel<AccountInformation>> addLoginId(@Body AddLoginIdRequest addLoginIdRequest);
+    @POST("/api/account/change-password")
+    Call<ResponseModel<String>> changePassword(@Body ChangePasswordRequest changePasswordRequest);
+
+    @POST("/api/account/update-user")
+    Call<ResponseModel<AccountInformation>> updateAccountProfile(@Body UpdateAccountRequest request);
+
 
     @POST("/api/cart/add")
     Call<ResponseModel<AccountInformation>> addToCart(@Body AddToCartRequest request);

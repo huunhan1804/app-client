@@ -6,12 +6,18 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.dietarysupplementshop.model.Address;
+import com.example.dietarysupplementshop.model.Order;
 import com.example.dietarysupplementshop.repositories.AccountRepository;
 import com.example.dietarysupplementshop.requests.AddAddressRquest;
 import com.example.dietarysupplementshop.requests.AddToCartRequest;
+import com.example.dietarysupplementshop.requests.ChangePasswordRequest;
+import com.example.dietarysupplementshop.requests.CheckoutRequest;
+import com.example.dietarysupplementshop.requests.OrderRequest;
+import com.example.dietarysupplementshop.requests.UpdateAccountRequest;
 import com.example.dietarysupplementshop.requests.UpdateAddressRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.repositories.Resource;
+import com.example.dietarysupplementshop.responses.OrderDetailResponse;
 
 import java.util.List;
 
@@ -21,6 +27,7 @@ public class AccountViewModel extends ViewModel {
     private MutableLiveData<Resource<AccountInformation>> accountInfoResource;
 
     private MutableLiveData<Resource<List<Address>>> addressListResource;
+    private MutableLiveData<Resource<List<Order>>> orderListResource;
 
     private String avatar_url;
 
@@ -40,7 +47,7 @@ public class AccountViewModel extends ViewModel {
         return accountInfoResource;
     }
 
-    private void loadAccountInfo() {
+    public void loadAccountInfo() {
         accountRepository.fetchAccount().observeForever(accountInfoResource::setValue);
     }
 
@@ -53,6 +60,10 @@ public class AccountViewModel extends ViewModel {
         });
     }
 
+    public LiveData<Resource<String>> changePassword(ChangePasswordRequest changePasswordRequest) {
+        return accountRepository.changePassword(changePasswordRequest);
+    }
+
     public LiveData<Resource<AccountInformation>> addToCart(AddToCartRequest request) {
         MutableLiveData<Resource<AccountInformation>> data = new MutableLiveData<>();
         accountRepository.fetchAddToCart(request).observeForever(accountInformationResource -> {
@@ -63,6 +74,30 @@ public class AccountViewModel extends ViewModel {
         });
         return data;
     }
+
+    public LiveData<Resource<AccountInformation>> updateAccountProfile(UpdateAccountRequest request) {
+        MutableLiveData<Resource<AccountInformation>> data = new MutableLiveData<>();
+        accountRepository.updateAccountProfile(request).observeForever(accountInformationResource -> {
+            data.setValue(accountInformationResource);
+            if (accountInformationResource != null) {
+                accountInfoResource.setValue(accountInformationResource);
+            }
+        });
+        return data;
+    }
+
+    public LiveData<Resource<AccountInformation>> addLoginId(String loginId) {
+        MutableLiveData<Resource<AccountInformation>> data = new MutableLiveData<>();
+        accountRepository.fetchAddLoginId(loginId).observeForever(accountInformationResource -> {
+            data.setValue(accountInformationResource);
+            if (accountInformationResource != null) {
+                accountInfoResource.setValue(accountInformationResource);
+            }
+        });
+        return data;
+    }
+
+
 
 
 
@@ -118,5 +153,45 @@ public class AccountViewModel extends ViewModel {
                 addressListResource.setValue(addresses);
             }
         });
+    }
+
+    public LiveData<Resource<List<Order>>> getOrderListResource() {
+        if (orderListResource == null) {
+            orderListResource = new MutableLiveData<>();
+            loadOrderList();
+        }
+        return orderListResource;
+    }
+
+    public void loadOrderList() {
+        accountRepository.fetchOrderList().observeForever(orderListResource::setValue);
+    }
+    public void cancelOrder(Long orderId) {
+        accountRepository.cancelOrder(orderId).observeForever(orderListResource::setValue);
+    }
+
+    public LiveData<Resource<Order>> getOrderInfo(long orderId) {
+        return accountRepository.getOrderInfo(orderId);
+    }
+
+    public LiveData<Resource<Order>> addOrder(OrderRequest orderRequest) {
+        return accountRepository.addOrder(orderRequest);
+    }
+
+    public LiveData<Resource<List<OrderDetailResponse>>> getOrderDetailCheckout(CheckoutRequest request) {
+        return accountRepository.getOrderDetailCheckout(request);
+    }
+
+    public void reloadAccountInfo() {
+        accountRepository.reloadAccountInfo();
+        loadAccountInfo();
+    }
+    public void reloadAddressList() {
+        accountRepository.reloadAddressList();
+        loadAddressList();
+    }
+    public void reloadOrderList() {
+        accountRepository.reloadOrderList();
+        loadOrderList();
     }
 }

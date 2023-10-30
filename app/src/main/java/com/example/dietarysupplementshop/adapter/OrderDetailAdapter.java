@@ -13,16 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dietarysupplementshop.ProductInfoActivity;
 import com.example.dietarysupplementshop.R;
-import com.example.dietarysupplementshop.model.OrderDetail;
+import com.example.dietarysupplementshop.responses.OrderDetailResponse;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.OrderDetailViewHolder> {
 
-    private List<OrderDetail> orderDetailList;
+    private List<OrderDetailResponse> orderDetailList;
     private Context context;
 
-    public OrderDetailAdapter(Context context, List<OrderDetail> orderDetailList) {
+    public OrderDetailAdapter(Context context, List<OrderDetailResponse> orderDetailList) {
         this.context = context;
         this.orderDetailList = orderDetailList;
     }
@@ -36,20 +37,30 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull OrderDetailViewHolder holder, int position) {
-        OrderDetail orderDetail = orderDetailList.get(position);
+        OrderDetailResponse orderDetail = orderDetailList.get(position);
 
-        // TODO: Set product image using orderDetail.getProductId() if you have a method to get the image
+        if (orderDetail.getProductVariantDTO().getProduct_variant_image_url() != null) {
+            Picasso.get()
+                    .load(orderDetail.getProductVariantDTO().getProduct_variant_image_url())
+                    .into(holder.productImageView);
+        } else {
+            for (String image : orderDetail.getProductInfoDTO().getMedia_url()) {
+                Picasso.get()
+                        .load(image)
+                        .into(holder.productImageView);
+            }
+        }
+
+        holder.productNameTextView.setText(orderDetail.getProductInfoDTO().getProduct_name());
         holder.productPriceTextValue.setText(orderDetail.getPrice());
         holder.quantityTextValue.setText(String.valueOf(orderDetail.getQuantity()));
-        holder.subTotalTextValue.setText(orderDetail.getSubtotal());
+        holder.subTotalTextValue.setText(orderDetail.getSub_total());
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ProductInfoActivity.class);
-                intent.putExtra("productId", orderDetail.getProductId());
-                context.startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ProductInfoActivity.class);
+            intent.putExtra("productId", orderDetail.getProductInfoDTO().getProduct_id());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         });
     }
 
@@ -60,11 +71,12 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
     public static class OrderDetailViewHolder extends RecyclerView.ViewHolder {
         ImageView productImageView;
-        TextView productPriceTextValue, quantityTextValue, subTotalTextValue;
+        TextView productNameTextView, productPriceTextValue, quantityTextValue, subTotalTextValue;
 
         public OrderDetailViewHolder(@NonNull View itemView) {
             super(itemView);
             productImageView = itemView.findViewById(R.id.productImageView);
+            productNameTextView = itemView.findViewById(R.id.productNameTextView);
             productPriceTextValue = itemView.findViewById(R.id.productPriceTextValue);
             quantityTextValue = itemView.findViewById(R.id.quantityTextValue);
             subTotalTextValue = itemView.findViewById(R.id.subTotalTextValue);

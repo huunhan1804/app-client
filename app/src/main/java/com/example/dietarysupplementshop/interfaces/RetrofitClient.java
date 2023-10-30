@@ -25,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private static Retrofit retrofit;
     private static AuthService authService = new AuthService(MyApplication.getInstance().getTokenManager());
-    private static final String BASE_URL = "http://192.168.1.10:8080";
+    private static final String BASE_URL = "http://192.168.1.8:8080";
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
@@ -70,7 +70,12 @@ public class RetrofitClient {
                             authService.refreshAccessToken(refreshToken, new AuthService.AuthCallback() {
                                 @Override
                                 public void onSuccess(String successMessage) {
-
+                                    new Handler(Looper.getMainLooper()).post(() -> {
+                                        Toast.makeText(MyApplication.getInstance().getApplicationContext(), "Đang đăng nhập lại...", Toast.LENGTH_SHORT).show();
+                                    });
+                                    Intent restartIntent = new Intent(MyApplication.getInstance().getApplicationContext(), SplashActivity.class);
+                                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    MyApplication.getInstance().getApplicationContext().startActivity(restartIntent);
                                 }
 
                                 @Override
@@ -87,7 +92,6 @@ public class RetrofitClient {
 
                 return response;
             });
-
 
             OkHttpClient httpClient = httpClientBuilder.build();
 

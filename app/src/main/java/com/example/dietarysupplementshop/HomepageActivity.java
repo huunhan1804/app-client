@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +41,8 @@ public class HomepageActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
 
+    private ImageView locationIcon;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,11 @@ public class HomepageActivity extends AppCompatActivity {
             startActivity(new Intent(this, SignInActivity.class));
             finish();
         }
+        locationIcon = findViewById(R.id.locationIcon);
+        locationIcon.setOnClickListener(view -> {
+            Intent intent = new Intent(this, LocationStoreActivity.class);
+            startActivity(intent);
+        });
 
 
         homeFragment = new HomeFragment();
@@ -115,28 +124,14 @@ public class HomepageActivity extends AppCompatActivity {
         searchTextInputLayout = findViewById(R.id.searchTextInputLayout);
         searchEditText = findViewById(R.id.searchEditText);
 
-        // Đặt sự kiện cho phím "Enter"
-        searchEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEARCH) {
-                String searchText = searchEditText.getText().toString();
-                Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
-                intent.putExtra("SEARCH_TEXT",searchText );
+        searchEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                Intent intent = new Intent(HomepageActivity.this, SearchActivity.class);
                 startActivity(intent);
-                return true;
+                searchEditText.clearFocus();
             }
-            return false;
         });
 
-        CoordinatorLayout coordinatorLayout = findViewById(R.id.homeView);
-        coordinatorLayout.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                if (searchEditText.isFocused()) {
-                    searchEditText.clearFocus();
-                }
-                hideKeyboard(v);
-            }
-            return false;
-        });
     }
 
     public void showProgressBar() {
@@ -153,10 +148,4 @@ public class HomepageActivity extends AppCompatActivity {
         animationView.setVisibility(View.GONE);
     }
 
-    private void hideKeyboard(View view) {
-        if (view != null) {
-            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
 }

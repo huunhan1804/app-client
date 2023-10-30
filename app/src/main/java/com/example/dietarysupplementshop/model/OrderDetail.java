@@ -2,6 +2,7 @@ package com.example.dietarysupplementshop.model;
 
 public class OrderDetail {
     private long productId;
+    private long productVariantId;
     private int quantity;
     private String price;
     private String subtotal;
@@ -9,8 +10,9 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(long productId, int quantity, String price, String subtotal) {
+    public OrderDetail(long productId, long productVariantId, int quantity, String price, String subtotal) {
         this.productId = productId;
+        this.productVariantId = productVariantId;
         this.quantity = quantity;
         this.price = price;
         this.subtotal = subtotal;
@@ -22,6 +24,14 @@ public class OrderDetail {
 
     public void setProductId(long productId) {
         this.productId = productId;
+    }
+
+    public long getProductVariantId() {
+        return productVariantId;
+    }
+
+    public void setProductVariantId(long productVariantId) {
+        this.productVariantId = productVariantId;
     }
 
     public int getQuantity() {

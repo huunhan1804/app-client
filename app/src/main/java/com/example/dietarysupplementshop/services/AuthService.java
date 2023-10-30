@@ -88,19 +88,6 @@ public class AuthService {
         });
     }
 
-    public AuthenticateResponse refreshAccessTokenSync(String refreshToken) throws IOException {
-        Log.d("Mytag", "goi refresh");
-        RefreshTokenRequest request = new RefreshTokenRequest(refreshToken);
-        retrofit2.Response<ResponseModel<AuthenticateResponse>> response = authenticateAPI.refreshAccessToken(request).execute();
-
-        if (response.isSuccessful() && response.body() != null && response.body().getStatus() == 0) {
-            return response.body().getData();
-        } else {
-            return null;
-        }
-    }
-
-
     public interface AuthCallback {
         void onSuccess(String errorMessage);
 

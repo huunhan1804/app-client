@@ -1,76 +1,76 @@
 package com.example.dietarysupplementshop.model;
 
+import com.example.dietarysupplementshop.responses.OrderDetailResponse;
+
+import java.util.Date;
 import java.util.List;
 
 public class Order {
-    private long orderId;
-    private String orderDate;
+    private long order_id;
+    private Address address_info;
+    private Date order_date;
+    private String order_status;
+    private String totalBill;
 
-    private String totalPrice;
-
-    private String orderStatus;
-
-    private String addressDetail;
-
-    private List<OrderDetail> orderDetails;
+    private List<OrderDetailResponse> order_detail;
 
     public Order() {
     }
 
-    public Order(long orderId, String orderDate, String totalPrice, String orderStatus, String addressDetail, List<OrderDetail> orderDetails) {
-        this.orderId = orderId;
-        this.orderDate = orderDate;
-        this.totalPrice = totalPrice;
-        this.orderStatus = orderStatus;
-        this.addressDetail = addressDetail;
-        this.orderDetails = orderDetails;
+    public Order(long order_id, Address address_info, Date order_date, String order_status, String totalBill, List<OrderDetailResponse> order_detail) {
+        this.order_id = order_id;
+        this.address_info = address_info;
+        this.order_date = order_date;
+        this.order_status = order_status;
+        this.totalBill = totalBill;
+        this.order_detail = order_detail;
     }
 
-    public long getOrderId() {
-        return orderId;
+    public long getOrder_id() {
+        return order_id;
     }
 
-    public void setOrderId(long orderId) {
-        this.orderId = orderId;
+    public void setOrder_id(long order_id) {
+        this.order_id = order_id;
     }
 
-    public String getOrderDate() {
-        return orderDate;
+    public Address getAddress_info() {
+        return address_info;
     }
 
-    public void setOrderDate(String orderDate) {
-        this.orderDate = orderDate;
+    public void setAddress_info(Address address_info) {
+        this.address_info = address_info;
     }
 
-    public String getTotalPrice() {
-        return totalPrice;
+    public Date getOrder_date() {
+        return order_date;
     }
 
-    public void setTotalPrice(String totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setOrder_date(Date order_date) {
+        this.order_date = order_date;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public String getOrder_status() {
+        return order_status;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setOrder_status(String order_status) {
+        this.order_status = order_status;
     }
 
-    public String getAddressDetail() {
-        return addressDetail;
+    public String getTotalBill() {
+        return totalBill;
     }
 
-    public void setAddressDetail(String addressDetail) {
-        this.addressDetail = addressDetail;
+    public void setTotalBill(String totalBill) {
+        this.totalBill = totalBill;
     }
 
-    public List<OrderDetail> getOrderDetails() {
-        return orderDetails;
+    public List<OrderDetailResponse> getOrder_detail() {
+        return order_detail;
     }
 
-    public void setOrderDetails(List<OrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
+    public void setOrder_detail(List<OrderDetailResponse> order_detail) {
+        this.order_detail = order_detail;
     }
 }

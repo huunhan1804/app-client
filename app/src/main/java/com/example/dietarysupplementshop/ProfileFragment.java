@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,10 +12,12 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -22,15 +25,17 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dietarysupplementshop.constant.Validation;
+import com.example.dietarysupplementshop.requests.ChangePasswordRequest;
+import com.example.dietarysupplementshop.requests.UpdateAccountRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.services.OtpService;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
@@ -42,7 +47,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,6 +67,8 @@ public class ProfileFragment extends Fragment {
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     private AccountViewModel accountViewModel;
+
+    private String birthdate;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -102,7 +108,7 @@ public class ProfileFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        accountViewModel = new ViewModelProvider(requireActivity()).get(AccountViewModel.class);
+        accountViewModel = MyApplication.getInstance().getAccountViewModel();
     }
 
     private static final int REQUEST_IMAGE_PICK = 101;
@@ -114,6 +120,7 @@ public class ProfileFragment extends Fragment {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -146,8 +153,9 @@ public class ProfileFragment extends Fragment {
                             phoneEditText.setText(accountInformations.getAccountProfileDTO().getPhone());
                             genderEditText.setText(accountInformations.getAccountProfileDTO().getGender());
                             Date date = accountInformations.getAccountProfileDTO().getBirthday();
-                            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                             String birthdateStr = dateFormat.format(date);
+                            birthdate = birthdateStr;
                             birthdateEditText.setText(birthdateStr);
                             fullnameEditText.setText(accountInformations.getAccountProfileDTO().getFullname());
                             Picasso.get().load(accountInformations.getAvatar_url()).transform(new CircleTransform()).into(avatarImageView);
@@ -197,77 +205,81 @@ public class ProfileFragment extends Fragment {
         ((HomepageActivity) getActivity()).hideProgressBar();
 
         FrameLayout frameAvatar = view.findViewById(R.id.frameAvatar);
-        frameAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onAvatarClick(v);
+        frameAvatar.setOnClickListener(v -> onAvatarClick(v));
+
+
+        fullnameEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                closeKeyboard();
+                UpdateAccountRequest accountRequest = new UpdateAccountRequest(fullnameEditText.getText().toString().trim(), genderEditText.getText().toString().trim(), birthdate);
+                accountViewModel.updateAccountProfile(accountRequest).observe(getViewLifecycleOwner(), resource -> {
+                    if (resource != null) {
+                        switch (resource.getStatus()) {
+                            case SUCCESS:
+                                ((HomepageActivity) getActivity()).hideProgressBar();
+                                break;
+                            case ERROR:
+                                ((HomepageActivity) getActivity()).hideProgressBar();
+                                break;
+                            case LOADING:
+                                ((HomepageActivity) getActivity()).showProgressBar();
+                                break;
+                        }
+                    }
+                });
+                return true;
             }
+            return false;
         });
 
 
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showEmailDialog();
-            }
+        RelativeLayout frameContain = view.findViewById(R.id.frameContain);
+
+        frameContain.setOnTouchListener((v, event) -> {
+            closeKeyboard();
+            return false;
         });
 
-        editPhoneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPhoneDialog();
-            }
+
+        editButton.setOnClickListener(v -> showEmailDialog());
+
+        editPhoneButton.setOnClickListener(v -> showPhoneDialog());
+
+        editGenderButton.setOnClickListener(v -> showGenderDialog());
+
+        editBirthdateButton.setOnClickListener(v -> showBirthdateDialog());
+
+        myAddressBtn.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), MyAddressActivity.class);
+            startActivity(intent);
         });
 
-        editGenderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showGenderDialog();
-            }
-        });
+        changePassBtn.setOnClickListener(view12 -> showChangePasswordDialog());
 
-        editBirthdateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBirthdateDialog();
-            }
-        });
+        signOutBtn.setOnClickListener(view13 -> {
+            MyApplication.getInstance().getTokenManager().clearTokens();
 
-        myAddressBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), MyAddressActivity.class);
-                startActivity(intent);
-            }
-        });
+            GoogleSignIn.getClient(getActivity(), new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()).signOut();
 
-        changePassBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showChangePasswordDialog();
-            }
-        });
+            Intent intent = new Intent(getActivity(), SignInActivity.class);
+            startActivity(intent);
+            getActivity().finish();
 
-        signOutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MyApplication.getInstance().getTokenManager().clearTokens();
-
-                GoogleSignIn.getClient(
-                        getActivity(),
-                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
-                ).signOut();
-
-                Intent intent = new Intent(getActivity(), SignInActivity.class);
-                startActivity(intent);
-                getActivity().finish();
-
-            }
         });
 
 
         return view;
     }
+
+    private void closeKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            view.clearFocus();
+        }
+    }
+
 
     private void uploadNewImage(FirebaseStorage storage, Uri selectedImage) {
         StorageReference storageRef = storage.getReference();
@@ -296,58 +308,25 @@ public class ProfileFragment extends Fragment {
         input.setText(emailEditText.getText());
         builder.setView(customView);
         OtpService otpService = new OtpService();
+        String originalEmail = emailEditText.getText().toString();
 
-        // Thêm sự kiện cho nút "OK", để không cần nút "OK" mà sử dụng Enter
         builder.setPositiveButton("OK", (dialogInterface, i) -> {
-            ((HomepageActivity) getActivity()).showProgressBar();
-            String email = input.getText().toString();
-            if (Validation.isValidEmail(email)) {
-                otpService.sendOtpRegistration(email, new OtpService.OtpCallback() {
-                    @Override
-                    public void onSuccess(String successMessage) {
-                        ((HomepageActivity) getActivity()).hideProgressBar();
-                        showOtpDialogForEmail();
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        if (Integer.parseInt(errorMessage) == 409) {
-                            ((HomepageActivity) getActivity()).hideProgressBar();
-                            Toast.makeText(getContext(), "Email is already exist!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            } else {
-                ((HomepageActivity) getActivity()).hideProgressBar();
-                Toast.makeText(getContext(), "Invalid email address!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builder.setNegativeButton("Cancel", null);
-
-        final AlertDialog dialog = builder.create();
-
-        // Lắng nghe sự kiện khi nhấn Enter trên bàn phím
-        input.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+            if (!originalEmail.equals(input.getText().toString())) {
                 ((HomepageActivity) getActivity()).showProgressBar();
                 String email = input.getText().toString();
                 if (Validation.isValidEmail(email)) {
                     otpService.sendOtpRegistration(email, new OtpService.OtpCallback() {
                         @Override
                         public void onSuccess(String successMessage) {
-                            // Đóng dialog khi API thành công
-                            dialog.dismiss();
                             ((HomepageActivity) getActivity()).hideProgressBar();
-                            showOtpDialogForEmail();
+                            showOtpDialogForEmail(otpService, email);
                         }
 
                         @Override
                         public void onError(String errorMessage) {
                             if (Integer.parseInt(errorMessage) == 409) {
-                                // Báo lỗi lên EditText của dialog
-                                input.setError("Email is already exist!");
                                 ((HomepageActivity) getActivity()).hideProgressBar();
+                                Toast.makeText(getContext(), "Email is already exist!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -355,7 +334,44 @@ public class ProfileFragment extends Fragment {
                     ((HomepageActivity) getActivity()).hideProgressBar();
                     Toast.makeText(getContext(), "Invalid email address!", Toast.LENGTH_SHORT).show();
                 }
-                return true;
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
+
+        final AlertDialog dialog = builder.create();
+        input.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                if (!originalEmail.equals(input.getText().toString())) {
+
+                    ((HomepageActivity) getActivity()).showProgressBar();
+                    String email = input.getText().toString();
+                    if (Validation.isValidEmail(email)) {
+                        otpService.sendOtpRegistration(email, new OtpService.OtpCallback() {
+                            @Override
+                            public void onSuccess(String successMessage) {
+                                // Đóng dialog khi API thành công
+                                dialog.dismiss();
+                                ((HomepageActivity) getActivity()).hideProgressBar();
+                                showOtpDialogForEmail(otpService, email);
+                            }
+
+                            @Override
+                            public void onError(String errorMessage) {
+                                if (Integer.parseInt(errorMessage) == 409) {
+                                    // Báo lỗi lên EditText của dialog
+                                    input.setError("Email is already exist!");
+                                    ((HomepageActivity) getActivity()).hideProgressBar();
+                                }
+                            }
+                        });
+                    } else {
+                        ((HomepageActivity) getActivity()).hideProgressBar();
+                        Toast.makeText(getContext(), "Invalid email address!", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+
             }
             return false;
         });
@@ -373,18 +389,27 @@ public class ProfileFragment extends Fragment {
         input.setText(phoneEditText.getText());
         builder.setView(input);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String phoneNumber = input.getText().toString();
-                if (Validation.isValidPhoneNumber(phoneNumber)) {
-                    // TODO: Send OTP to the phone number
-                    showOtpDialog();
-                } else {
-                    Toast.makeText(getContext(), "Invalid phone number!", Toast.LENGTH_SHORT).show();
-                }
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String phoneNumber = input.getText().toString();
+            if (Validation.isValidPhoneNumber(phoneNumber)) {
+                accountViewModel.addLoginId(phoneNumber).observe(getViewLifecycleOwner(), resource -> {
+                    if (resource != null) {
+                        switch (resource.getStatus()) {
+                            case SUCCESS:
+                                ((HomepageActivity) getActivity()).hideProgressBar();
+                                break;
+                            case ERROR:
+                                ((HomepageActivity) getActivity()).hideProgressBar();
+                                break;
+                            case LOADING:
+                                ((HomepageActivity) getActivity()).showProgressBar();
+                                break;
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(getContext(), "Invalid phone number!", Toast.LENGTH_SHORT).show();
             }
-
         });
         builder.setNegativeButton("Cancel", null);
         builder.show();
@@ -397,111 +422,117 @@ public class ProfileFragment extends Fragment {
         final String[] genders = {"Male", "Female"};
         int checkedItem = genderEditText.getText().toString().equals("Male") ? 0 : 1;
 
-        builder.setSingleChoiceItems(genders, checkedItem, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                genderEditText.setText(genders[which]);
-                dialog.dismiss();
-            }
+        builder.setSingleChoiceItems(genders, checkedItem, (dialog, which) -> {
+            genderEditText.setText(genders[which]);
+            dialog.dismiss();
+            UpdateAccountRequest accountRequest = new UpdateAccountRequest(fullnameEditText.getText().toString().trim(), genderEditText.getText().toString().trim(), birthdate);
+            accountViewModel.updateAccountProfile(accountRequest).observe(getViewLifecycleOwner(), resource -> {
+                if (resource != null) {
+                    switch (resource.getStatus()) {
+                        case SUCCESS:
+                            ((HomepageActivity) getActivity()).hideProgressBar();
+                            break;
+                        case ERROR:
+                            ((HomepageActivity) getActivity()).hideProgressBar();
+                            break;
+                        case LOADING:
+                            ((HomepageActivity) getActivity()).showProgressBar();
+                            break;
+                    }
+                }
+            });
         });
         builder.show();
     }
 
     private void showBirthdateDialog() {
         Calendar calendar = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                Calendar birthDate = Calendar.getInstance();
-                birthDate.set(year, month, dayOfMonth);
-                Calendar today = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), (view, year, month, dayOfMonth) -> {
+            Calendar birthDate = Calendar.getInstance();
+            birthDate.set(year, month, dayOfMonth);
+            Calendar today = Calendar.getInstance();
 
-                int age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
+            int age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
 
-                if (today.get(Calendar.MONTH) < birthDate.get(Calendar.MONTH) || (today.get(Calendar.MONTH) == birthDate.get(Calendar.MONTH) && today.get(Calendar.DAY_OF_MONTH) < birthDate.get(Calendar.DAY_OF_MONTH))) {
-                    age--;
-                }
-
-                if (age >= 18) {
-                    String birthdate = dayOfMonth + "/" + (month + 1) + "/" + year;
-                    birthdateEditText.setText(birthdate);
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    try {
-                        Date birthDateObject = sdf.parse(birthdate);
-                        //TODO
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), "Error parsing date.", Toast.LENGTH_SHORT).show();
-                    }
-
-                } else {
-                    Toast.makeText(getContext(), "You must be at least 18 years old to use this app.", Toast.LENGTH_SHORT).show();
-                }
+            if (today.get(Calendar.MONTH) < birthDate.get(Calendar.MONTH) || (today.get(Calendar.MONTH) == birthDate.get(Calendar.MONTH) && today.get(Calendar.DAY_OF_MONTH) < birthDate.get(Calendar.DAY_OF_MONTH))) {
+                age--;
             }
 
+            if (age >= 18) {
+                birthdate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
+                birthdateEditText.setText(birthdate);
+                UpdateAccountRequest accountRequest = new UpdateAccountRequest(fullnameEditText.getText().toString().trim(), genderEditText.getText().toString().trim(), birthdate);
+                accountViewModel.updateAccountProfile(accountRequest).observe(getViewLifecycleOwner(), resource -> {
+                    if (resource != null) {
+                        switch (resource.getStatus()) {
+                            case SUCCESS:
+                                ((HomepageActivity) getActivity()).hideProgressBar();
+                                break;
+                            case ERROR:
+                                ((HomepageActivity) getActivity()).hideProgressBar();
+                                break;
+                            case LOADING:
+                                ((HomepageActivity) getActivity()).showProgressBar();
+                                break;
+                        }
+                    }
+                });
+
+
+            } else {
+                Toast.makeText(getContext(), "You must be at least 18 years old to use this app.", Toast.LENGTH_SHORT).show();
+            }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
 
-    private void showOtpDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Enter OTP sent to your phone");
+//    private void showOtpDialog() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//        builder.setTitle("Enter OTP sent to your phone");
+//
+//        LinearLayout layout = new LinearLayout(getContext());
+//        layout.setOrientation(LinearLayout.VERTICAL);
+//        layout.setPadding(50, 10, 50, 10);
+//
+//        final EditText otpInput = new EditText(getContext());
+//        otpInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+//        layout.addView(otpInput);
+//
+//        final TextView timerTextView = new TextView(getContext());
+//        timerTextView.setText("Time remaining: 60s");
+//        layout.addView(timerTextView);
+//
+//        builder.setView(layout);
+//
+//        final CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//                timerTextView.setText("Time remaining: " + millisUntilFinished / 1000 + "s");
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//                timerTextView.setText("Time's up!");
+//            }
+//        }.start();
+//
+//        builder.setPositiveButton("Verify", (dialog, which) -> {
+//            // TODO: Verify the OTP
+//            countDownTimer.cancel();
+//        });
+//
+//        builder.setNegativeButton("Resend", (dialog, which) -> {
+//            // TODO: Resend the OTP
+//            countDownTimer.cancel();
+//            showOtpDialog();
+//        });
+//
+//        builder.setOnCancelListener(dialog -> countDownTimer.cancel());
+//
+//        builder.show();
+//    }
 
-        LinearLayout layout = new LinearLayout(getContext());
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 10, 50, 10);
-
-        final EditText otpInput = new EditText(getContext());
-        otpInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        layout.addView(otpInput);
-
-        final TextView timerTextView = new TextView(getContext());
-        timerTextView.setText("Time remaining: 60s");
-        layout.addView(timerTextView);
-
-        builder.setView(layout);
-
-        final CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timerTextView.setText("Time remaining: " + millisUntilFinished / 1000 + "s");
-            }
-
-            @Override
-            public void onFinish() {
-                timerTextView.setText("Time's up!");
-            }
-        }.start();
-
-        builder.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO: Verify the OTP
-                countDownTimer.cancel();
-            }
-        });
-
-        builder.setNegativeButton("Resend", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO: Resend the OTP
-                countDownTimer.cancel();
-                showOtpDialog();
-            }
-        });
-
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                countDownTimer.cancel();
-            }
-        });
-
-        builder.show();
-    }
-
-    private void showOtpDialogForEmail() {
+    private void showOtpDialogForEmail(OtpService otpService, String email) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Enter OTP sent to your email");
 
@@ -531,29 +562,46 @@ public class ProfileFragment extends Fragment {
             }
         }.start();
 
-        builder.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO: Verify the OTP
-                countDownTimer.cancel();
-            }
+        builder.setPositiveButton("Verify", (dialog, which) -> {
+            countDownTimer.cancel();
+            accountViewModel.addLoginId(email).observe(getViewLifecycleOwner(), resource -> {
+                if (resource != null) {
+                    switch (resource.getStatus()) {
+                        case SUCCESS:
+                            ((HomepageActivity) getActivity()).hideProgressBar();
+                            break;
+                        case ERROR:
+                            ((HomepageActivity) getActivity()).hideProgressBar();
+                            break;
+                        case LOADING:
+                            ((HomepageActivity) getActivity()).showProgressBar();
+                            break;
+                    }
+                }
+            });
         });
 
-        builder.setNegativeButton("Resend", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO: Resend the OTP to email
-                countDownTimer.cancel();
-                showOtpDialogForEmail();
-            }
+        builder.setNegativeButton("Resend", (dialog, which) -> {
+            ((HomepageActivity) getActivity()).showProgressBar();
+            otpService.sendOtpRegistration(email, new OtpService.OtpCallback() {
+                @Override
+                public void onSuccess(String successMessage) {
+                    ((HomepageActivity) getActivity()).hideProgressBar();
+                    countDownTimer.cancel();
+                    showOtpDialogForEmail(otpService, email);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    ((HomepageActivity) getActivity()).hideProgressBar();
+                    if (Integer.parseInt(errorMessage) == 409) {
+                        Toast.makeText(getContext(), "Email is already exist!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         });
 
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                countDownTimer.cancel();
-            }
-        });
+        builder.setOnCancelListener(dialog -> countDownTimer.cancel());
 
         builder.show();
     }
@@ -583,26 +631,41 @@ public class ProfileFragment extends Fragment {
 
         builder.setView(layout);
 
-        builder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String oldPassword = oldPasswordInput.getText().toString();
-                String newPassword = newPasswordInput.getText().toString();
-                String confirmPassword = confirmPasswordInput.getText().toString();
+        builder.setPositiveButton("Change", (dialog, which) -> {
+            String oldPassword = oldPasswordInput.getText().toString();
+            String newPassword = newPasswordInput.getText().toString();
+            String confirmPassword = confirmPasswordInput.getText().toString();
 
-                // TODO: Check if old password is correct
-                if (Validation.isValidPassword(newPassword) && Validation.isValidPassword(confirmPassword) && Validation.isValidPasswordMatch(newPassword, confirmPassword)) {
-                    // TODO: Change the password in the backend
-                    Toast.makeText(getContext(), "Password changed successfully!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Invalid password or passwords do not match!", Toast.LENGTH_SHORT).show();
-                }
+            if (Validation.isValidPassword(newPassword) && Validation.isValidPassword(confirmPassword) && Validation.isValidPasswordMatch(newPassword, confirmPassword)) {
+                ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(oldPassword, confirmPassword);
+                accountViewModel.changePassword(changePasswordRequest).observe(getViewLifecycleOwner(), resource -> {
+                    if (resource != null) {
+                        switch (resource.getStatus()) {
+                            case SUCCESS:
+                                ((HomepageActivity) getActivity()).hideProgressBar();
+                                if (resource.getData() != null) {
+                                    Toast.makeText(getContext(), resource.getData(), Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                            case ERROR:
+                                ((HomepageActivity) getActivity()).hideProgressBar();
+                                Toast.makeText(getContext(), resource.getMessage(), Toast.LENGTH_LONG).show();
+                                break;
+                            case LOADING:
+                                ((HomepageActivity) getActivity()).showProgressBar();
+                                break;
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(getContext(), "Invalid password or passwords do not match!", Toast.LENGTH_SHORT).show();
             }
         });
 
         builder.setNegativeButton("Cancel", null);
         builder.show();
     }
+
 
 
 }

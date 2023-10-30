@@ -8,9 +8,11 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.responses.AuthenticateResponse;
 import com.example.dietarysupplementshop.services.AuthService;
@@ -55,26 +57,26 @@ public class Verify extends AppCompatActivity {
         timeLeftInMillis = COUNTDOWN_TIME;
         startCountdown();
 
-        buttonResendCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                otpService.sendOtpRegistration(email, new OtpService.OtpCallback() {
-                    @Override
-                    public void onSuccess(String successMessage) {
-                        Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
-                        startCountdown();
-                    }
+        buttonResendCode.setOnClickListener(v -> {
+            showProgressBar();
+            otpService.sendOtpRegistration(email, new OtpService.OtpCallback() {
+                @Override
+                public void onSuccess(String successMessage) {
+                    hideProgressBar();
+                    Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
+                    startCountdown();
+                }
 
-                    @Override
-                    public void onError(String errorMessage) {
-                        if(Integer.parseInt(errorMessage) == 409){
-                            Toast.makeText(getApplicationContext(), "Email is already exist!", Toast.LENGTH_SHORT).show();
-                        }  else if (Integer.parseInt(errorMessage) == 429){
-                            Toast.makeText(getApplicationContext(), "Otp is already sent!", Toast.LENGTH_SHORT).show();
-                        }
+                @Override
+                public void onError(String errorMessage) {
+                    hideProgressBar();
+                    if(Integer.parseInt(errorMessage) == 409){
+                        Toast.makeText(getApplicationContext(), "Email is already exist!", Toast.LENGTH_SHORT).show();
+                    }  else if (Integer.parseInt(errorMessage) == 429){
+                        Toast.makeText(getApplicationContext(), "Otp is already sent!", Toast.LENGTH_SHORT).show();
                     }
-                });
-            }
+                }
+            });
         });
 
         editTextOTPCode.setOnFocusChangeListener((v, hasFocus) -> {
@@ -91,9 +93,11 @@ public class Verify extends AppCompatActivity {
         buttonVerify.setOnClickListener(v -> {
             String otp = editTextOTPCode.getText().toString();
             if(Validation.isValidOTP(otp)){
+                showProgressBar();
                 authService.registration(email, password, name, otp, new AuthService.AuthCallback() {
                     @Override
                     public void onSuccess(String successMessage){
+                        hideProgressBar();
                         Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -103,6 +107,7 @@ public class Verify extends AppCompatActivity {
 
                     @Override
                     public void onError(String errorMessage) {
+                        hideProgressBar();
                         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -134,5 +139,19 @@ public class Verify extends AppCompatActivity {
         int seconds = (int) (timeLeftInMillis / 1000) % 60;
         String timeLeftFormatted = String.format("%02d", seconds) + "s";
         countdownText.setText(timeLeftFormatted);
+    }
+
+    public void showProgressBar() {
+        FrameLayout frameLayout = findViewById(R.id.frameLoading);
+        LottieAnimationView animationView = findViewById(R.id.animationView);
+        frameLayout.setVisibility(View.VISIBLE);
+        animationView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar() {
+        FrameLayout frameLayout = findViewById(R.id.frameLoading);
+        LottieAnimationView animationView = findViewById(R.id.animationView);
+        frameLayout.setVisibility(View.GONE);
+        animationView.setVisibility(View.GONE);
     }
 }

@@ -42,7 +42,7 @@ public class MyAddressActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_address);
 
-        accountViewModel = new ViewModelProvider(this).get(AccountViewModel.class);
+        accountViewModel = MyApplication.getInstance().getAccountViewModel();
 
         rcv_address = findViewById(R.id.rcv_address);
 

@@ -27,10 +27,24 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".SearchActivity"
+            android:windowSoftInputMode="stateVisible|adjustPan"
+            android:exported="false" />
+        <activity
+            android:name=".LocationStoreActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+        <activity
+            android:name=".CheckoutActivity"
+            android:exported="false" />
+        <activity
             android:name=".SearchResultActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateHidden|adjustPan"
-            />
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".HomepageActivity"
             android:exported="false"
@@ -112,9 +126,6 @@
             </intent-filter>
         </receiver>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

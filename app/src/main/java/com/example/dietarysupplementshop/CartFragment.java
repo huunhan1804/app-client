@@ -1,11 +1,13 @@
 package com.example.dietarysupplementshop;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,6 +31,7 @@ import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.responses.CartInformation;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 import com.example.dietarysupplementshop.viewModel.ProductViewModel;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -60,9 +63,10 @@ public class CartFragment extends Fragment {
 
     private ProductViewModel productViewModel;
 
-    RelativeLayout EmptyCartItem;
-    RelativeLayout HaveCartItem;
-    RecyclerView cartRecyclerView;
+    private RelativeLayout EmptyCartItem;
+    private RelativeLayout HaveCartItem;
+    private RecyclerView cartRecyclerView;
+    private Button checkoutButton;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -123,6 +127,21 @@ public class CartFragment extends Fragment {
             rcvRelatedProduct.setLayoutManager(gridLayoutManager);
             rcvRelatedProduct.setAdapter(productAdapter);
         });
+
+        checkoutButton = view.findViewById(R.id.checkoutButton);
+        checkoutButton.setOnClickListener(view1 -> {
+            List<CartItem> selectedItems = getSelectedCartItems();
+            if (selectedItems.isEmpty()) {
+                Toast.makeText(getContext(), "Please select items to checkout!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            Gson gson = new Gson();
+            String selectedItemsJson = gson.toJson(selectedItems);
+            Intent intent = new Intent(getContext(), CheckoutActivity.class);
+            intent.putExtra("selectedItems", selectedItemsJson);
+            startActivity(intent);
+        });
+
 
         cartRecyclerView = view.findViewById(R.id.cartItem);
         accountViewModel.getAccountInfoResource().observe(getViewLifecycleOwner(), resource -> {
@@ -231,4 +250,15 @@ public class CartFragment extends Fragment {
             EmptyCartItem.setVisibility(View.GONE);
         }
     }
+    public List<CartItem> getSelectedCartItems() {
+        List<CartItem> selectedItems = new ArrayList<>();
+        for (CartItem item : cartItemList) {
+            if (item.isSelected()) {
+                selectedItems.add(item);
+            }
+        }
+        return selectedItems;
+    }
+
+
 }

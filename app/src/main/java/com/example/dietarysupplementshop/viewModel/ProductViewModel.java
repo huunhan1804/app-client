@@ -114,5 +114,9 @@ public class ProductViewModel extends ViewModel {
        return productRepository.fetchProductResult(request);
     }
 
+    public LiveData<Resource<List<Product>>> getProductByCategory(Long categoryId){
+       return productRepository.getProductByCategory(categoryId);
+    }
+
 }
 

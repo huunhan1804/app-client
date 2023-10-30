@@ -57,12 +57,7 @@ public class ConfirmPopupHandling extends AppCompatActivity {
 
     private void initUI() {
         ImageButton backButton = popupView.findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closePopup();
-            }
-        });
+        backButton.setOnClickListener(view -> closePopup());
 
         quantityValueTextView = popupView.findViewById(R.id.quantityValue);
         subTotalValueTextView = popupView.findViewById(R.id.subTotalValue);
@@ -75,15 +70,9 @@ public class ConfirmPopupHandling extends AppCompatActivity {
 
 
         Button confirmButton = popupView.findViewById(R.id.confirmButton);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Gửi dữ liệu về sản phẩm khi confirmButton được nhấn
-                sendProductData();
-
-                // Đóng pop-up
-                closePopup();
-            }
+        confirmButton.setOnClickListener(view -> {
+            sendProductData();
+            closePopup();
         });
 
 
@@ -119,14 +108,9 @@ public class ConfirmPopupHandling extends AppCompatActivity {
     }
 
     private void sendProductData() {
-        // Tạo intent để chứa dữ liệu sản phẩm
         Intent resultIntent = new Intent();
-
-
-        resultIntent.putExtra("quantity", quantity);
         resultIntent.putExtra("subTotal", subTotalValueTextView.getText().toString());
         resultIntent.putExtra("totalBill", totalValueTextView.getText().toString());
-
         String shippingInfo  = "Name: " + name + "\n" +
                 "Phone: " + phone + "\n" +
                 "Address: " + address;
