@@ -75,11 +75,9 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
         decorView.setSystemUiVisibility(uiOptions);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address_info);
 

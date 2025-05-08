@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,6 +42,9 @@ public class LocationStoreActivity extends AppCompatActivity implements OnMapRea
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        decorView.setSystemUiVisibility(uiOptions);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_store);
 
@@ -60,20 +64,23 @@ public class LocationStoreActivity extends AppCompatActivity implements OnMapRea
                 .build();
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
         mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        mMap.setMapType(1);
+        mMap.setMapType(1); // default
         LatLng latLng1 = new LatLng(10.014351444089163, 105.73195414291693);
 
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(10.013093276675898, 105.73158482780026))
                 .title("Four Store") );
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng1,15));
     }
 

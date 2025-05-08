@@ -28,6 +28,7 @@ public class CategoryRepository {
 
     public LiveData<List<Category>> fetchCategories() {
         MutableLiveData<List<Category>> data = new MutableLiveData<>();
+
         categoryAPI.getCategories().enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {

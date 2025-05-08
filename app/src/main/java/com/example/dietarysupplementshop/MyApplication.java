@@ -1,11 +1,20 @@
 package com.example.dietarysupplementshop;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dietarysupplementshop.token.TokenManager;
@@ -34,12 +43,35 @@ public class MyApplication extends Application {
     }
 
     private void createChannelNotification() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "PushNotification", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
     }
+
+    public void sendNotification(String strTitle, String strMessage) {
+        //
+        Intent intent = new Intent(this, HomepageActivity.class);
+        intent.putExtra("navigateTo", "CartFragment");
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder noBuilder = new NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
+                .setContentTitle(strTitle)
+                .setContentText(strMessage)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pendingIntent);
+        Notification notification = noBuilder.build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if(notificationManager != null){
+            notificationManager.notify(1, notification);
+        }
+    }
+
+
+
+
     public static MyApplication getInstance() {
         return instance;
     }

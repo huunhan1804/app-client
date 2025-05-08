@@ -37,24 +37,21 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private RecyclerView rcvCategory;
-
-    private List<Category> mCategoryList;
-
-    private CategoryAdapter categoryAdapter;
-
-    private ImageSlider imageSlider;
-
-
     private RecyclerView rcvBestSeller;
     private RecyclerView rcvBestOrder;
+
+    private List<Category> mCategoryList;
     private List<Product> mBestSellerList;
     private List<Product> mBestOrderList;
+
+    private CategoryAdapter categoryAdapter;
     private ProductAdapter productBestSellerAdapter;
     private ProductAdapter productBestOrderAdapter;
 
     private ProductViewModel productViewModel;
 
 
+    private ImageSlider imageSlider;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -109,10 +106,6 @@ public class HomeFragment extends Fragment {
         rcvBestSeller.setAdapter(fakeProductAdapter);
         rcvBestOrder.setAdapter(fakeProductAdapter);
 
-//        rcvBestSeller.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
-//        rcvBestOrder.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
-
-
         productViewModel.getBestSellers().observe(getViewLifecycleOwner(), products -> {
             mBestSellerList = products;
             ProductAdapter productAdapter = new ProductAdapter(mBestSellerList, requireContext());
@@ -124,6 +117,8 @@ public class HomeFragment extends Fragment {
             productBestOrderAdapter = new ProductAdapter(mBestOrderList, requireContext());
             rcvBestOrder.setAdapter(productBestOrderAdapter);
         });
+
+
 
         productViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             mCategoryList = categories;

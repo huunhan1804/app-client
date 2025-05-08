@@ -1,7 +1,8 @@
-package com.zlpdemo.merchantDemo.Api;
+package com.example.dietarysupplementshop.interfaces;
 
-import com.zlpdemo.merchantDemo.Constant.AppInfo;
-import com.zlpdemo.merchantDemo.Helper.Helpers;
+
+import com.example.dietarysupplementshop.Helper.Helpers;
+import com.example.dietarysupplementshop.constant.AppInfo;
 
 import org.json.JSONObject;
 

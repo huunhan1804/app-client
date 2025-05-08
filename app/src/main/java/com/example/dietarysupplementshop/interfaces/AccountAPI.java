@@ -31,7 +31,6 @@ public interface AccountAPI {
     @POST("/api/account/update-user")
     Call<ResponseModel<AccountInformation>> updateAccountProfile(@Body UpdateAccountRequest request);
 
-
     @POST("/api/cart/add")
     Call<ResponseModel<AccountInformation>> addToCart(@Body AddToCartRequest request);
 

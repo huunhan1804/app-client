@@ -5,21 +5,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.text.InputType;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -142,6 +139,10 @@ public class ProfileFragment extends Fragment {
         changePassBtn = view.findViewById(R.id.changePasswordButton);
         signOutBtn = view.findViewById(R.id.signOutButton);
 
+        /////
+
+
+
         accountViewModel.getAccountInfoResource().observe(getViewLifecycleOwner(), resource -> {
             if (resource != null) {
                 switch (resource.getStatus()) {
@@ -179,24 +180,28 @@ public class ProfileFragment extends Fragment {
                     Uri selectedImage = data.getData();
                     ((HomepageActivity) getActivity()).showProgressBar();
                     FirebaseStorage storage = FirebaseStorage.getInstance();
-                    StorageReference oldImageRef = storage.getReferenceFromUrl(accountViewModel.getAvatar_url());
-
-                    oldImageRef.delete().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            uploadNewImage(storage, selectedImage);
-                        } else if (task.getException() instanceof StorageException) {
-                            StorageException storageException = (StorageException) task.getException();
-                            if (storageException.getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                    String avatarUrl = accountViewModel.getAvatar_url();
+                    if (avatarUrl != null && !avatarUrl.isEmpty() && avatarUrl.startsWith("https://firebasestorage.googleapis.com")) {
+                        StorageReference oldImageRef = storage.getReferenceFromUrl(avatarUrl);
+                        oldImageRef.delete().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
                                 uploadNewImage(storage, selectedImage);
+                            } else if (task.getException() instanceof StorageException) {
+                                StorageException storageException = (StorageException) task.getException();
+                                if (storageException.getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                                    uploadNewImage(storage, selectedImage);
+                                } else {
+                                    Toast.makeText(getContext(), "Failed to delete the previous image", Toast.LENGTH_SHORT).show();
+                                    ((HomepageActivity) getActivity()).hideProgressBar();
+                                }
                             } else {
-                                Toast.makeText(getContext(), "Failed to delete the previous image", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "An unexpected error occurred", Toast.LENGTH_SHORT).show();
                                 ((HomepageActivity) getActivity()).hideProgressBar();
                             }
-                        } else {
-                            Toast.makeText(getContext(), "An unexpected error occurred", Toast.LENGTH_SHORT).show();
-                            ((HomepageActivity) getActivity()).hideProgressBar();
-                        }
-                    });
+                        });
+                    } else {
+                        uploadNewImage(storage, selectedImage);
+                    }
 
                 }
             }
@@ -257,6 +262,7 @@ public class ProfileFragment extends Fragment {
         changePassBtn.setOnClickListener(view12 -> showChangePasswordDialog());
 
         signOutBtn.setOnClickListener(view13 -> {
+
             MyApplication.getInstance().getTokenManager().clearTokens();
 
             GoogleSignIn.getClient(getActivity(), new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()).signOut();
@@ -264,7 +270,6 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(getActivity(), SignInActivity.class);
             startActivity(intent);
             getActivity().finish();
-
         });
 
 
@@ -396,8 +401,6 @@ public class ProfileFragment extends Fragment {
                     if (resource != null) {
                         switch (resource.getStatus()) {
                             case SUCCESS:
-                                ((HomepageActivity) getActivity()).hideProgressBar();
-                                break;
                             case ERROR:
                                 ((HomepageActivity) getActivity()).hideProgressBar();
                                 break;
@@ -665,7 +668,6 @@ public class ProfileFragment extends Fragment {
         builder.setNegativeButton("Cancel", null);
         builder.show();
     }
-
 
 
 }

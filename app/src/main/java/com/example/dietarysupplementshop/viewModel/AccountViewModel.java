@@ -32,6 +32,9 @@ public class AccountViewModel extends ViewModel {
     private String avatar_url;
 
     public String getAvatar_url() {
+        if(avatar_url == null){
+            loadAccountInfo();
+        }
         return avatar_url;
     }
 
@@ -64,16 +67,7 @@ public class AccountViewModel extends ViewModel {
         return accountRepository.changePassword(changePasswordRequest);
     }
 
-    public LiveData<Resource<AccountInformation>> addToCart(AddToCartRequest request) {
-        MutableLiveData<Resource<AccountInformation>> data = new MutableLiveData<>();
-        accountRepository.fetchAddToCart(request).observeForever(accountInformationResource -> {
-            data.setValue(accountInformationResource);
-            if (accountInformationResource != null) {
-                accountInfoResource.setValue(accountInformationResource);
-            }
-        });
-        return data;
-    }
+
 
     public LiveData<Resource<AccountInformation>> updateAccountProfile(UpdateAccountRequest request) {
         MutableLiveData<Resource<AccountInformation>> data = new MutableLiveData<>();
@@ -98,7 +92,16 @@ public class AccountViewModel extends ViewModel {
     }
 
 
-
+    public LiveData<Resource<AccountInformation>> addToCart(AddToCartRequest request) {
+        MutableLiveData<Resource<AccountInformation>> data = new MutableLiveData<>();
+        accountRepository.fetchAddToCart(request).observeForever(accountInformationResource -> {
+            data.setValue(accountInformationResource);
+            if (accountInformationResource != null) {
+                accountInfoResource.setValue(accountInformationResource);
+            }
+        });
+        return data;
+    }
 
 
     public void increaseCartItemQuantity(AddToCartRequest request) {

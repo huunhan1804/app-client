@@ -78,8 +78,10 @@ public class ProductRepository {
                 data.setValue(null);
             }
         });
+
         return data;
     }
+
 
     public LiveData<List<Product>> fetchBestOrders() {
         MutableLiveData<List<Product>> data = new MutableLiveData<>();

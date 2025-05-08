@@ -115,7 +115,7 @@ public class CartFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
 
-
+        //Product related        ??
         rcvRelatedProduct = view.findViewById(R.id.recyclerView);
         FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
         rcvRelatedProduct.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -154,6 +154,7 @@ public class CartFragment extends Fragment {
 
                             cartItemList = accountInformations.getCart_info().getCartItem();
                             cartItemAdapter = new CartItemAdapter(cartItemList, getContext());
+
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                             cartRecyclerView.setLayoutManager(linearLayoutManager);
                             cartRecyclerView.setAdapter(cartItemAdapter);

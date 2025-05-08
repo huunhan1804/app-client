@@ -70,6 +70,7 @@ public class CartItemAdapter  extends RecyclerView.Adapter<CartItemAdapter.CartV
         holder.productImageView.setOnClickListener(view -> {
             Intent intent = new Intent(context, ProductInfoActivity.class);
             intent.putExtra("productId", product.getProduct_info().getProduct_id());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
 

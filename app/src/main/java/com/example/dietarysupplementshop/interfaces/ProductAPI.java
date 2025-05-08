@@ -13,10 +13,13 @@ import retrofit2.http.Path;
 public interface ProductAPI {
     @GET("api/product/all-by-category/{categoryId}")
     Call<ResponseModel> getListProductByCategory(@Path("categoryId") long categoryId);
+
     @GET("api/product/best-seller")
     Call<ResponseModel> getListBestSellerProduct();
+
     @GET("api/product/best-order")
     Call<ResponseModel> getListBestOrderProduct();
+
     @GET("api/product/info/{productId}")
     Call<ResponseModel<ProductInformation>> getProductInfo(@Path("productId") long productId);
     @GET("api/product/related/{productId}")

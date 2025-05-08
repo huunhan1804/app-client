@@ -1,9 +1,15 @@
 package com.example.dietarysupplementshop;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.dietarysupplementshop.adapter.OrderDetailAdapter;
 import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.model.Address;
@@ -27,6 +34,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class CheckoutActivity extends AppCompatActivity {
     private AccountViewModel accountViewModel;
 
@@ -38,14 +46,20 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private TextView fullnameText, phoneText, addressText;
 
-    private Button continueButton;
-
     private List<OrderDetail> orderDetail;
 
+    private FrameLayout frameLayout;
+    LottieAnimationView animationView;
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        decorView.setSystemUiVisibility(uiOptions);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+
 
         accountViewModel = MyApplication.getInstance().getAccountViewModel();
 
@@ -59,19 +73,26 @@ public class CheckoutActivity extends AppCompatActivity {
         accountViewModel.getAddressListResource().observe(this, resource -> {
             switch (resource.getStatus()) {
                 case LOADING:
+                    showProgressBar();
                     break;
                 case SUCCESS:
-                    if (resource.getData() != null) {
+                    hideProgressBar();
+                    if (resource.getData() != null && !resource.getData().isEmpty()) {
                         Address defaultAddress = resource.getData().stream()
                                 .filter(Address::getIs_default)
                                 .findFirst()
-                                .orElse(null);
+                                .orElse(resource.getData().get(0));
                         fullnameText.setText(defaultAddress.getFullname());
                         phoneText.setText(defaultAddress.getPhone());
                         addressText.setText(defaultAddress.getAddress_detail());
+                    }else {
+                        Toast.makeText(this, "Please add an address to buy now", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(this, AddressInfoActivity.class);
+                        startActivity(intent);
                     }
                     break;
                 case ERROR:
+                    hideProgressBar();
                     Toast.makeText(this, resource.getMessage(), Toast.LENGTH_LONG).show();
                     break;
             }
@@ -83,6 +104,7 @@ public class CheckoutActivity extends AppCompatActivity {
         }.getType();
         List<CartItem> selectedItems = gson.fromJson(selectedItemsJson, type);
         List<Long> cartItemIds = new ArrayList<>();
+        assert selectedItems != null;
         for (CartItem cartItem : selectedItems) {
             cartItemIds.add(cartItem.getCart_item_id());
         }
@@ -91,6 +113,7 @@ public class CheckoutActivity extends AppCompatActivity {
             if (resource != null) {
                 switch (resource.getStatus()) {
                     case SUCCESS:
+                        hideProgressBar();
                         if (resource.getData() != null) {
                             List<OrderDetailResponse> orderDetailResponses = resource.getData();
                             orderDetailRecyclerView = findViewById(R.id.orderDetailRecyclerView);
@@ -99,9 +122,8 @@ public class CheckoutActivity extends AppCompatActivity {
                             orderDetailRecyclerView.setLayoutManager(linearLayoutManager);
                             orderDetailRecyclerView.setAdapter(orderDetailAdapter);
 
-                            String shippingFee = shippingFeeValue.getText().toString().replaceAll("[^\\d]+", "");
-                            double shippingFeeValue = Double.parseDouble(shippingFee);
-                            double total = shippingFeeValue;
+                            String shippingFee = shippingFeeValue.getText().toString().replaceAll("\\D+", "");
+                            double total = Double.parseDouble(shippingFee);
 
                             LinearLayout selectedItemsContainer = findViewById(R.id.selectedItemsContainer);
                             selectedItemsContainer.removeAllViews();
@@ -112,7 +134,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                 double priceValue = Double.parseDouble(priceCleaned);
                                 total += priceValue * orderDetailResponse.getQuantity();
 
-                                LinearLayout productItem = (LinearLayout) getLayoutInflater().inflate(R.layout.selected_product_item, null);
+                                @SuppressLint("InflateParams") LinearLayout productItem = (LinearLayout) getLayoutInflater().inflate(R.layout.selected_product_item, null);
 
                                 TextView productName = productItem.findViewById(R.id.productNameTextView);
                                 TextView productQuantity = productItem.findViewById(R.id.productQuantityTextView);
@@ -129,15 +151,16 @@ public class CheckoutActivity extends AppCompatActivity {
                             totalPriceTextView.setText(Validation.formatPriceToVND(total));
                         }
                     case ERROR:
-
+                        hideProgressBar();
                         break;
                     case LOADING:
+                        showProgressBar();
                         break;
                 }
             }
         });
 
-        continueButton = findViewById(R.id.continueButton);
+        Button continueButton = findViewById(R.id.continueButton);
         continueButton.setOnClickListener(view -> {
             String shippingInfo  = "Name: " + fullnameText.getText().toString().trim() + "\n" +
                     "Phone: " + phoneText.getText().toString().trim() + "\n" +
@@ -147,8 +170,10 @@ public class CheckoutActivity extends AppCompatActivity {
                 if (orderResource != null) {
                     switch (orderResource.getStatus()) {
                         case LOADING:
+                            showProgressBar();
                             break;
                         case SUCCESS:
+                            hideProgressBar();
                             if (orderResource.getData() != null) {
                                 Intent intent = new Intent(getApplicationContext(), OrderSuccessActivity.class);
                                 intent.putExtra("orderId", orderResource.getData().getOrder_id());
@@ -157,6 +182,7 @@ public class CheckoutActivity extends AppCompatActivity {
                             }
                             break;
                         case ERROR:
+                            hideProgressBar();
                             Toast.makeText(this, orderResource.getMessage(), Toast.LENGTH_LONG).show();
                             break;
                     }
@@ -164,6 +190,69 @@ public class CheckoutActivity extends AppCompatActivity {
             });
         });
 
+        ImageView addressListIcon = findViewById(R.id.addressListIcon);
+        addressListIcon.setOnClickListener(view -> {
+            Intent intent = new Intent(this, AddressListActivity.class);
+            startActivityForResult(intent, 1001);
+        });
 
+        RelativeLayout defaultAddress = findViewById(R.id.defaultAddress);
+        defaultAddress.setOnClickListener(view -> {
+            Intent intent = new Intent(this, AddressListActivity.class);
+            startActivityForResult(intent, 1001);
+        });
+
+
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            if (data != null) {
+                long selectedAddress = data.getLongExtra("selectedAddress", 0);
+                if (selectedAddress != 0) {
+                    accountViewModel.getInfoAddress(selectedAddress).observe(this, resource -> {
+                        switch (resource.getStatus()) {
+                            case LOADING:
+                                showProgressBar();
+                                break;
+                            case SUCCESS:
+                                hideProgressBar();
+                                if(resource.getData() != null){
+                                    Address defaultAddress = resource.getData();
+                                    if (defaultAddress != null) {
+                                        fullnameText.setText(defaultAddress.getFullname());
+                                        phoneText.setText(defaultAddress.getPhone());
+                                        addressText.setText(defaultAddress.getAddress_detail());
+                                    }
+                                }
+                                break;
+                            case ERROR:
+                                hideProgressBar();
+                                Toast.makeText(this, resource.getMessage(), Toast.LENGTH_LONG).show();
+                                break;
+                        }
+                    });
+                }
+
+            }
+        }
+
+    }
+    public void showProgressBar() {
+        frameLayout = findViewById(R.id.frameLoading);
+        animationView = findViewById(R.id.animationView);
+        frameLayout.setVisibility(View.VISIBLE);
+        animationView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar() {
+        frameLayout = findViewById(R.id.frameLoading);
+        animationView = findViewById(R.id.animationView);
+        frameLayout.setVisibility(View.GONE);
+        animationView.setVisibility(View.GONE);
     }
 }

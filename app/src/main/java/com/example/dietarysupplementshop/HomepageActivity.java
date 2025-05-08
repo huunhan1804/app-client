@@ -42,6 +42,7 @@ public class HomepageActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
 
     private ImageView locationIcon;
+    private ImageView chatIcon;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -55,6 +56,8 @@ public class HomepageActivity extends AppCompatActivity {
         TokenManager tokenManager = new TokenManager(getApplicationContext());
         String accessToken = tokenManager.getAccessToken();
 
+        
+
         if (accessToken == null) {
             startActivity(new Intent(this, SignInActivity.class));
             finish();
@@ -62,6 +65,12 @@ public class HomepageActivity extends AppCompatActivity {
         locationIcon = findViewById(R.id.locationIcon);
         locationIcon.setOnClickListener(view -> {
             Intent intent = new Intent(this, LocationStoreActivity.class);
+            startActivity(intent);
+        });
+
+        chatIcon = findViewById(R.id.chatIcon);
+        chatIcon.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ChatActivity.class);
             startActivity(intent);
         });
 
@@ -131,6 +140,11 @@ public class HomepageActivity extends AppCompatActivity {
                 searchEditText.clearFocus();
             }
         });
+
+
+        if (getIntent() != null && "CartFragment".equals(getIntent().getStringExtra("navigateTo"))) {
+            viewPager2.setCurrentItem(2);
+        }
 
     }
 

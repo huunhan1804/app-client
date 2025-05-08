@@ -59,34 +59,31 @@ public class AuthService {
     }
 
 
-    public void refreshAccessToken(String refreshToken, final AuthCallback callback) {
+    public String refreshAccessToken(String refreshToken) {
         RefreshTokenRequest request = new RefreshTokenRequest(refreshToken);
         Call<ResponseModel<AuthenticateResponse>> call = authenticateAPI.refreshAccessToken(request);
 
-        call.enqueue(new Callback<ResponseModel<AuthenticateResponse>>() {
-            @Override
-            public void onResponse(Call<ResponseModel<AuthenticateResponse>> call, Response<ResponseModel<AuthenticateResponse>> response) {
-                if (response.isSuccessful()) {
-                    ResponseModel<AuthenticateResponse> responseModel = response.body();
-                    if (responseModel != null && responseModel.getStatus() == 200) {
-                        AuthenticateResponse authResponse = responseModel.getData();
-                        MyApplication.getInstance().getTokenManager().clearTokens();
-                        MyApplication.getInstance().getTokenManager().saveTokens(authResponse.getAccess_token(), authResponse.getRefresh_token());
-                        callback.onSuccess(responseModel.getMessage());
-                    } else {
-                        callback.onError(responseModel != null ? responseModel.getMessage() : "Token refresh failed");
-                    }
+        try {
+            Response<ResponseModel<AuthenticateResponse>> response = call.execute();
+            if (response.isSuccessful()) {
+                ResponseModel<AuthenticateResponse> responseModel = response.body();
+                if (responseModel != null && responseModel.getStatus() == 200) {
+                    AuthenticateResponse authResponse = responseModel.getData();
+                    return authResponse.getAccess_token();
                 } else {
-                    callback.onError("Token refresh failed");
+                    // Handle the case where the response is not successful or the token refresh fails
+                    return null;
                 }
+            } else {
+                // Handle the case where the response is not successful or the token refresh fails
+                return null;
             }
-
-            @Override
-            public void onFailure(Call<ResponseModel<AuthenticateResponse>> call, Throwable t) {
-                callback.onError(t.getMessage());
-            }
-        });
+        } catch (IOException e) {
+            // Handle the case where an exception occurs during the refresh
+            return null;
+        }
     }
+
 
     public interface AuthCallback {
         void onSuccess(String errorMessage);

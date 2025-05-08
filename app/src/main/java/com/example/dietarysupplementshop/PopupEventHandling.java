@@ -3,7 +3,7 @@ package com.example.dietarysupplementshop;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -131,16 +131,7 @@ public class PopupEventHandling  extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_ADDRESS_LIST && resultCode == RESULT_OK) {
-            if (data != null) {
-                String selectedAddress = data.getStringExtra("selectedAddress");
 
-            }
-        }
-    }
 
 
     private void handleContinueButtonClick() {
