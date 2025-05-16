@@ -26,9 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     private static Retrofit retrofit;
-
-    private static final String BASE_URL = "http://192.168.1.15:8080";
-
+    private static final String TAG = "ApiCallLog"; // Tag for logging
+    private static final String BASE_URL = "http://192.168.1.27:8080";
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
@@ -42,20 +41,47 @@ public class RetrofitClient {
             httpClientBuilder.retryOnConnectionFailure(true);
             httpClientBuilder.addInterceptor(loggingInterceptor);
 
+            // Add request logging interceptor
             httpClientBuilder.addInterceptor(chain -> {
                 Request originalRequest = chain.request();
+                Log.d(TAG, "API REQUEST: " + originalRequest.method() + " " + originalRequest.url());
+                Log.d(TAG, "REQUEST HEADERS: " + originalRequest.headers());
+
                 String accessToken = MyApplication.getInstance().getTokenManager().getAccessToken();
 
                 if (accessToken != null) {
                     String url = originalRequest.url().toString();
                     if (!url.startsWith(BASE_URL + "/api/auth/")) {
-                        Log.d("Mytag", "API cần token");
+                        Log.d(TAG, "Adding Authorization token to request");
                         Request request = originalRequest.newBuilder().header("Authorization", "Bearer " + accessToken).build();
                         return chain.proceed(request);
                     }
                 }
 
-                return chain.proceed(originalRequest);
+                long startTime = System.currentTimeMillis();
+                Response response = chain.proceed(originalRequest);
+                long endTime = System.currentTimeMillis();
+
+                Log.d(TAG, "API RESPONSE: " + response.code() + " for " + originalRequest.url());
+                Log.d(TAG, "RESPONSE TIME: " + (endTime - startTime) + "ms");
+                Log.d(TAG, "RESPONSE HEADERS: " + response.headers());
+
+                return response;
+            });
+
+            // Add network response logging interceptor
+            httpClientBuilder.addNetworkInterceptor(chain -> {
+                Request request = chain.request();
+                long startTime = System.currentTimeMillis();
+                Log.d(TAG, "⬆️ Sending request: " + request.method() + " " + request.url());
+
+                Response response = chain.proceed(request);
+                long endTime = System.currentTimeMillis();
+
+                Log.d(TAG, "⬇️ Received response for " + request.url() + " in " + (endTime - startTime) + "ms");
+                Log.d(TAG, "Response status: " + response.code() + " " + response.message());
+
+                return response;
             });
 
             httpClientBuilder.authenticator(tokenAuthenticator);
@@ -68,6 +94,8 @@ public class RetrofitClient {
                     .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                     .client(httpClient)
                     .build();
+
+            Log.d(TAG, "Retrofit instance created with BASE_URL: " + BASE_URL);
         }
         return retrofit;
     }

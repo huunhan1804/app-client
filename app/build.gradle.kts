@@ -5,27 +5,27 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        getByName("debug") {
-            storeFile = file("C:\\keystore\\keystore.jks")
-            storePassword = "Qui23022003@"
-            keyAlias = "Quangqui"
-            keyPassword = "Qui23022003@"
-        }
-        create("myconfig") {
-            storeFile = file("C:\\keystore\\keystore.jks")
-            storePassword = "Qui23022003@"
-            keyAlias = "Quangqui"
-            keyPassword = "Qui23022003@"
-        }
-    }
+//    signingConfigs {
+//        getByName("debug") {
+//            storeFile = file("C:\\keystore\\keystore.jks")
+//            storePassword = "Qui23022003@"
+//            keyAlias = "Quangqui"
+//            keyPassword = "Qui23022003@"
+//        }
+//        create("myconfig") {
+//            storeFile = file("C:\\keystore\\keystore.jks")
+//            storePassword = "Qui23022003@"
+//            keyAlias = "Quangqui"
+//            keyPassword = "Qui23022003@"
+//        }
+//    }
     namespace = "com.example.dietarysupplementshop"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.dietarysupplementshop"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -38,11 +38,11 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("myconfig")
+//            signingConfig = signingConfigs.getByName("myconfig")
         }
-        getByName("debug") {
-            signingConfig = signingConfigs.getByName("myconfig")
-        }
+//        getByName("debug") {
+//            signingConfig = signingConfigs.getByName("myconfig")
+//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -82,11 +82,11 @@ dependencies {
     implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
     implementation("com.airbnb.android:lottie:6.5.2")
     implementation("androidx.room:room-runtime:2.6.1")
-    implementation(fileTree(mapOf(
-        "dir" to "D:\\zalopay",
-        "include" to listOf("*.aar", "*.jar"),
-        "exclude" to listOf("")
-    )))
+//    implementation(fileTree(mapOf(
+//        "dir" to "D:\\zalopay",
+//        "include" to listOf("*.aar", "*.jar"),
+//        "exclude" to listOf("")
+//    )))
     implementation("commons-codec:commons-codec:1.17.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     testImplementation("junit:junit:4.13.2")
