@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="8dp"
+    card_view:cardElevation="4dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RadioButton
+            android:id="@+id/radioSelectAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="10dp"/>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"
+        android:padding="16dp">
+        <LinearLayout
+            android:id="@+id/frameNameAndPhone"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/fullnameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Tran Quang Qui"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_margin="10dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:background="#CCCCCC" />
+
+            <TextView
+                android:id="@+id/phoneTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="0945605514"
+                android:textColor="#776E6E"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/frameAddressDetail"
+            android:layout_below="@+id/frameNameAndPhone"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/detailAddressTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Ấp Phong Lưu"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/frameAddress"
+            android:layout_below="@+id/frameAddressDetail"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/AddressTextView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start|center_vertical"
+                android:text="Xã Tân Hưng, Huyện Cái Nước, Tỉnh Cà Mau"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/defaultAddressTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/frameAddress"
+            android:layout_marginTop="10dp"
+            android:text="Default Address"
+            android:textColor="#FF0000"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/editAddressButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/frameAddress"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"
+            android:src="@drawable/edit"
+            android:contentDescription="TODO" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

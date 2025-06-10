@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "629620286353",
+    "project_id": "dietarysupplementshop",
+    "storage_bucket": "dietarysupplementshop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629620286353:android:760108164b52fb9ddfb030",
+        "android_client_info": {
+          "package_name": "com.example.dietarysupplementshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629620286353-o3hh2i7u9gd9igelvfma30m6qvaf31c8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dietarysupplementshop",
+            "certificate_hash": "38d242e43a4a463d5b82e216ed41878c64717511"
+          }
+        },
+        {
+          "client_id": "629620286353-0i0gmdlnp3kmpir202e3he9nqm0nvc2e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkF_n-0R1DEQ74MnRW6mNxJA4qQzdMwwk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629620286353-0i0gmdlnp3kmpir202e3he9nqm0nvc2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CartFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/EmptyCartItem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/frameImageCart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginEnd="80dp"
+                    android:layout_marginBottom="10dp">
+
+                    <ImageView
+                        android:id="@+id/zoomImageView"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/circle_button"
+                        android:backgroundTint="@color/color_app" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/circle_button"
+                        android:backgroundTint="@android:color/transparent"
+                        android:src="@drawable/empty_cart_ic" />
+
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/emptyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/frameImageCart"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:text="Your cart is empty"
+                    android:textAlignment="center"
+                    android:textColor="@color/color_app"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/suggestText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/emptyText"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginBottom="25dp"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:text="Look like you have not anything to your cart"
+                    android:textAlignment="center"
+                    android:textColor="@color/color_app"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:id="@+id/spacer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/suggestText"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="#CCCCCC"
+                        android:backgroundTint="@color/color_app" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textRelatedProduct"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/spacer"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:text="You may also like"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textRelatedProduct"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="25dp"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/HaveCartItem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/totalItemText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:text="Product in cart: 2 items"
+                    android:textColor="#000"
+                    android:textSize="18sp" />
+
+                <RelativeLayout
+                    android:id="@+id/totalBill"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/totalItemText"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/rounded_button"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/shippingFee"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:id="@+id/shippingFeeText"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:text="Shipping fee"
+                            android:textColor="#000"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/shippingFeeValue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="end"
+                            android:maxLines="2"
+                            android:text="20.000 đ"
+                            android:textColor="#000"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <ScrollView
+                        android:id="@+id/selectedItemsScrollView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/shippingFee">
+
+                        <LinearLayout
+                            android:id="@+id/selectedItemsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingTop="10dp">
+
+                        </LinearLayout>
+                    </ScrollView>
+
+                    <LinearLayout
+                        android:id="@+id/spacer2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/selectedItemsScrollView"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="3dp"
+                            android:layout_gravity="center_horizontal"
+                            android:background="#CCCCCC"
+                            android:backgroundTint="@color/color_app" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/total"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/spacer2"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:id="@+id/totalText"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:gravity="start"
+                            android:text="Total"
+                            android:textColor="#000"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/totalPriceTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="end"
+                            android:maxLines="2"
+                            android:text="20.000 đ"
+                            android:textColor="#000"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/checkoutButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_below="@+id/totalBill"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:backgroundTint="@color/color_app"
+                    android:text="Check out"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cartItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/checkoutButton"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</RelativeLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ErrorText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/color_app</item>
+    </style>
+
+    <style name="BottomNavigationView.TextAppearance.Active" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="BottomNavigationView.TextAppearance.Inactive" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+</resources>

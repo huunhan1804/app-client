@@ -1,0 +1,151 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="8dp"
+    card_view:cardElevation="4dp">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <ImageButton
+            android:id="@+id/btnRemoveCartItem"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"
+            android:backgroundTint="@color/color_app"
+            android:contentDescription="TODO"
+            android:padding="15dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/close_ic" />
+
+        <CheckBox
+            android:id="@+id/productCheckBox"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingStart="50dp">
+
+        <ImageView
+            android:id="@+id/productImageView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:contentDescription="@string/image_product"
+            android:scaleType="fitCenter"
+            android:src="@drawable/product_image" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:paddingEnd="50dp">
+
+            <TextView
+                android:id="@+id/productNameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Product Name"
+                android:textColor="#000"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:background="#50d9d9d9"
+                >
+
+                <TextView
+                    android:id="@+id/productVariantTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Variation: "
+                    android:textColor="#888"
+                    android:textSize="14sp" />
+
+                <Spinner
+                    android:id="@+id/productVariantSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                     />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/productPriceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Price: "
+                android:textColor="#888"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="36dp"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/decreaseQuantityButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="TODO"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/minus" />
+
+                <TextView
+                    android:id="@+id/quantityTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="#000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/increaseQuantityButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="TODO"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/plus" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

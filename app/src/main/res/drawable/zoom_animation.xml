@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/zoom_in"
+        android:drawable="@drawable/circle_button"
+        android:state_selected="true">
+        <scale
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:pivotX="50%"
+            android:pivotY="50%" />
+    </item>
+
+    <item android:drawable="@drawable/circle_button" />
+</animated-selector>

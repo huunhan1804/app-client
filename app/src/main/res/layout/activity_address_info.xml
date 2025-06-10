@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".AddressInfoActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_app">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/backButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="start|center_vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/back"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/back_white_ic" />
+
+                <TextView
+                    android:id="@+id/titleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </FrameLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:id="@+id/contentActivity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/titleEditInfoContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#d9d9d9"
+            android:paddingStart="25dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="25dp"
+            android:paddingBottom="10dp"
+            android:text="@string/information_contact"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:id="@+id/frameEditInfoContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/titleEditInfoContact"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/fullNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:inputType="none"
+                android:maxLines="2"
+                android:paddingStart="25dp"
+                android:paddingEnd="25dp"
+                android:hint="@string/your_name"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#CCCCCC" />
+
+            <EditText
+                android:id="@+id/phoneEditText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@null"
+                android:clickable="false"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:paddingStart="25dp"
+                android:paddingEnd="25dp"
+                android:hint="@string/your_phone"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/titleEditAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/frameEditInfoContact"
+            android:background="#d9d9d9"
+            android:paddingStart="25dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="25dp"
+            android:paddingBottom="10dp"
+            android:text="Address"
+            android:textSize="14sp" />
+
+        <!-- Phần chọn thành phố -->
+        <Spinner
+            android:id="@+id/citySpinner"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/titleEditAddress"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:prompt="@string/select_city" />
+
+        <!-- Phần chọn quận -->
+        <Spinner
+            android:id="@+id/districtSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/citySpinner"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:prompt="@string/select_district" />
+
+        <Spinner
+            android:id="@+id/wardSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/districtSpinner"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
+            android:prompt="@string/select_ward" />
+
+        <EditText
+            android:id="@+id/detailAddressEditText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/wardSpinner"
+            android:background="@null"
+            android:clickable="false"
+            android:gravity="center_vertical"
+            android:inputType="none"
+            android:maxLines="2"
+            android:paddingStart="32dp"
+            android:paddingEnd="25dp"
+            android:hint="@string/your_address_detail"
+            android:textColor="#000"
+            android:textSize="14sp" />
+
+
+        <TextView
+            android:id="@+id/titleChooseLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/detailAddressEditText"
+            android:background="#d9d9d9"
+            android:paddingStart="25dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="25dp"
+            android:paddingBottom="10dp"
+            android:text="@string/current_location"
+            android:textSize="14sp" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/titleChooseLocation"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="25dp" />
+
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/defaultAddressSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/map"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="25dp"
+            android:checked="true"
+            android:text="@string/default_address" />
+
+        <Button
+            android:id="@+id/saveChangesButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/defaultAddressSwitch"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/rounded_button"
+            android:text="@string/save_address" />
+
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
