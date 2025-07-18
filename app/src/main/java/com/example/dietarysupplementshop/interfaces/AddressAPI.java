@@ -22,8 +22,10 @@ public interface AddressAPI {
 
     @GET("/api/d/search/")
     Call<List<District>> searchDistrict(@Query("q") String query);
+
     @GET("/api/address/all")
     Call<ResponseModel<List<Address>>> getListAddress();
+
     @GET("/api/address/info/{addressId}")
     Call<ResponseModel<Address>> getInfoAddress(@Path("addressId") long addressId);
 

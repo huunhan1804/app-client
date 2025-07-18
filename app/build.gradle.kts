@@ -52,6 +52,10 @@ android {
 }
 
 dependencies {
+    // Glide (để tải ảnh)
+    implementation ("com.github.bumptech.glide:glide:4.13.0") // Hoặc phiên bản mới nhất
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
+    implementation ("com.makeramen:roundedimageview:2.3.0")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.github.denzcoskun:ImageSlideshow:0.1.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")

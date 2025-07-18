@@ -13,13 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dietarysupplementshop.AddressInfoActivity;
-import com.example.dietarysupplementshop.ProductInfoActivity;
 import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.model.Address;
 
 import java.util.List;
 
-public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder>{
+public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder> {
     private List<Address> addressList;
     private Context context;
 
@@ -102,7 +101,6 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             addressTextView = itemView.findViewById(R.id.AddressTextView);
             defaultAddressTextView = itemView.findViewById(R.id.defaultAddressTextView);
             editAddressButton = itemView.findViewById(R.id.editAddressButton);
-
 
         }
     }

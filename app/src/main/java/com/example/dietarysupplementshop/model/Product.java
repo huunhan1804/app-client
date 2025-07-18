@@ -7,6 +7,9 @@ public class Product {
     private String product_price;
     private double rating;
 
+    public Product(String s, String string, double v, int product_image) {
+    }
+
     public Product() {
     }
 

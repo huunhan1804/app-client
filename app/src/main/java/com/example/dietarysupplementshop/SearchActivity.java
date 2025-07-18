@@ -50,11 +50,9 @@ public class SearchActivity extends AppCompatActivity {
 
         viewModel = MyApplication.getInstance().getSearchHistoryViewModel();
 
-        // Đặt adapter cho RecyclerView
         SearchHistoryAdapter adapter = new SearchHistoryAdapter();
         searchHistoryRecyclerView.setAdapter(adapter);
 
-        // Lắng nghe dữ liệu từ ViewModel và cập nhật UI
         viewModel.getAllSearchHistories().observe(this, searchHistories -> {
             adapter.setSearchHistories(searchHistories);
 
@@ -66,12 +64,10 @@ public class SearchActivity extends AppCompatActivity {
 
         });
 
-        // Đặt sự kiện cho phím "Enter"
         searchEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String searchText = searchEditText.getText().toString();
 
-                // Insert the search text into the database
                 SearchHistory searchHistory = new SearchHistory(searchText);
                 viewModel.insert(searchHistory);
 
@@ -112,13 +108,11 @@ public class SearchActivity extends AppCompatActivity {
         });
 
 
-
         searchEditText.postDelayed(() -> {
             searchEditText.requestFocus();
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
         }, 100);
-
 
 
         RelativeLayout relativeLayout = findViewById(R.id.frameContain);

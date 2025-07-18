@@ -21,21 +21,14 @@ public class SmsReceiver extends BroadcastReceiver {
                         SmsMessage sms = SmsMessage.createFromPdu((byte[]) pdu);
                         smsMessage += sms.getMessageBody();
                     }
-
-                    // Xác định và trích xuất OTP từ smsMessage
                     String otp = extractOTP(smsMessage);
-
-                    // Đưa OTP vào EditText hoặc xử lý theo ý muốn
                     Log.d("SMS OTP", "Received OTP: " + otp);
                 }
             }
         }
     }
 
-    // Hàm trích xuất OTP từ tin nhắn SMS
     private String extractOTP(String message) {
-        // Thực hiện xác định và trích xuất OTP từ tin nhắn SMS
-        // Đây là một ví dụ đơn giản, cần xem xét định dạng cụ thể của OTP
         return message.replaceAll("[^0-9]", "");
     }
 }

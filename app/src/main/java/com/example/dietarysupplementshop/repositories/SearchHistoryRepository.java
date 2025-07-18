@@ -8,12 +8,13 @@ import androidx.lifecycle.LiveData;
 import com.example.dietarysupplementshop.daos.SearchHistoryDao;
 import com.example.dietarysupplementshop.database.SearchHistoryDatabase;
 import com.example.dietarysupplementshop.entities.SearchHistory;
+
 import java.util.List;
+
 public class SearchHistoryRepository {
     private SearchHistoryDao searchHistoryDao;
     private LiveData<List<SearchHistory>> allSearchHistories;
 
-    // Constructor
     public SearchHistoryRepository(Application application) {
         SearchHistoryDatabase db = SearchHistoryDatabase.getInstance(application);
         searchHistoryDao = db.searchHistoryDao();

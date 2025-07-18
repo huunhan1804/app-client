@@ -12,8 +12,9 @@ import com.example.dietarysupplementshop.model.Address;
 
 import java.util.List;
 
-public class FakeAddressAdapter  extends RecyclerView.Adapter<FakeAddressAdapter.FakeAddressViewHolder>{
+public class FakeAddressAdapter extends RecyclerView.Adapter<FakeAddressAdapter.FakeAddressViewHolder> {
     private final List<Address> addresses;
+
     public FakeAddressAdapter(List<Address> addresses) {
         this.addresses = addresses;
     }
@@ -33,14 +34,14 @@ public class FakeAddressAdapter  extends RecyclerView.Adapter<FakeAddressAdapter
 
     @Override
     public int getItemCount() {
-        if (addresses != null){
+        if (addresses != null) {
             return addresses.size();
         }
         return 0;
     }
 
     public static class FakeAddressViewHolder extends RecyclerView.ViewHolder {
-        public FakeAddressViewHolder(@NonNull View view){
+        public FakeAddressViewHolder(@NonNull View view) {
             super(view);
         }
     }

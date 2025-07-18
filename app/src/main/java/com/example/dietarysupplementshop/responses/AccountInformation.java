@@ -4,16 +4,18 @@ public class AccountInformation {
     private long id;
     private String avatar_url;
     private String role_code;
+    private String status;
     private CartInformation cart_info;
     private AccountProfile accountProfileDTO;
 
     public AccountInformation() {
     }
 
-    public AccountInformation(long id, String avatar_url, String role_code, CartInformation cart_info, AccountProfile accountProfileDTO) {
+    public AccountInformation(long id, String avatar_url, String role_code, String status,CartInformation cart_info, AccountProfile accountProfileDTO) {
         this.id = id;
         this.avatar_url = avatar_url;
         this.role_code = role_code;
+        this.status = status;
         this.cart_info = cart_info;
         this.accountProfileDTO = accountProfileDTO;
     }
@@ -56,5 +58,13 @@ public class AccountInformation {
 
     public void setAccountProfileDTO(AccountProfile accountProfileDTO) {
         this.accountProfileDTO = accountProfileDTO;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

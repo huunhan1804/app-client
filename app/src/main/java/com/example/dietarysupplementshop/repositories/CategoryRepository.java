@@ -33,7 +33,8 @@ public class CategoryRepository {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<List<Category>>() {}.getType();
+                    Type listType = new TypeToken<List<Category>>() {
+                    }.getType();
                     List<Category> categories = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
                     data.setValue(categories);
                 }

@@ -21,6 +21,7 @@ import com.example.dietarysupplementshop.requests.OrderRequest;
 import com.example.dietarysupplementshop.requests.UpdateAccountRequest;
 import com.example.dietarysupplementshop.requests.UpdateAddressRequest;
 import com.example.dietarysupplementshop.requests.UpdateAvatarRequest;
+import com.example.dietarysupplementshop.requests.UpdateRoleRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.responses.OrderDetailResponse;
 import com.google.gson.Gson;
@@ -35,6 +36,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AccountRepository {
+
+    private static AccountRepository instance;
+
     private final AccountAPI accountAPI;
 
     private final AddressAPI addressAPI;
@@ -53,6 +57,16 @@ public class AccountRepository {
         this.orderAPI = RetrofitClient.getRetrofitInstance().create(OrderAPI.class);
     }
 
+    public static AccountRepository getInstance() {
+        if (instance == null) {
+            synchronized (AccountRepository.class) {
+                if (instance == null) {
+                    instance = new AccountRepository();
+                }
+            }
+        }
+        return instance;
+    }
 
     public LiveData<Resource<AccountInformation>> fetchAccount() {
         MutableLiveData<Resource<AccountInformation>> data = new MutableLiveData<>();
@@ -296,7 +310,8 @@ public class AccountRepository {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<Address>>> call, @NonNull Response<ResponseModel<List<Address>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Address> addresses = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Address>>() {}.getType());
+                    List<Address> addresses = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Address>>() {
+                    }.getType());
                     data.setValue(Resource.success(addresses));
                     cachedAddress = addresses;
                 } else {
@@ -344,7 +359,8 @@ public class AccountRepository {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<Address>>> call, @NonNull Response<ResponseModel<List<Address>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<List<Address>>() {}.getType();
+                    Type listType = new TypeToken<List<Address>>() {
+                    }.getType();
                     List<Address> addresses = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
                     data.setValue(Resource.success(addresses));
                     cachedAddress = addresses;
@@ -370,7 +386,8 @@ public class AccountRepository {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<Address>>> call, @NonNull Response<ResponseModel<List<Address>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<List<Address>>() {}.getType();
+                    Type listType = new TypeToken<List<Address>>() {
+                    }.getType();
                     List<Address> addresses = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
                     data.setValue(Resource.success(addresses));
                     cachedAddress = addresses;
@@ -396,7 +413,8 @@ public class AccountRepository {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<Address>>> call, @NonNull Response<ResponseModel<List<Address>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<List<Address>>() {}.getType();
+                    Type listType = new TypeToken<List<Address>>() {
+                    }.getType();
                     List<Address> addresses = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
                     data.setValue(Resource.success(addresses));
                     cachedAddress = addresses;
@@ -428,7 +446,8 @@ public class AccountRepository {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Order> orderList = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Order>>() {}.getType());
+                    List<Order> orderList = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Order>>() {
+                    }.getType());
                     data.setValue(Resource.success(orderList));
                     cachedOrders = orderList;
                 } else {
@@ -453,7 +472,8 @@ public class AccountRepository {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<Order>> call, @NonNull Response<ResponseModel<Order>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Order order = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<Order>() {}.getType());
+                    Order order = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<Order>() {
+                    }.getType());
                     data.setValue(Resource.success(order));
                 } else {
                     handleErrorResponse(response, data);
@@ -476,7 +496,8 @@ public class AccountRepository {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Order> orderList = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Order>>() {}.getType());
+                    List<Order> orderList = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Order>>() {
+                    }.getType());
                     data.setValue(Resource.success(orderList));
                     cachedOrders = orderList;
                 } else {
@@ -501,7 +522,8 @@ public class AccountRepository {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<Order>> call, @NonNull Response<ResponseModel<Order>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Order order = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<Order>() {}.getType());
+                    Order order = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<Order>() {
+                    }.getType());
                     data.setValue(Resource.success(order));
                 } else {
                     handleErrorResponse(response, data);
@@ -525,7 +547,8 @@ public class AccountRepository {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<OrderDetailResponse>>> call, @NonNull Response<ResponseModel<List<OrderDetailResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<OrderDetailResponse> order = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<OrderDetailResponse>>() {}.getType());
+                    List<OrderDetailResponse> order = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<OrderDetailResponse>>() {
+                    }.getType());
                     data.setValue(Resource.success(order));
                 } else {
                     handleErrorResponse(response, data);
@@ -534,6 +557,30 @@ public class AccountRepository {
 
             @Override
             public void onFailure(@NonNull Call<ResponseModel<List<OrderDetailResponse>>> call, @NonNull Throwable t) {
+                data.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+
+        return data;
+    }
+
+    public LiveData<Resource<String>> updateSellerRole(long accountId, String roleCode) {
+        MutableLiveData<Resource<String>> data = new MutableLiveData<>();
+        data.setValue(Resource.loading(null));
+
+        UpdateRoleRequest request = new UpdateRoleRequest(accountId, roleCode);
+        accountAPI.updateRole(request).enqueue(new Callback<ResponseModel<String>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<String>> call, @NonNull Response<ResponseModel<String>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    data.setValue(Resource.success(response.body().getMessage()));
+                } else {
+                    handleErrorResponse(response, data);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<String>> call, @NonNull Throwable t) {
                 data.setValue(Resource.error(t.getMessage(), null));
             }
         });
@@ -568,9 +615,5 @@ public class AccountRepository {
         cachedOrders = null;
         fetchOrderList();
     }
-
-
-
-
 
 }

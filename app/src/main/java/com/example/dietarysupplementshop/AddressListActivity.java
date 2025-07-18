@@ -1,5 +1,4 @@
 package com.example.dietarysupplementshop;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.dietarysupplementshop.MyApplication;
+import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.adapter.ChooseAddressAdapter;
 import com.example.dietarysupplementshop.adapter.FakeAddressAdapter;
 import com.example.dietarysupplementshop.model.Address;

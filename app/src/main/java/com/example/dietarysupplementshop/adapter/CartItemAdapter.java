@@ -28,7 +28,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CartItemAdapter  extends RecyclerView.Adapter<CartItemAdapter.CartViewHolder>{
+public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartViewHolder> {
     private final List<CartItem> productList;
     private Context context;
     private OnItemCheckedListener itemCheckedListener;
@@ -55,8 +55,8 @@ public class CartItemAdapter  extends RecyclerView.Adapter<CartItemAdapter.CartV
         holder.productNameTextView.setText(product.getProduct_info().getProduct_name());
         holder.productPriceTextView.setText(product.getProduct_variant_info().getSale_price());
 
-        if(product.getProduct_variant_info().getProduct_variant_image_url() == null){
-            for (String image : product.getProduct_info().getMedia_url()){
+        if (product.getProduct_variant_info().getProduct_variant_image_url() == null) {
+            for (String image : product.getProduct_info().getMedia_url()) {
                 Picasso.get()
                         .load(image)
                         .into(holder.productImageView);
@@ -95,12 +95,10 @@ public class CartItemAdapter  extends RecyclerView.Adapter<CartItemAdapter.CartV
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int spinnerPosition, long id) {
                 String selectedVariant = parentView.getItemAtPosition(spinnerPosition).toString();
-                // Do something with the selected variant...
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // Optional: Do something when nothing is selected
             }
         });
 
@@ -136,15 +134,11 @@ public class CartItemAdapter  extends RecyclerView.Adapter<CartItemAdapter.CartV
 
         });
 
-        // Set the checkbox state based on the product's selection status
         holder.productCheckBox.setChecked(product.isSelected());
 
-        // Handle checkbox clicks
         holder.productCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // Update the product's selection status
             product.setSelected(isChecked);
 
-            // Notify the listener
             if (itemCheckedListener != null) {
                 itemCheckedListener.onItemChecked(product, isChecked);
             }
@@ -159,7 +153,7 @@ public class CartItemAdapter  extends RecyclerView.Adapter<CartItemAdapter.CartV
 
     @Override
     public int getItemCount() {
-        if(productList != null){
+        if (productList != null) {
             return productList.size();
         }
         return 0;
@@ -180,7 +174,9 @@ public class CartItemAdapter  extends RecyclerView.Adapter<CartItemAdapter.CartV
 
     public interface OnQuantityChangeListener {
         void onIncreaseChange(CartItem product, int quantity);
+
         void onDecreaseChange(CartItem product, int quantity);
+
         void onDelete(CartItem product);
     }
 

@@ -1,23 +1,18 @@
 package com.example.dietarysupplementshop.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dietarysupplementshop.AddressListActivity;
 import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.responses.ProductInformation;
 import com.example.dietarysupplementshop.responses.ProductVariantDTO;
@@ -75,18 +70,16 @@ public class CartItemCheckoutAdapter extends RecyclerView.Adapter<CartItemChecko
         });
 
         RadioGroup radioGroup = holder.itemView.findViewById(R.id.radioGroupProductVariants);
-        radioGroup.removeAllViews(); // Clear existing views if any
+        radioGroup.removeAllViews();
         for (ProductVariantDTO variant : productInformation.getProduct_variant_list()) {
             RadioButton radioButton = new RadioButton(context);
             radioButton.setText(variant.getProduct_variant_name());
             radioButton.setTag(variant);
             radioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
-                    // Update product image
-                    if(variant.getProduct_variant_image_url() != null){
+                    if (variant.getProduct_variant_image_url() != null) {
                         Picasso.get().load(variant.getProduct_variant_image_url()).into(holder.productImageView);
                     }
-                    // Update product price
                     holder.productPriceTextView.setText(variant.getSale_price());
 
                     holder.increaseQuantityButton.setOnClickListener(view -> {
@@ -110,6 +103,7 @@ public class CartItemCheckoutAdapter extends RecyclerView.Adapter<CartItemChecko
         }
 
     }
+
     public void updateProductAtPosition(ProductInformation product, int position) {
         productList.set(position, product);
         notifyItemChanged(position);

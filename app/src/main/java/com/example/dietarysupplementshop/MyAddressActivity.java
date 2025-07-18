@@ -1,7 +1,6 @@
 package com.example.dietarysupplementshop;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +16,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.dietarysupplementshop.adapter.AddressAdapter;
 import com.example.dietarysupplementshop.adapter.FakeAddressAdapter;
 import com.example.dietarysupplementshop.model.Address;
-import com.example.dietarysupplementshop.model.Product;
+import com.example.dietarysupplementshop.AddressInfoActivity;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 
 import java.util.ArrayList;

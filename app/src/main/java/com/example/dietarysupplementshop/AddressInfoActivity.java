@@ -1,7 +1,6 @@
 package com.example.dietarysupplementshop;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -19,21 +18,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.dietarysupplementshop.adapter.CartItemAdapter;
+import com.example.dietarysupplementshop.MyAddressActivity;
+import com.example.dietarysupplementshop.MyApplication;
+import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.interfaces.AddressAPI;
 import com.example.dietarysupplementshop.interfaces.GeocodingApi;
 import com.example.dietarysupplementshop.model.Address;
-import com.example.dietarysupplementshop.model.CartItem;
 import com.example.dietarysupplementshop.model.District;
 import com.example.dietarysupplementshop.model.Province;
 import com.example.dietarysupplementshop.model.Ward;
-import com.example.dietarysupplementshop.requests.AddToCartRequest;
 import com.example.dietarysupplementshop.requests.UpdateAddressRequest;
-import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -116,13 +112,12 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
                         String selectedCity = citySpinner.getSelectedItem().toString();
                         String fullAddress = detailAddress + ", " + selectedWard + ", " + selectedDistrict + ", " + selectedCity;
 
-                        // Tạo một request cập nhật mới
                         UpdateAddressRequest updateRequest = new UpdateAddressRequest();
                         updateRequest.setAddress_id(addressId);
                         updateRequest.setFullname(fullNameEditText.getText().toString().trim());
                         updateRequest.setPhone(phoneEditText.getText().toString());
                         updateRequest.setAddress_detail(fullAddress);
-                        if(defaultAddressSwitch.isChecked()){
+                        if (defaultAddressSwitch.isChecked()) {
                             accountViewModel.setDefaultAddress(addressId);
                         }
                         accountViewModel.updateAddress(updateRequest);
@@ -196,28 +191,24 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
     }
 
     private boolean isValidInput() {
-        // Kiểm tra họ và tên
         String fullName = fullNameEditText.getText().toString().trim();
         if (fullName.isEmpty()) {
             fullNameEditText.setError("Name cannot be empty");
             return false;
         }
 
-        // Kiểm tra số điện thoại
         String phone = phoneEditText.getText().toString();
         if (!Validation.isValidPhoneNumber(phone)) {
             phoneEditText.setError("Invalid phone number");
             return false;
         }
 
-        // Kiểm tra detail address
         String detailAddress = detailAddressEditText.getText().toString().trim();
         if (detailAddress.isEmpty()) {
             detailAddressEditText.setError("Detail address cannot be empty");
             return false;
         }
 
-        // Kiểm tra spinner city, district, ward
         if (citySpinner.getSelectedItem() == null || citySpinner.getSelectedItem().toString().trim().isEmpty()) {
             Toast.makeText(AddressInfoActivity.this, "Please select a city", Toast.LENGTH_SHORT).show();
             return false;
@@ -410,11 +401,9 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
         String BASE_URL = "https://maps.googleapis.com/";
         String apiKey = "AIzaSyD8NPSxs_GNW1JBU8d5RJl5_974LL8xnV8";
 
-        // Khởi tạo Logging Interceptor
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        // Thêm Interceptor vào OkHttpClient
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(logging)
                 .build();
@@ -444,7 +433,6 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onFailure(Call<GeocodingApi.GeocodingResponse> call, Throwable t) {
-                // Xử lý lỗi
             }
         });
     }
@@ -477,7 +465,6 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
     private void updateSpinnerWithAddress(String fullAddress) {
         String[] addressParts = fullAddress.split(",");
 
-        // Đảm bảo địa chỉ có tất cả các phần cần thiết
         if (addressParts.length >= 4) {
             detailAddressEditText.setText(addressParts[0].trim());
 
@@ -500,7 +487,6 @@ public class AddressInfoActivity extends AppCompatActivity implements OnMapReady
 
                         if (matchingWard != null) {
                             setupWardSpinnerWithWards(matchingDistrict.getWards(), matchingWard.getName());
-                            // Cập nhật vị trí của địa chỉ này lên bản đồ
                             getCoordinatesFromAddress(fullAddress);
                         }
                     }

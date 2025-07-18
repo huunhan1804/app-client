@@ -79,22 +79,17 @@ public class ConfirmPopupHandling extends AppCompatActivity {
     }
 
     private void updateUI() {
-        // Xử lý chuỗi quantity và price để bỏ đi ký tự không phải số
         String quantityCleaned = quantity.replaceAll("[^\\d]+", "");
         String priceCleaned = price.replaceAll("[^\\d]+", "");
 
-        // Chuyển đổi chuỗi đã làm sạch thành kiểu số
         int quantityValue = Integer.parseInt(quantityCleaned);
         double priceValue = Double.parseDouble(priceCleaned);
 
-        // Tính giá trị subtotal và phí vận chuyển
         double subtotal = quantityValue * priceValue;
-        double shippingFee = 20000.0; // Số tiền phí vận chuyển
+        double shippingFee = 20000.0;
 
-        // Tính tổng giá trị và định dạng lại để hiển thị
         double total = subtotal + shippingFee;
 
-        // Định dạng lại giá trị và hiển thị lên TextView
         DecimalFormat decimalFormat = new DecimalFormat("#,###,###");
 
         quantityValueTextView.setText(decimalFormat.format(quantityValue));

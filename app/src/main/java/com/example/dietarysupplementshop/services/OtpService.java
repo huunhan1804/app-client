@@ -27,8 +27,8 @@ public class OtpService {
             @Override
             public void onResponse(Call<ResponseModel<String>> call, Response<ResponseModel<String>> response) {
                 ResponseModel<String> responseModel = response.body();
-                if(response.isSuccessful()) {
-                    if(responseModel != null && responseModel.getStatus() == 200) {
+                if (response.isSuccessful()) {
+                    if (responseModel != null && responseModel.getStatus() == 200) {
                         otpCallback.onSuccess(responseModel.getMessage());
                     }
                 } else {
@@ -51,8 +51,8 @@ public class OtpService {
             @Override
             public void onResponse(Call<ResponseModel<String>> call, Response<ResponseModel<String>> response) {
                 ResponseModel<String> responseModel = response.body();
-                if(response.isSuccessful()) {
-                    if(responseModel != null && responseModel.getStatus() == 200) {
+                if (response.isSuccessful()) {
+                    if (responseModel != null && responseModel.getStatus() == 200) {
                         otpCallback.onSuccess(responseModel.getMessage());
                     }
                 } else {
@@ -68,9 +68,9 @@ public class OtpService {
     }
 
 
-
     public interface OtpCallback {
         void onSuccess(String successMessage);
+
         void onError(String errorMessage);
     }
 }

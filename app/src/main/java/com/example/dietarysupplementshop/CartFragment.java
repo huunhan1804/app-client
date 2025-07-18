@@ -1,25 +1,25 @@
 package com.example.dietarysupplementshop;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dietarysupplementshop.CheckoutActivity;
+import com.example.dietarysupplementshop.HomepageActivity;
+import com.example.dietarysupplementshop.MyApplication;
+import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.adapter.CartItemAdapter;
 import com.example.dietarysupplementshop.adapter.FakeProductAdapter;
 import com.example.dietarysupplementshop.adapter.ProductAdapter;
@@ -28,23 +28,14 @@ import com.example.dietarysupplementshop.model.CartItem;
 import com.example.dietarysupplementshop.model.Product;
 import com.example.dietarysupplementshop.requests.AddToCartRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
-import com.example.dietarysupplementshop.responses.CartInformation;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 import com.example.dietarysupplementshop.viewModel.ProductViewModel;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CartFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class CartFragment extends Fragment {
 
     private ProductAdapter productAdapter;
@@ -68,28 +59,16 @@ public class CartFragment extends Fragment {
     private RecyclerView cartRecyclerView;
     private Button checkoutButton;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     public CartFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CartFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static CartFragment newInstance(String param1, String param2) {
         CartFragment fragment = new CartFragment();
         Bundle args = new Bundle();
@@ -107,15 +86,13 @@ public class CartFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         accountViewModel = MyApplication.getInstance().getAccountViewModel();
-        productViewModel =  MyApplication.getInstance().getProductViewModel();
+        productViewModel = MyApplication.getInstance().getProductViewModel();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
 
-        //Product related        ??
         rcvRelatedProduct = view.findViewById(R.id.recyclerView);
         FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
         rcvRelatedProduct.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -144,7 +121,7 @@ public class CartFragment extends Fragment {
 
 
         cartRecyclerView = view.findViewById(R.id.cartItem);
-        accountViewModel.getAccountInfoResource().observe(getViewLifecycleOwner(), resource -> {
+        accountViewModel.getAccountInfo().observe(getViewLifecycleOwner(), resource -> {
             if (resource != null) {
                 switch (resource.getStatus()) {
                     case SUCCESS:
@@ -187,7 +164,7 @@ public class CartFragment extends Fragment {
 
                             totalPriceTextView = view.findViewById(R.id.totalPriceTextView);
                             totalItemText = view.findViewById(R.id.totalItemText);
-                            totalItemText.setText("Product in cart: "+ accountInformations.getCart_info().getTotal_item() + " items");
+                            totalItemText.setText("Product in cart: " + accountInformations.getCart_info().getTotal_item() + " items");
 
                             shippingFeeValue = view.findViewById(R.id.shippingFeeValue);
                             updateTotalPrice();
@@ -251,6 +228,7 @@ public class CartFragment extends Fragment {
             EmptyCartItem.setVisibility(View.GONE);
         }
     }
+
     public List<CartItem> getSelectedCartItems() {
         List<CartItem> selectedItems = new ArrayList<>();
         for (CartItem item : cartItemList) {

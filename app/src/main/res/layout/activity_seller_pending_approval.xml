@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".SellerPendingApprovalActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.Material3.DayNight.SideSheetDialog">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/ic_launcher_background"
+            app:popupTheme="@style/Theme.AppCompat"
+            app:title="Trạng Thái Xét Duyệt"
+            app:titleTextColor="@android:color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="24dp"
+            android:contentDescription="Pending Approval Icon"
+            android:src="@drawable/ic_pending_approval"
+            app:tint="#FFC107" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"
+            android:text="Tài khoản đang chờ xét duyệt"
+            android:textColor="#333333"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:text="Hồ sơ đăng ký của bạn đang được đội ngũ của chúng tôi kiểm tra. Quá trình này có thể mất từ 24-48 giờ làm việc."
+            android:textColor="#777777"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:lineSpacingExtra="2dp"
+            android:text="Chúng tôi sẽ gửi thông báo đến bạn qua email hoặc số điện thoại khi có kết quả."
+            android:textColor="#777777"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_contact_support"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/ic_launcher_background"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:text="Liên hệ hỗ trợ"
+            android:textColor="@android:color/white"
+            app:cornerRadius="8dp" />
+
+        <Button
+            android:id="@+id/btn_refresh_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#E0E0E0"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:text="Kiểm tra lại trạng thái"
+            android:textColor="#333333"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

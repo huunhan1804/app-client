@@ -11,9 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.adapter.MessageAdapter;
 import com.example.dietarysupplementshop.model.Message;
 
@@ -66,7 +66,6 @@ public class ChatActivity extends AppCompatActivity {
             SERVER_IP = getLocalIpAddress();
         } catch (UnknownHostException e) {
             e.printStackTrace();
-            // TODO: Show an error message to the user
         }
 
         btnSend.setOnClickListener(v -> sendMessage());
@@ -85,16 +84,13 @@ public class ChatActivity extends AppCompatActivity {
     private void sendMessage() {
         String messageText = etMessage.getText().toString().trim();
         if (!messageText.isEmpty()) {
-            // Update UI and message list with the new message
             Message message = new Message(messageText, true);
             messageList.add(message);
             messageAdapter.notifyItemInserted(messageList.size() - 1);
             rvMessages.scrollToPosition(messageList.size() - 1);
 
-            // Clear input field
             etMessage.setText("");
 
-            // Send message using the networking thread
             new Thread(new Thread3(messageText)).start();
         }
     }
@@ -128,14 +124,12 @@ public class ChatActivity extends AppCompatActivity {
                     final String message = input.readLine();
                     if (message != null) {
                         runOnUiThread(() -> {
-                            // Update the RecyclerView with the new message
                             Message receivedMessage = new Message(message, false);
                             messageList.add(receivedMessage);
                             messageAdapter.notifyItemInserted(messageList.size() - 1);
                             rvMessages.scrollToPosition(messageList.size() - 1);
                         });
                     } else {
-                        // Connection was lost, attempt to reconnect
                         isRunning = false;
                         runOnUiThread(() -> {
                             handleDisconnection();
@@ -147,6 +141,7 @@ public class ChatActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
         private void handleDisconnection() {
             Toast.makeText(getApplicationContext(), "Disconnection with server!", Toast.LENGTH_SHORT).show();
         }
@@ -154,6 +149,7 @@ public class ChatActivity extends AppCompatActivity {
 
     class Thread3 implements Runnable {
         private final String message;
+
         Thread3(String message) {
             this.message = message;
         }
@@ -164,16 +160,15 @@ public class ChatActivity extends AppCompatActivity {
                 output.println(message);
             } else {
                 runOnUiThread(() -> {
-                    // Show an error message to the user or handle sending failure
                     handleSendingError();
                 });
             }
         }
+
         private void handleSendingError() {
             Toast.makeText(getApplicationContext(), "Error to send message with server!", Toast.LENGTH_SHORT).show();
         }
     }
-
 
 
     @Override

@@ -28,12 +28,11 @@ public class FakeProductAdapter extends RecyclerView.Adapter<FakeProductAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull FakeProductViewHolder holder, int position) {
-        // No data binding needed as this is just a placeholder
     }
 
     @Override
     public int getItemCount() {
-        if(productList != null){
+        if (productList != null) {
             return productList.size();
         }
         return 0;
@@ -42,7 +41,6 @@ public class FakeProductAdapter extends RecyclerView.Adapter<FakeProductAdapter.
     public static class FakeProductViewHolder extends RecyclerView.ViewHolder {
         public FakeProductViewHolder(@NonNull View itemView) {
             super(itemView);
-            // No views to bind as this is just a placeholder
         }
     }
 }

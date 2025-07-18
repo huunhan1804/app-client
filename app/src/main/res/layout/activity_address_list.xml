@@ -14,7 +14,7 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_app">
+            android:background="@color/light_gray_background">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -36,7 +36,9 @@
                         android:contentDescription="@string/back"
                         android:padding="5dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/back_white_ic" />
+                        android:src="@drawable/back_arrow_ic"
+                        android:tint="@color/color_app"
+                        tools:ignore="UseAppTint"/>
 
                     <TextView
                         android:id="@+id/titleTextView"
@@ -45,7 +47,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:text="My Address"
-                        android:textColor="@color/white"
+                        android:textColor="@color/black"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 

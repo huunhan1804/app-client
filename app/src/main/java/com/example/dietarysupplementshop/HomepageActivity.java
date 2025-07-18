@@ -1,37 +1,34 @@
 package com.example.dietarysupplementshop;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.dietarysupplementshop.HomeFragment;
+import com.example.dietarysupplementshop.LocationStoreActivity;
+import com.example.dietarysupplementshop.OrderedFragment;
+import com.example.dietarysupplementshop.ProfileFragment;
+import com.example.dietarysupplementshop.R;
+import com.example.dietarysupplementshop.SearchActivity;
 import com.example.dietarysupplementshop.adapter.ViewPagerAdapter;
+import com.example.dietarysupplementshop.CartFragment;
 import com.example.dietarysupplementshop.token.TokenManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class HomepageActivity extends AppCompatActivity {
+public class HomepageActivity extends AppCompatActivity implements IProgressBarController {
     private HomeFragment homeFragment;
     private OrderedFragment orderedFragment;
     private CartFragment cartFragment;
-    private ProfileFragment profileFragment;
     private ViewPager viewPager2;
 
     private TextInputLayout searchTextInputLayout;
@@ -56,7 +53,6 @@ public class HomepageActivity extends AppCompatActivity {
         TokenManager tokenManager = new TokenManager(getApplicationContext());
         String accessToken = tokenManager.getAccessToken();
 
-        
 
         if (accessToken == null) {
             startActivity(new Intent(this, SignInActivity.class));
@@ -74,11 +70,6 @@ public class HomepageActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
-        homeFragment = new HomeFragment();
-        orderedFragment = new OrderedFragment();
-        cartFragment = new CartFragment();
-        profileFragment = new ProfileFragment();
 
         viewPager2 = findViewById(R.id.view_pager);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);

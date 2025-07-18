@@ -3,10 +3,8 @@ package com.example.dietarysupplementshop;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -21,12 +19,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.dietarysupplementshop.model.Address;
 import com.example.dietarysupplementshop.responses.ProductInformation;
 import com.example.dietarysupplementshop.responses.ProductVariantDTO;
+import com.example.dietarysupplementshop.AddressListActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 
-public class PopupEventHandling  extends AppCompatActivity {
+public class PopupEventHandling extends AppCompatActivity {
     private Context context;
     private View popupView;
     private int maxQuantity = 10;
@@ -71,7 +70,7 @@ public class PopupEventHandling  extends AppCompatActivity {
         productNameTextView = popupView.findViewById(R.id.productNameTextView);
         productPriceTextView = popupView.findViewById(R.id.productPriceTextView);
 
-        for (String image : productInformation.getMedia_url()){
+        for (String image : productInformation.getMedia_url()) {
             Picasso.get()
                     .load(image)
                     .into(productImageView);
@@ -132,8 +131,6 @@ public class PopupEventHandling  extends AppCompatActivity {
     }
 
 
-
-
     private void handleContinueButtonClick() {
         RadioGroup radioGroup = popupView.findViewById(R.id.radioGroupProductVariants);
         int selectedId = radioGroup.getCheckedRadioButtonId();
@@ -181,7 +178,7 @@ public class PopupEventHandling  extends AppCompatActivity {
 
     private void updateUIForVariant(ProductVariantDTO variant) {
         // Update product image
-        if(variant.getProduct_variant_image_url() != null){
+        if (variant.getProduct_variant_image_url() != null) {
             Picasso.get()
                     .load(variant.getProduct_variant_image_url())
                     .into(productImageView);
@@ -205,7 +202,6 @@ public class PopupEventHandling  extends AppCompatActivity {
     }
 
 
-
     private void closePopup() {
         if (popupWindow != null && popupWindow.isShowing()) {
             popupWindow.dismiss();
@@ -215,11 +211,13 @@ public class PopupEventHandling  extends AppCompatActivity {
     public void setPopupWindow(PopupWindow popupWindow) {
         this.popupWindow = popupWindow;
     }
+
     private OnActivityResultListener onActivityResultListener;
 
     public void setOnActivityResultListener(OnActivityResultListener listener) {
         this.onActivityResultListener = listener;
     }
+
     public interface OnActivityResultListener {
         void onActivityResult(int requestCode, int resultCode, Intent data);
     }

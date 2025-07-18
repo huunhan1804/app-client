@@ -6,9 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.dietarysupplementshop.interfaces.ProductAPI;
 import com.example.dietarysupplementshop.interfaces.RetrofitClient;
 import com.example.dietarysupplementshop.model.Product;
+import com.example.dietarysupplementshop.model.ProductSeller;
 import com.example.dietarysupplementshop.model.ResponseModel;
+import com.example.dietarysupplementshop.requests.AddProductRequest;
 import com.example.dietarysupplementshop.requests.SearchRequest;
 import com.example.dietarysupplementshop.responses.ProductInformation;
+// import com.example.dietarysupplementshop.services.ProductApiService; // Xóa import này nếu không dùng ProductApiService.ProductCallback nữa
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,9 +30,166 @@ public class ProductRepository {
     private List<Product> cachedBestSellers;
     private List<Product> cachedBestOrders;
 
+    // Đã xóa hoàn toàn: private final ProductApiService apiService;
+
     public ProductRepository() {
         productAPI = RetrofitClient.getRetrofitInstance().create(ProductAPI.class);
     }
+
+    // Định nghĩa lại ProductCallback để nó độc lập với ProductApiService
+    public interface ProductSellerCallback<T> {
+        void onSuccess(T result);
+        void onError(Throwable t);
+        void onError(String errorMessage); // Thêm phương thức này để nhận thông báo lỗi từ ResponseModel
+    }
+
+    // Phương thức này giờ gọi API thật
+    public void getAllSellerProducts(final ProductSellerCallback<List<ProductSeller>> callback) {
+        productAPI.getAllSellerProducts().enqueue(new Callback<List<ProductSeller>>() {
+            @Override
+            public void onResponse(Call<List<ProductSeller>> call, Response<List<ProductSeller>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    String errorMessage = "Lỗi không xác định khi tải sản phẩm người bán";
+                    if (response.errorBody() != null) {
+                        try {
+                            ResponseModel<?> errorResponse = new Gson().fromJson(response.errorBody().string(), ResponseModel.class);
+                            if (errorResponse != null && errorResponse.getMessage() != null) {
+                                errorMessage = errorResponse.getMessage();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    callback.onError(errorMessage); // Sử dụng errorMessage từ ResponseModel
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductSeller>> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
+    // Phương thức này giờ gọi API thật
+    public void addProduct(AddProductRequest request, final ProductSellerCallback<ProductSeller> callback) {
+        productAPI.addProduct(request).enqueue(new Callback<ProductSeller>() {
+            @Override
+            public void onResponse(Call<ProductSeller> call, Response<ProductSeller> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    String errorMessage = "Lỗi không xác định khi thêm sản phẩm";
+                    if (response.errorBody() != null) {
+                        try {
+                            ResponseModel<?> errorResponse = new Gson().fromJson(response.errorBody().string(), ResponseModel.class);
+                            if (errorResponse != null && errorResponse.getMessage() != null) {
+                                errorMessage = errorResponse.getMessage();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    callback.onError(errorMessage);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProductSeller> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
+    // Phương thức này giờ gọi API thật
+    public void updateProductStatus(String productId, String newStatus, final ProductSellerCallback<ProductSeller> callback) {
+        productAPI.updateProductStatus(productId, newStatus).enqueue(new Callback<ProductSeller>() {
+            @Override
+            public void onResponse(Call<ProductSeller> call, Response<ProductSeller> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    String errorMessage = "Lỗi không xác định khi cập nhật trạng thái sản phẩm";
+                    if (response.errorBody() != null) {
+                        try {
+                            ResponseModel<?> errorResponse = new Gson().fromJson(response.errorBody().string(), ResponseModel.class);
+                            if (errorResponse != null && errorResponse.getMessage() != null) {
+                                errorMessage = errorResponse.getMessage();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    callback.onError(errorMessage);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProductSeller> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
+    // Phương thức này giờ gọi API thật
+    public void updateProduct(String productId, AddProductRequest request, final ProductSellerCallback<ProductSeller> callback) {
+        productAPI.updateProduct(productId, request).enqueue(new Callback<ProductSeller>() {
+            @Override
+            public void onResponse(Call<ProductSeller> call, Response<ProductSeller> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    String errorMessage = "Lỗi không xác định khi cập nhật sản phẩm";
+                    if (response.errorBody() != null) {
+                        try {
+                            ResponseModel<?> errorResponse = new Gson().fromJson(response.errorBody().string(), ResponseModel.class);
+                            if (errorResponse != null && errorResponse.getMessage() != null) {
+                                errorMessage = errorResponse.getMessage();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    callback.onError(errorMessage);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProductSeller> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
+     public void deleteProduct(String productId, final ProductSellerCallback<Void> callback) {
+         productAPI.deleteProduct(productId).enqueue(new Callback<Void>() {
+             @Override
+             public void onResponse(Call<Void> call, Response<Void> response) {
+                 if (response.isSuccessful()) {
+                     callback.onSuccess(null);
+                 } else {
+                     String errorMessage = "Lỗi không xác định khi xóa sản phẩm";
+                     if (response.errorBody() != null) {
+                         try {
+                             ResponseModel<?> errorResponse = new Gson().fromJson(response.errorBody().string(), ResponseModel.class);
+                             if (errorResponse != null && errorResponse.getMessage() != null) {
+                                 errorMessage = errorResponse.getMessage();
+                             }
+                         } catch (IOException e) {
+                             e.printStackTrace();
+                         }
+                     }
+                     callback.onError(errorMessage);
+                 }
+             }
+             @Override
+             public void onFailure(Call<Void> call, Throwable t) {
+                 callback.onError(t);
+             }
+         });
+     }
 
     public LiveData<ProductInformation> getProductInfo(long productId) {
         MutableLiveData<ProductInformation> data = new MutableLiveData<>();
@@ -37,7 +198,8 @@ public class ProductRepository {
             @Override
             public void onResponse(Call<ResponseModel<ProductInformation>> call, Response<ResponseModel<ProductInformation>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<ProductInformation>(){}.getType();
+                    Type listType = new TypeToken<ProductInformation>() {
+                    }.getType();
                     ProductInformation productInformation = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
                     data.setValue(productInformation);
                 }
@@ -56,7 +218,6 @@ public class ProductRepository {
     public LiveData<List<Product>> fetchBestSellers() {
         MutableLiveData<List<Product>> data = new MutableLiveData<>();
 
-        // Kiểm tra dữ liệu đã được tải chưa
         if (cachedBestSellers != null) {
             data.setValue(cachedBestSellers);
             return data;
@@ -66,13 +227,14 @@ public class ProductRepository {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<List<Product>>() {}.getType();
+                    Type listType = new TypeToken<List<Product>>() {
+                    }.getType();
                     List<Product> productList = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
-                    // Lưu trữ dữ liệu đã được tải
                     cachedBestSellers = productList;
                     data.setValue(productList);
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel> call, Throwable t) {
                 data.setValue(null);
@@ -86,7 +248,6 @@ public class ProductRepository {
     public LiveData<List<Product>> fetchBestOrders() {
         MutableLiveData<List<Product>> data = new MutableLiveData<>();
 
-        // Kiểm tra dữ liệu đã được tải chưa
         if (cachedBestOrders != null) {
             data.setValue(cachedBestOrders);
             return data;
@@ -96,13 +257,14 @@ public class ProductRepository {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<List<Product>>() {}.getType();
+                    Type listType = new TypeToken<List<Product>>() {
+                    }.getType();
                     List<Product> productList = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
-                    // Lưu trữ dữ liệu đã được tải
                     cachedBestOrders = productList;
                     data.setValue(productList);
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel> call, Throwable t) {
                 data.setValue(null);
@@ -118,11 +280,13 @@ public class ProductRepository {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<List<Product>>() {}.getType();
+                    Type listType = new TypeToken<List<Product>>() {
+                    }.getType();
                     List<Product> productList = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
                     data.setValue(productList);
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel> call, Throwable t) {
                 data.setValue(null);
@@ -138,13 +302,15 @@ public class ProductRepository {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<List<Product>>() {}.getType();
+                    Type listType = new TypeToken<List<Product>>() {
+                    }.getType();
                     List<Product> productList = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
                     data.setValue(Resource.success(productList));
                 } else {
                     handleErrorResponse(response, data);
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel> call, Throwable t) {
                 data.setValue(Resource.error(t.getMessage(), null));
@@ -160,13 +326,15 @@ public class ProductRepository {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Type listType = new TypeToken<List<Product>>() {}.getType();
+                    Type listType = new TypeToken<List<Product>>() {
+                    }.getType();
                     List<Product> productList = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
                     data.setValue(Resource.success(productList));
                 } else {
                     handleErrorResponse(response, data);
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel> call, Throwable t) {
                 data.setValue(Resource.error(t.getMessage(), null));
@@ -174,7 +342,6 @@ public class ProductRepository {
         });
         return data;
     }
-
 
 
     private <T> void handleErrorResponse(Response<?> response, MutableLiveData<Resource<T>> data) {

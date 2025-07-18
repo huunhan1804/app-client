@@ -74,14 +74,14 @@ public class LocationStoreActivity extends AppCompatActivity implements OnMapRea
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        mMap.setMapType(1); // default
+        mMap.setMapType(1);
         LatLng latLng1 = new LatLng(10.014351444089163, 105.73195414291693);
 
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(10.013093276675898, 105.73158482780026))
-                .title("Four Store") );
+                .title("Four Store"));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng1,15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng1, 15));
     }
 
 }

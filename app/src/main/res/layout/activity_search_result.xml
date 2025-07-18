@@ -26,8 +26,8 @@
 
                 <ImageButton
                     android:id="@+id/backButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="45dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="start|center_vertical"
                     android:background="?attr/selectableItemBackground"
                     android:contentDescription="@string/back"
@@ -52,7 +52,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/searchEditText"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="41dp"
                         android:hint="@string/search"
                         android:inputType="text"
                         android:textColor="#8F959E"

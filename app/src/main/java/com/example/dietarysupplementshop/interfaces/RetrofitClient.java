@@ -1,21 +1,12 @@
 package com.example.dietarysupplementshop.interfaces;
 
-import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.dietarysupplementshop.HomepageActivity;
 import com.example.dietarysupplementshop.MyApplication;
-import com.example.dietarysupplementshop.SignInActivity;
-import com.example.dietarysupplementshop.SplashActivity;
-import com.example.dietarysupplementshop.services.AuthService;
 import com.example.dietarysupplementshop.token.TokenAuthenticator;
 
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -26,8 +17,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     private static Retrofit retrofit;
-    private static final String TAG = "ApiCallLog"; // Tag for logging
-    private static final String BASE_URL = "https://app-server-zykr.onrender.com";
+    private static final String TAG = "ApiCallLog";
+    private static final String BASE_URL = "http://10.189.0.120:8080/";
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
@@ -41,7 +32,6 @@ public class RetrofitClient {
             httpClientBuilder.retryOnConnectionFailure(true);
             httpClientBuilder.addInterceptor(loggingInterceptor);
 
-            // Add request logging interceptor
             httpClientBuilder.addInterceptor(chain -> {
                 Request originalRequest = chain.request();
                 Log.d(TAG, "API REQUEST: " + originalRequest.method() + " " + originalRequest.url());
@@ -69,7 +59,6 @@ public class RetrofitClient {
                 return response;
             });
 
-            // Add network response logging interceptor
             httpClientBuilder.addNetworkInterceptor(chain -> {
                 Request request = chain.request();
                 long startTime = System.currentTimeMillis();

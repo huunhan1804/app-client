@@ -10,12 +10,13 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RadioButton
             android:id="@+id/radioSelectAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp" />
     </FrameLayout>
 
     <RelativeLayout
@@ -23,6 +24,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="25dp"
         android:padding="16dp">
+
         <LinearLayout
             android:id="@+id/frameNameAndPhone"
             android:layout_width="match_parent"
@@ -36,14 +38,14 @@
                 android:gravity="center"
                 android:text="Tran Quang Qui"
                 android:textColor="#000"
-                android:textStyle="bold"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="1dp"
-                android:layout_margin="10dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
                 android:background="#CCCCCC" />
 
             <TextView
@@ -54,16 +56,15 @@
                 android:text="0945605514"
                 android:textColor="#776E6E"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/frameAddressDetail"
-            android:layout_below="@+id/frameNameAndPhone"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_below="@+id/frameNameAndPhone"
             android:orientation="horizontal">
 
             <TextView
@@ -78,9 +79,9 @@
 
         <LinearLayout
             android:id="@+id/frameAddress"
-            android:layout_below="@+id/frameAddressDetail"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_below="@+id/frameAddressDetail"
             android:orientation="horizontal">
 
             <TextView
@@ -108,13 +109,13 @@
             android:id="@+id/editAddressButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
             android:layout_below="@+id/frameAddress"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="TODO"
             android:padding="4dp"
             android:scaleType="fitCenter"
-            android:background="@android:color/transparent"
-            android:src="@drawable/edit"
-            android:contentDescription="TODO" />
+            android:src="@drawable/edit" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
