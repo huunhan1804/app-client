@@ -1,8 +1,11 @@
 package com.example.dietarysupplementshop.responses;
 
+import com.example.dietarysupplementshop.model.Shop;
+
 import java.util.List;
 
 public class ProductInformation {
+    private Shop shop;
     private Long product_id;
     private String product_name;
     private String product_price;
@@ -98,5 +101,11 @@ public class ProductInformation {
 
     public void setFeedback_list(List<FeedbackDTO> feedback_list) {
         this.feedback_list = feedback_list;
+    }
+    public Shop getShop() {
+        return shop;
+    }
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 }

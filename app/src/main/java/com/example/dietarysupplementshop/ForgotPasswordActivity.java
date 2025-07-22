@@ -91,7 +91,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 @Override
                 public void onError(String errorMessage) {
                     hideProgressBar();
-                    if(Integer.parseInt(errorMessage) == 404){
+                    if (Integer.parseInt(errorMessage) == 404) {
                         editTextEmail.setError("Account doesn't exist!");
                     }
                 }
@@ -133,7 +133,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
 
         buttonConfirm.setOnClickListener(view -> {
-            if(Validation.isValidOTP(editTextOTPCode.getText().toString())
+            if (Validation.isValidOTP(editTextOTPCode.getText().toString())
                     && Validation.isValidPasswordMatch(editTextPassword.getText().toString(), editTextConfirmPassword.getText().toString())
                     && Validation.isValidPassword(editTextPassword.getText().toString())
                     && Validation.isValidEmailOrPhone(editTextEmail.getText().toString())

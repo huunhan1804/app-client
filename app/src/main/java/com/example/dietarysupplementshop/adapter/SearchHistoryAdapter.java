@@ -21,6 +21,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     public void setOnSearchHistoryClickListener(OnSearchHistoryClickListener listener) {
         this.listener = listener;
     }
+
     private List<SearchHistory> searchHistories = new ArrayList<>();
 
     @NonNull
@@ -50,7 +51,6 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         });
 
 
-
     }
 
     @Override
@@ -76,6 +76,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
     public interface OnSearchHistoryClickListener {
         void onSearchHistoryClicked(String searchText);
+
         void onSearchHistoryDeleteButtonClicked(SearchHistory searchHistory);
     }
 

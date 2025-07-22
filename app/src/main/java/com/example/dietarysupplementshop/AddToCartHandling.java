@@ -55,7 +55,7 @@ public class AddToCartHandling {
         productNameTextView = popupView.findViewById(R.id.productNameTextView);
         productPriceTextView = popupView.findViewById(R.id.productPriceTextView);
 
-        for (String image : productInformation.getMedia_url()){
+        for (String image : productInformation.getMedia_url()) {
             Picasso.get()
                     .load(image)
                     .into(productImageView);
@@ -100,7 +100,6 @@ public class AddToCartHandling {
         });
 
 
-
     }
 
     private void populateProductVariants(RadioGroup radioGroup, List<ProductVariantDTO> productVariants) {
@@ -118,17 +117,13 @@ public class AddToCartHandling {
     }
 
     private void updateUIForVariant(ProductVariantDTO variant) {
-        // Update product image
-        if(variant.getProduct_variant_image_url() != null){
+        if (variant.getProduct_variant_image_url() != null) {
             Picasso.get()
                     .load(variant.getProduct_variant_image_url())
                     .into(productImageView);
         }
 
-        // Update product price
         productPriceTextView.setText(variant.getSale_price());
-
-        // Update quantity buttons based on stock
         ImageButton increaseQuantityButton = popupView.findViewById(R.id.increaseQuantityButton);
         increaseQuantityButton.setOnClickListener(view -> {
             int currentQuantity = Integer.parseInt(quantityTextView.getText().toString());
@@ -143,17 +138,13 @@ public class AddToCartHandling {
     }
 
 
-
     private void handleContinueButtonClick() {
         int quantity = Integer.parseInt(quantityTextView.getText().toString());
 
-        // Get the selected variant
         RadioGroup radioGroup = popupView.findViewById(R.id.radioGroupProductVariants);
         int selectedId = radioGroup.getCheckedRadioButtonId();
 
-        // Check if a variant is selected
         if (selectedId == -1 && productInformation.getProduct_variant_list() != null && !productInformation.getProduct_variant_list().isEmpty()) {
-            // No variant is selected, but there are available variants. Show an error message.
             Toast.makeText(context, "Please select a product variant before adding to cart.", Toast.LENGTH_LONG).show();
             return;
         }
@@ -161,7 +152,6 @@ public class AddToCartHandling {
         RadioButton selectedRadioButton = radioGroup.findViewById(selectedId);
         ProductVariantDTO selectedVariant = (ProductVariantDTO) selectedRadioButton.getTag();
 
-        // Create the request
         AddToCartRequest addToCartRequest = new AddToCartRequest(
                 productInformation.getProduct_id(),
                 selectedVariant.getProduct_variant_id(),
@@ -169,9 +159,8 @@ public class AddToCartHandling {
         );
 
         if (onActivityResultListener != null) {
-            // You might need to adjust this part to pass relevant data back
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("addToCartRequest", addToCartRequest); // Assuming AddToCartRequest is Serializable or Parcelable
+            resultIntent.putExtra("addToCartRequest", addToCartRequest);
             onActivityResultListener.onActivityResult(code, RESULT_OK, resultIntent);
         }
 
@@ -188,11 +177,13 @@ public class AddToCartHandling {
     public void setPopupWindow(PopupWindow popupWindow) {
         this.popupWindow = popupWindow;
     }
+
     private AddToCartHandling.OnActivityResultListener onActivityResultListener;
 
     public void setOnActivityResultListener(AddToCartHandling.OnActivityResultListener listener) {
         this.onActivityResultListener = listener;
     }
+
     public interface OnActivityResultListener {
         void onActivityResult(int requestCode, int resultCode, Intent data);
     }

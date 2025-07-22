@@ -1,6 +1,5 @@
 package com.example.dietarysupplementshop;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -8,17 +7,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.Log;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dietarysupplementshop.token.TokenManager;
+import com.example.dietarysupplementshop.HomepageActivity;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
+import com.example.dietarysupplementshop.viewModel.CouponViewModel;
 import com.example.dietarysupplementshop.viewModel.ProductViewModel;
 import com.example.dietarysupplementshop.viewModel.SearchHistoryViewModel;
 
@@ -27,6 +23,7 @@ public class MyApplication extends Application {
     private static MyApplication instance;
     private TokenManager tokenManager;
     private SearchHistoryViewModel searchHistoryViewModel;
+    private CouponViewModel couponViewModel;
 
     private AccountViewModel accountViewModel;
     private ProductViewModel productViewModel;
@@ -51,7 +48,7 @@ public class MyApplication extends Application {
     }
 
     public void sendNotification(String strTitle, String strMessage) {
-        //
+
         Intent intent = new Intent(this, HomepageActivity.class);
         intent.putExtra("navigateTo", "CartFragment");
 
@@ -64,12 +61,10 @@ public class MyApplication extends Application {
                 .setContentIntent(pendingIntent);
         Notification notification = noBuilder.build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if(notificationManager != null){
+        if (notificationManager != null) {
             notificationManager.notify(1, notification);
         }
     }
-
-
 
 
     public static MyApplication getInstance() {
@@ -84,6 +79,7 @@ public class MyApplication extends Application {
         Intent logoutIntent = new Intent("com.example.dietarysupplementshop.ACTION_LOGOUT");
         sendBroadcast(logoutIntent);
     }
+
     public AccountViewModel getAccountViewModel() {
         return accountViewModel;
     }
@@ -94,5 +90,8 @@ public class MyApplication extends Application {
 
     public SearchHistoryViewModel getSearchHistoryViewModel() {
         return searchHistoryViewModel;
+    }
+    public CouponViewModel getCouponViewModel() { // Thêm getter này
+        return couponViewModel;
     }
 }

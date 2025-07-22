@@ -15,7 +15,6 @@ public class BuyItem {
         this.subTotal = this.price * this.quantity;
     }
 
-    // Getters and setters for each attribute
 
     public String getProductId() {
         return productId;
@@ -39,7 +38,6 @@ public class BuyItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-        // Update subTotal whenever quantity changes
         this.subTotal = this.price * this.quantity;
     }
 
@@ -49,7 +47,6 @@ public class BuyItem {
 
     public void setPrice(double price) {
         this.price = price;
-        // Update subTotal whenever price changes
         this.subTotal = this.price * this.quantity;
     }
 

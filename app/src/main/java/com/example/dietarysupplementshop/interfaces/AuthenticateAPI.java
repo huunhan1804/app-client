@@ -16,6 +16,7 @@ import retrofit2.http.POST;
 public interface AuthenticateAPI {
     @POST("/api/auth/authenticate")
     Call<ResponseModel<AuthenticateResponse>> authenticate(@Body AuthenticateRequest loginRequest);
+
     @POST("/api/auth/refresh-token")
     Call<ResponseModel<AuthenticateResponse>> refreshAccessToken(@Body RefreshTokenRequest refreshTokenRequest);
 
@@ -24,6 +25,7 @@ public interface AuthenticateAPI {
 
     @POST("/api/auth/authenticate-google")
     Call<ResponseModel<AuthenticateResponse>> authenticateGoogle(@Body AuthenticateSocialRequest authenticateSocialRequest);
+
     @POST("/api/auth/forgot-password")
     Call<ResponseModel<String>> forgotPassword(@Body ForgotPasswordRequest forgotPasswordRequest);
 }

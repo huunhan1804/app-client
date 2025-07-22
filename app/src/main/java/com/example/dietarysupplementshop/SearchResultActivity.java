@@ -72,7 +72,7 @@ public class SearchResultActivity extends AppCompatActivity {
             receiveSearchText(searchText);
         }
 
-        if(getIntent() != null && getIntent().getLongExtra("categoryId", -1) != -1) {
+        if (getIntent() != null && getIntent().getLongExtra("categoryId", -1) != -1) {
             TextView titleCategory = findViewById(R.id.titleCategory);
             titleCategory.setText(getIntent().getStringExtra("categoryName"));
             showListProductByCategory(getIntent().getLongExtra("categoryId", -1));

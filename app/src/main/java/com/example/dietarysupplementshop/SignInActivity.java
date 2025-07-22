@@ -20,6 +20,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.services.AuthService;
 import com.example.dietarysupplementshop.token.TokenManager;
+import com.example.dietarysupplementshop.HomepageActivity;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
@@ -28,13 +29,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class SignInActivity extends AppCompatActivity {
-    private static final int REQ_ONE_TAP = 2;  // Can be any integer unique to the Activity.
+    private static final int REQ_ONE_TAP = 2;
     private boolean showOneTapUI = true;
 
     private SignInClient oneTapClient;
@@ -65,7 +65,6 @@ public class SignInActivity extends AppCompatActivity {
         tokenManager = new TokenManager(getApplicationContext());
         authService = new AuthService(tokenManager);
 
-        // Thêm phần này để khởi tạo EditText
         editTextEmail = findViewById(R.id.editTextEmail);
         textInputLayoutEmail = findViewById(R.id.textInputLayoutEmail);
         textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
@@ -108,10 +107,9 @@ public class SignInActivity extends AppCompatActivity {
                     .addOnFailureListener(SignInActivity.this, e -> Log.d(TAG, e.getLocalizedMessage()));
         });
 
-        // handle sign in with email và password ở đây
         buttonSignIn = findViewById(R.id.buttonSignIn);
         buttonSignIn.setOnClickListener(view -> {
-            if(!Validation.isValidPassword(editTextPassword.getText().toString()) || !Validation.isValidUsernameOrEmailOrPhone(editTextEmail.getText().toString())){
+            if (!Validation.isValidPassword(editTextPassword.getText().toString()) || !Validation.isValidUsernameOrEmailOrPhone(editTextEmail.getText().toString())) {
                 String password = editTextPassword.getText().toString();
                 if (!Validation.isValidPassword(password)) {
                     textInputLayoutPassword.setError("Password must be at least 8 characters long, including uppercase, lowercase, digits, and special characters.");
@@ -162,7 +160,6 @@ public class SignInActivity extends AppCompatActivity {
         });
 
 
-
         buttonSignUpPage = findViewById(R.id.buttonSignUpPage);
         buttonSignUpPage.setOnClickListener(view -> {
             Intent signUpIntent = new Intent(this, SignUpActivity.class);
@@ -177,21 +174,16 @@ public class SignInActivity extends AppCompatActivity {
                         .build())
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
-                        // Your server's client ID, not your Android client ID.
                         .setServerClientId(getString(R.string.default_web_client_id))
-                        // Only show accounts previously used to sign in.
                         .setFilterByAuthorizedAccounts(true)
                         .build())
-                // Automatically sign in when exactly one credential is retrieved.
                 .setAutoSelectEnabled(true)
                 .build();
 
         signUpRequest = BeginSignInRequest.builder()
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
-                        // Your server's client ID, not your Android client ID.
                         .setServerClientId(getString(R.string.default_web_client_id))
-                        // Show all accounts on the device.
                         .setFilterByAuthorizedAccounts(false)
                         .build())
                 .build();
@@ -207,7 +199,6 @@ public class SignInActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(this, e -> {
-                    // No Google Accounts found. Just continue presenting the signed-out UI.
                     Log.d(TAG, e.getLocalizedMessage());
                 });
 
@@ -222,11 +213,11 @@ public class SignInActivity extends AppCompatActivity {
                 try {
                     SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(data);
                     String idToken = credential.getGoogleIdToken();
-                    if (idToken !=  null) {
+                    if (idToken != null) {
                         showProgressBar();
                         authService.authenticateGoogle(idToken, new AuthService.AuthCallback() {
                             @Override
-                            public void onSuccess(String successMessage){
+                            public void onSuccess(String successMessage) {
                                 hideProgressBar();
                                 Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
@@ -243,7 +234,6 @@ public class SignInActivity extends AppCompatActivity {
                         });
                     }
                 } catch (ApiException e) {
-                    // ...
                 }
                 break;
             case REQ_GOOGLE_SIGN_IN:
@@ -255,7 +245,7 @@ public class SignInActivity extends AppCompatActivity {
                         showProgressBar();
                         authService.authenticateGoogle(idToken, new AuthService.AuthCallback() {
                             @Override
-                            public void onSuccess(String successMessage){
+                            public void onSuccess(String successMessage) {
                                 hideProgressBar();
                                 Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);

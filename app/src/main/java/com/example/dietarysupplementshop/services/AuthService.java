@@ -71,15 +71,12 @@ public class AuthService {
                     AuthenticateResponse authResponse = responseModel.getData();
                     return authResponse.getAccess_token();
                 } else {
-                    // Handle the case where the response is not successful or the token refresh fails
                     return null;
                 }
             } else {
-                // Handle the case where the response is not successful or the token refresh fails
                 return null;
             }
         } catch (IOException e) {
-            // Handle the case where an exception occurs during the refresh
             return null;
         }
     }

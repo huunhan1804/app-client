@@ -121,14 +121,13 @@ public class FilterDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        // safety check
         if (getDialog() == null)
             return;
 
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    private List<FilterItem> getCategoryFilter(){
+    private List<FilterItem> getCategoryFilter() {
         List<FilterItem> filterItems = new ArrayList<>();
         filterItems.add(new FilterItem("Digestion", false));
         filterItems.add(new FilterItem("Digestion", false));
@@ -138,14 +137,16 @@ public class FilterDialogFragment extends DialogFragment {
         filterItems.add(new FilterItem("Digestion", false));
         return filterItems;
     }
-    private List<FilterItem> getSortByFilter(){
+
+    private List<FilterItem> getSortByFilter() {
         List<FilterItem> filterItems = new ArrayList<>();
         filterItems.add(new FilterItem("Price: High to Low", false));
         filterItems.add(new FilterItem("Price: Low to High", false));
         filterItems.add(new FilterItem("Sold the most", false));
         return filterItems;
     }
-    private List<FilterItem> getPriceFilter(){
+
+    private List<FilterItem> getPriceFilter() {
         List<FilterItem> filterItems = new ArrayList<>();
         filterItems.add(new FilterItem("0 đ - 200.000 đ", false));
         filterItems.add(new FilterItem("200.000 đ - 500.000 đ", false));
@@ -160,24 +161,21 @@ public class FilterDialogFragment extends DialogFragment {
             return 0;
         }
 
-        // Lấy chiều rộng của parent layout
         int parentWidth = recyclerView.getWidth();
 
-        // Lấy số lượng item trong một hàng (cố định hoặc dựa trên độ dài mỗi item)
-        int itemsPerRow = 1; // Đặt số lượng item trên một hàng mặc định là 1
+        int itemsPerRow = 1;
         int totalItemWidth = 0;
         for (int i = 0; i < adapter.getItemCount(); i++) {
             View itemView = recyclerView.getLayoutManager().findViewByPosition(i);
             if (itemView != null) {
                 totalItemWidth += itemView.getWidth();
                 if (totalItemWidth >= parentWidth) {
-                    break; // Đủ chiều rộng cho một hàng
+                    break;
                 }
                 itemsPerRow++;
             }
         }
 
-        // Tính toán spanCount dựa trên số lượng item trên một hàng
         int spanCount = Math.max(1, itemsPerRow);
         return spanCount;
     }
@@ -187,7 +185,6 @@ public class FilterDialogFragment extends DialogFragment {
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                // Loại bỏ lắng nghe để không gọi lại khi không cần thiết
                 recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
                 int spanCount = getItemWidth(recyclerView);
@@ -195,6 +192,4 @@ public class FilterDialogFragment extends DialogFragment {
             }
         });
     }
-
-
 }

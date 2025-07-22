@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ProductInfoActivity">
 
-
-
     <com.denzcoskun.imageslider.ImageSlider
         android:id="@+id/imageSlider"
         android:layout_width="match_parent"
@@ -37,7 +35,9 @@
             android:contentDescription="@string/cart"
             android:padding="7dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/back_arrow_ic" />
+            android:src="@drawable/back_arrow_ic"
+            android:tint="@color/color_app"
+            tools:ignore="UseAppTint" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -50,10 +50,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            tools:ignore="WebViewLayout">
+            android:padding="16dp">
 
-            <!-- Tên sản phẩm -->
             <TextView
                 android:id="@+id/productNameTextView"
                 android:layout_width="wrap_content"
@@ -67,7 +65,6 @@
                 android:textColor="#000"
                 android:textSize="20sp" />
 
-            <!-- Giá sản phẩm -->
             <TextView
                 android:id="@+id/productPriceTextView"
                 android:layout_width="wrap_content"
@@ -79,7 +76,6 @@
                 android:textColor="#888"
                 android:textSize="14sp" />
 
-            <!-- Rating sản phẩm -->
             <RatingBar
                 android:id="@+id/ratingBar"
                 style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
@@ -93,13 +89,106 @@
                 android:rating="4.5"
                 android:stepSize="0.5" />
 
-            <WebView
-                android:id="@+id/productWebView"
+            <LinearLayout
+                android:id="@+id/shopInfoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintTop_toBottomOf="@id/basicInfoContain" />
+                android:layout_marginTop="15dp"
+                android:background="@drawable/shop_info_background"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/shopAvatarImageView"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/logo_2"
+                    app:riv_corner_radius="25dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/shopNameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nali Bánh Tráng Phơi Sương"
+                        android:textColor="#000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/shopStatusTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Online 10 phút trước"
+                        android:textColor="#888"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/shopLocationTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bình Định"
+                        android:textColor="#888"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/viewShopButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_border_background"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:text="Xem Shop"
+                    android:textColor="@color/color_app"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/textDescriptionProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Mô tả sản phẩm"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/productDescriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:ellipsize="end"
+                android:maxLines="9999"
+                android:text="Đây là một đoạn mô tả sản phẩm rất dài và chi tiết, cung cấp tất cả thông tin cần thiết về sản phẩm từ chất liệu, công dụng, cách sử dụng cho đến những lợi ích mà nó mang lại cho người dùng. Đoạn mô tả này được viết ra để khách hàng có cái nhìn tổng quan nhất trước khi quyết định mua sản phẩm. Nó bao gồm nhiều đoạn văn khác nhau để trình bày rõ ràng các khía cạnh khác nhau của sản phẩm."
+                android:textColor="#333"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/readMoreTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="Xem thêm"
+                android:textColor="@color/color_app"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/textRelatedProduct"
@@ -110,10 +199,7 @@
                 android:layout_marginEnd="10dp"
                 android:text="You may also like"
                 android:textSize="16dp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/productWebView"
-
-                />
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -122,32 +208,27 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintTop_toBottomOf="@id/textRelatedProduct" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         android:layout_gravity="bottom"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        >
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior">
 
         <ImageView
             android:id="@+id/messengerIcon"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="0.5"
-            android:padding="15dp"
             android:contentDescription="Messenger"
-            android:src="@drawable/messenger_icon"
-             />
+            android:padding="15dp"
+            android:src="@drawable/messenger_icon" />
 
         <View
             android:layout_width="2dp"
@@ -160,41 +241,39 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="0.5"
-            android:padding="15dp"
             android:contentDescription="Add to Cart"
-            android:src="@drawable/shopping_cart_icon"
-           />
+            android:padding="15dp"
+            android:src="@drawable/shopping_cart_icon" />
 
         <TextView
             android:id="@+id/buyNowText"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
-            android:text="Buy Now"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:background="@color/color_app"
             android:gravity="center"
+            android:text="Buy Now"
             android:textColor="@color/white"
-            android:background="@color/color_app" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/frameLoading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#1A000000"
         android:layout_gravity="center"
-        android:visibility="gone"
-        >
+        android:background="#1A000000"
+        android:visibility="gone">
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animationView"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            app:lottie_rawRes="@raw/loading"
             app:lottie_autoPlay="true"
-            app:lottie_loop="true"/>
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loading" />
     </FrameLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

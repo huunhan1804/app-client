@@ -13,8 +13,8 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".MyApplication"
@@ -31,8 +31,7 @@
         <activity
             android:name=".ChatActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateVisible|adjustPan"
-            />
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".SearchActivity"
             android:exported="false"
@@ -47,19 +46,25 @@
 
         <activity
             android:name=".CheckoutActivity"
-            android:launchMode="singleTask"
-            android:exported="true" >
-
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="demozpdk"
-                    android:host="app" />
+
+                <data
+                    android:host="app"
+                    android:scheme="demozpdk" />
             </intent-filter>
-
-
         </activity>
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChoiceRoleActivity"
+            android:exported="false" />
         <activity
             android:name=".SearchResultActivity"
             android:exported="false"
@@ -99,12 +104,74 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
+            android:name=".SellerRegistrationStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrationShopActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ShopCertificatesInformationRegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ShopIdentifierInformationRegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ShopTaxInformationRegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ShopSellerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HealthHubCtucareActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VouchersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MembershipActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SellerRegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SellerProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SellerAddProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SellerOrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SalesPerformanceActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".FinanceActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".SellerCreateVoucherActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".OrdersActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".ArticleDetailActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".SellerMainActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
             android:name=".SplashActivity"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

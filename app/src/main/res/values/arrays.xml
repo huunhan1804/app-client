@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="product_categories">
+        <item>Chọn danh mục</item>
+        <item>Thực phẩm bảo vệ sức khỏe</item>
+        <item>Vitamin &amp; Khoáng chất</item>
+        <item>Bổ sung đạm (Whey, Casein)</item>
+        <item>Amino Acid &amp; BCAA</item>
+        <item>Sản phẩm hỗ trợ giảm cân</item>
+        <item>Sản phẩm hỗ trợ tăng cân</item>
+        <item>Khác</item>
+    </string-array>
+    <string-array name="shipping_methods_array">
+        <item>Tất cả phương thức vận chuyển</item>
+        <item>Giao hàng nhanh</item>
+        <item>Giao hàng tiết kiệm</item>
+    </string-array>
+
+</resources>

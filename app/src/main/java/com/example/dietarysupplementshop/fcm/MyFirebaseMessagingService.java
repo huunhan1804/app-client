@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
@@ -21,7 +20,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
         RemoteMessage.Notification notification = message.getNotification();
-        if(notification == null){
+        if (notification == null) {
             return;
         }
         String strTitle = notification.getTitle();
@@ -29,7 +28,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         sendNotification(strTitle, strMessage);
     }
-
     private void sendNotification(String strTitle, String strMessage) {
         Intent intent = new Intent(this, HomepageActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
@@ -40,7 +38,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);
         Notification notification = noBuilder.build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if(notificationManager != null){
+        if (notificationManager != null) {
             notificationManager.notify(1, notification);
         }
     }

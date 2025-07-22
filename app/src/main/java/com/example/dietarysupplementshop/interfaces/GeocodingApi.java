@@ -7,7 +7,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 
-
 public interface GeocodingApi {
     @GET("maps/api/geocode/json")
     Call<GeocodingResponse> getCoordinatesFromAddress(@Query("address") String address, @Query("key") String apiKey);

@@ -27,6 +27,7 @@ public class SearchHistoryViewModel extends AndroidViewModel {
     public void insert(SearchHistory searchHistory) {
         repository.insert(searchHistory);
     }
+
     public void delete(SearchHistory searchHistory) {
         repository.delete(searchHistory);
     }

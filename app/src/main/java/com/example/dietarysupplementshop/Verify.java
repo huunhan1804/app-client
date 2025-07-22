@@ -14,13 +14,11 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.dietarysupplementshop.constant.Validation;
-import com.example.dietarysupplementshop.responses.AuthenticateResponse;
 import com.example.dietarysupplementshop.services.AuthService;
 import com.example.dietarysupplementshop.services.OtpService;
 import com.example.dietarysupplementshop.token.TokenManager;
+import com.example.dietarysupplementshop.ChoiceRoleActivity;
 import com.google.android.material.textfield.TextInputLayout;
-
-import okhttp3.Response;
 
 public class Verify extends AppCompatActivity {
 
@@ -102,7 +100,7 @@ public class Verify extends AppCompatActivity {
                     public void onSuccess(String successMessage){
                         hideProgressBar();
                         Toast.makeText(getApplicationContext(), successMessage, Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), ChoiceRoleActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();

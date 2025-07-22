@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/frameContain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="25dp">
+
+            <FrameLayout
+                android:id="@+id/frameAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/circle_button"
+                    android:backgroundTint="#14A367" />
+
+                <ImageView
+                    android:id="@+id/avatarImageView"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/add_a_photo_24px"/>
+            </FrameLayout>
+
+
+            <EditText
+                android:id="@+id/fullnameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/frameAvatar"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                android:gravity="center"
+                android:inputType="text"
+                android:text=""
+                android:imeOptions="actionDone"
+                android:textColor="@color/color_app"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/infoAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fullnameText"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_button"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:id="@+id/fullnameContain"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <ImageView
+                        android:id="@+id/email_ic"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/mail" />
+
+                    <EditText
+                        android:id="@+id/emailEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="2"
+                        android:background="@null"
+                        android:clickable="false"
+                        android:ellipsize="end"
+                        android:focusable="false"
+                        android:gravity="center_vertical"
+                        android:inputType="text"
+                        android:maxLines="2"
+                        android:text=""
+                        android:textColor="#000"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/editButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:background="@drawable/rounded_button"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/edit"
+                        android:text="Edit" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/phoneContain"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/fullnameContain"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <ImageView
+                        android:id="@+id/phone_ic"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/telephone_ic" />
+
+                    <EditText
+                        android:id="@+id/phoneEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="2"
+                        android:background="@null"
+                        android:clickable="false"
+                        android:ellipsize="end"
+                        android:focusable="false"
+                        android:gravity="center_vertical"
+                        android:inputType="none"
+                        android:maxLines="2"
+                        android:text=""
+                        android:textColor="#000"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/editPhoneButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:background="@drawable/rounded_button"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/edit" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/genderContain"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/phoneContain"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <ImageView
+                        android:id="@+id/gender_ic"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/gender" />
+
+                    <EditText
+                        android:id="@+id/genderEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="2"
+                        android:background="@null"
+                        android:clickable="false"
+                        android:ellipsize="end"
+                        android:focusable="false"
+                        android:gravity="center_vertical"
+                        android:inputType="none"
+                        android:maxLines="2"
+                        android:text=""
+                        android:textColor="#000"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/editGenderButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:background="@drawable/rounded_button"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/edit" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/birthdateContain"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/genderContain"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <ImageView
+                        android:id="@+id/birthdate_ic"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/birthday_cake" />
+
+                    <EditText
+                        android:id="@+id/birthdateEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="2"
+                        android:background="@null"
+                        android:clickable="false"
+                        android:ellipsize="end"
+                        android:focusable="false"
+                        android:gravity="center_vertical"
+                        android:inputType="none"
+                        android:maxLines="2"
+                        android:text=""
+                        android:textColor="#000"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/editBirthdateButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:background="@drawable/rounded_button"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/edit" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/infoAccount"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <!-- Change Password Button with Icon -->
+                <Button
+                    android:id="@+id/changePasswordButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="@color/color_app"
+                    android:drawablePadding="10dp"
+                    android:text="Change Password"
+                    android:textColor="#FFFFFF" />
+
+                <!-- My Address Button with Icon -->
+                <Button
+                    android:id="@+id/myAddressButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="@color/color_app"
+                    android:drawablePadding="10dp"
+                    android:text="My Address"
+                    android:textColor="#FFFFFF" />
+
+                <!-- Sign Out Button with Icon -->
+                <Button
+                    android:id="@+id/signOutButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/color_app"
+                    android:drawablePadding="10dp"
+                    android:text="Sign Out"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

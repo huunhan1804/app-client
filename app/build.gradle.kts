@@ -20,12 +20,12 @@ android {
 //        }
 //    }
     namespace = "com.example.dietarysupplementshop"
-    compileSdk = 36
+    compileSdk = 34  // Giảm xuống 34 để ổn định hơn
 
     defaultConfig {
         applicationId = "com.example.dietarysupplementshop"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34  // Giảm xuống 34 để tương thích
         versionCode = 1
         versionName = "1.0"
 
@@ -38,6 +38,7 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
 //            signingConfig = signingConfigs.getByName("myconfig")
         }
 //        getByName("debug") {
@@ -51,14 +52,30 @@ android {
 }
 
 dependencies {
+    // Glide (để tải ảnh)
+    implementation ("com.github.bumptech.glide:glide:4.13.0") // Hoặc phiên bản mới nhất
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
+    implementation ("com.makeramen:roundedimageview:2.3.0")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.github.denzcoskun:ImageSlideshow:0.1.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.14")
-    implementation("com.google.android.gms:play-services-auth:21.2.0")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.material:material:1.12.0")
+
+    // Google Play Services - Thêm các dependency bị thiếu
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.android.gms:play-services-identity:18.0.1")  // THÊM MỚI
+    implementation("com.google.android.gms:play-services-tasks:18.0.2")     // THÊM MỚI
+    implementation("com.google.android.gms:play-services-base:18.2.0")      // THÊM MỚI
+
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    // AndroidX Core - THÊM MỚI để fix các lỗi method không tìm thấy
+    implementation("androidx.core:core:1.12.0")                             // THÊM MỚI
+    implementation("androidx.activity:activity:1.8.2")                      // THÊM MỚI
+    implementation("androidx.annotation:annotation:1.7.1")                  // THÊM MỚI
+
     implementation("com.squareup.picasso:picasso:2.71828")
     implementation("nl.dionsegijn:konfetti-xml:2.0.4")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
@@ -80,7 +97,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.retrofit2:adapter-rxjava3:2.11.0")
     implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
-    implementation("com.airbnb.android:lottie:6.5.2")
+    implementation("com.airbnb.android:lottie:6.2.0")
     implementation("androidx.room:room-runtime:2.6.1")
 //    implementation(fileTree(mapOf(
 //        "dir" to "D:\\zalopay",

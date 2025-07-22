@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.model.Category;
 import com.example.dietarysupplementshop.model.Product;
 import com.example.dietarysupplementshop.repositories.CategoryRepository;
@@ -76,7 +77,7 @@ public class ProductViewModel extends ViewModel {
     public List<Product> createFakeProducts(int count) {
         List<Product> fakeList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            fakeList.add(new Product());
+            fakeList.add(new Product("Sản phẩm 1", "Mô tả sản phẩm 1...", 150000.0, R.drawable.product_image));
         }
         return fakeList;
     }
@@ -95,8 +96,8 @@ public class ProductViewModel extends ViewModel {
         });
     }
 
-    public LiveData<List<Product>> getListRelatedProduct(long productId){
-        if (relatedProduct == null){
+    public LiveData<List<Product>> getListRelatedProduct(long productId) {
+        if (relatedProduct == null) {
             relatedProduct = new MutableLiveData<>();
             loadRelatedProduct(productId);
         }
@@ -109,13 +110,13 @@ public class ProductViewModel extends ViewModel {
         });
     }
 
-    public LiveData<Resource<List<Product>>> getListSearchProduct(String searchKey){
+    public LiveData<Resource<List<Product>>> getListSearchProduct(String searchKey) {
         SearchRequest request = new SearchRequest(searchKey);
-       return productRepository.fetchProductResult(request);
+        return productRepository.fetchProductResult(request);
     }
 
-    public LiveData<Resource<List<Product>>> getProductByCategory(Long categoryId){
-       return productRepository.getProductByCategory(categoryId);
+    public LiveData<Resource<List<Product>>> getProductByCategory(Long categoryId) {
+        return productRepository.getProductByCategory(categoryId);
     }
 
 }

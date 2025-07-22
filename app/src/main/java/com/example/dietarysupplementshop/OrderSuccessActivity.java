@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.dietarysupplementshop.HomepageActivity;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 
 import java.util.concurrent.TimeUnit;
@@ -39,7 +40,7 @@ public class OrderSuccessActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_success);
 
         accountViewModel = MyApplication.getInstance().getAccountViewModel();
-        accountViewModel.reloadAccountInfo();
+        accountViewModel.loadAccountInfo();
         accountViewModel.reloadOrderList();
 
         final Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_heart);

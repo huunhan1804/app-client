@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +21,7 @@ import com.example.dietarysupplementshop.constant.Validation;
 import com.example.dietarysupplementshop.services.AuthService;
 import com.example.dietarysupplementshop.services.OtpService;
 import com.example.dietarysupplementshop.token.TokenManager;
-import com.google.android.gms.auth.api.Auth;
+import com.example.dietarysupplementshop.HomepageActivity;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
@@ -31,10 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
@@ -42,7 +38,6 @@ import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthMissingActivityForRecaptchaException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -50,7 +45,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import java.util.concurrent.TimeUnit;
 
 public class SignUpActivity extends AppCompatActivity {
-    private static final int REQ_ONE_TAP = 2;  // Can be any integer unique to the Activity.
+    private static final int REQ_ONE_TAP = 2;
     private boolean showOneTapUI = true;
 
     private SignInClient oneTapClient;
@@ -253,21 +248,16 @@ public class SignUpActivity extends AppCompatActivity {
                         .build())
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
-                        // Your server's client ID, not your Android client ID.
                         .setServerClientId(getString(R.string.default_web_client_id))
-                        // Only show accounts previously used to sign in.
                         .setFilterByAuthorizedAccounts(true)
                         .build())
-                // Automatically sign in when exactly one credential is retrieved.
                 .setAutoSelectEnabled(true)
                 .build();
 
         signUpRequest = BeginSignInRequest.builder()
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
-                        // Your server's client ID, not your Android client ID.
                         .setServerClientId(getString(R.string.default_web_client_id))
-                        // Show all accounts on the device.
                         .setFilterByAuthorizedAccounts(false)
                         .build())
                 .build();
@@ -283,7 +273,6 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(this, e -> {
-                    // No Google Accounts found. Just continue presenting the signed-out UI.
                     Log.d(TAG, e.getLocalizedMessage());
                 });
     }
@@ -338,7 +327,6 @@ public class SignUpActivity extends AppCompatActivity {
                         });
                     }
                 } catch (ApiException e) {
-                    // ...
                 }
                 break;
             case REQ_GOOGLE_SIGN_IN:

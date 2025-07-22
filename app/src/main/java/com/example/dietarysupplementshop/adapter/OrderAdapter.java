@@ -12,13 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dietarysupplementshop.MyApplication;
 import com.example.dietarysupplementshop.OrderDetailsActivity;
 import com.example.dietarysupplementshop.R;
-import com.example.dietarysupplementshop.constant.Validation;
+import com.example.dietarysupplementshop.constant.Validation; // Giả sử bạn có lớp này
 import com.example.dietarysupplementshop.model.Order;
 import com.example.dietarysupplementshop.responses.OrderDetailResponse;
-import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -28,80 +26,90 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private Context context;
     private OrderActionListener orderActionListener;
 
+    public interface OrderActionListener {
+        void onCancelOrderClicked(Order order);
+    }
+
     public OrderAdapter(List<Order> orderList, Context context, OrderActionListener listener) {
         this.orderList = orderList;
         this.context = context;
         this.orderActionListener = listener;
     }
 
-
     @NonNull
     @Override
     public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context).inflate(R.layout.item_order, parent, false);
-        return new OrderAdapter.OrderViewHolder(itemView);
+        return new OrderViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
-        if (order != null) {
-            OrderDetailResponse orderDetail = order.getOrder_detail().get(0);
-
-            if (orderDetail.getProductVariantDTO().getProduct_variant_image_url() != null) {
-                Picasso.get()
-                        .load(orderDetail.getProductVariantDTO().getProduct_variant_image_url())
-                        .into(holder.ivOrderProduct);
-            } else {
-                for (String image : orderDetail.getProductInfoDTO().getMedia_url()) {
-                    Picasso.get()
-                            .load(image)
-                            .into(holder.ivOrderProduct);
-                }
-            }
-
-            holder.tvOrderId.setText("Order ID: #" + order.getOrder_id());
-
-            holder.tvOrderDate.setText("Date: " + Validation.formatDate(order.getOrder_date()));
-
-            holder.tvOrderStatus.setText("Status: " + order.getOrder_status());
-            holder.tvOrderDetails.setText("Details: " + (order.getOrder_detail().size() > 1 ? order.getOrder_detail().size() + " items" : "1 item") + ", Total: " + order.getTotalBill());
-
-            if (!order.getOrder_status().equals("SHIPPING")) {
-                holder.cancelBtn.setVisibility(View.GONE);
-            } else {
-                holder.cancelBtn.setEnabled(true);
-            }
-
-            holder.viewDetailBtn.setOnClickListener(view -> {
-                Intent intent = new Intent(context, OrderDetailsActivity.class);
-                intent.putExtra("orderId", order.getOrder_id());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            });
-
-            holder.cancelBtn.setOnClickListener(view -> {
-                if (orderActionListener != null) {
-                    orderActionListener.onCancelOrderClicked(order);
-                }
-            });
-
-
+        if (order == null) {
+            return;
         }
+
+        if (order.getOrder_detail() != null && !order.getOrder_detail().isEmpty()) {
+            OrderDetailResponse firstProduct = order.getOrder_detail().get(0);
+
+            String imageUrl = getImageUrlFromOrderDetail(firstProduct);
+            if (imageUrl != null) {
+                Picasso.get().load(imageUrl).placeholder(R.drawable.logo_2).into(holder.ivOrderProduct);
+            } else {
+                holder.ivOrderProduct.setImageResource(R.drawable.logo_2);
+            }
+
+            int totalItems = order.getOrder_detail().size();
+            holder.tvOrderDetails.setText("Chi tiết: " + totalItems + (totalItems > 1 ? " sản phẩm" : " sản phẩm") + ", Tổng: " + order.getTotalBill());
+        } else {
+            holder.ivOrderProduct.setImageResource(R.drawable.logo_2); // Ảnh mặc định
+            holder.tvOrderDetails.setText("Chi tiết: 0 sản phẩm, Tổng: " + order.getTotalBill());
+        }
+
+        holder.tvOrderId.setText("Mã đơn: #" + order.getOrder_id());
+        if (order.getOrder_date() != null) {
+            holder.tvOrderDate.setText("Ngày: " + Validation.formatDate(order.getOrder_date()));
+        }
+        holder.tvOrderStatus.setText("Trạng thái: " + order.getOrder_status());
+
+        if ("SHIPPING".equalsIgnoreCase(order.getOrder_status())) {
+            holder.cancelBtn.setVisibility(View.VISIBLE);
+            holder.cancelBtn.setEnabled(true);
+        } else {
+            holder.cancelBtn.setVisibility(View.GONE);
+        }
+
+        holder.viewDetailBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(context, OrderDetailsActivity.class);
+            intent.putExtra("orderId", order.getOrder_id());
+            context.startActivity(intent);
+        });
+
+        holder.cancelBtn.setOnClickListener(view -> {
+            if (orderActionListener != null) {
+                orderActionListener.onCancelOrderClicked(order);
+            }
+        });
+    }
+
+    private String getImageUrlFromOrderDetail(OrderDetailResponse orderDetail) {
+        if (orderDetail.getProductVariantDTO() != null && orderDetail.getProductVariantDTO().getProduct_variant_image_url() != null) {
+            return orderDetail.getProductVariantDTO().getProduct_variant_image_url();
+        } else if (orderDetail.getProductInfoDTO() != null && orderDetail.getProductInfoDTO().getMedia_url() != null && !orderDetail.getProductInfoDTO().getMedia_url().isEmpty()) {
+            return orderDetail.getProductInfoDTO().getMedia_url().get(0);
+        }
+        return null;
     }
 
     @Override
     public int getItemCount() {
-        if (orderList != null) {
-            return orderList.size();
-        }
-        return 0;
+        return orderList != null ? orderList.size() : 0;
     }
 
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
         ImageView ivOrderProduct;
         TextView tvOrderId, tvOrderDate, tvOrderStatus, tvOrderDetails;
-
         Button cancelBtn, viewDetailBtn;
 
         public OrderViewHolder(@NonNull View itemView) {
@@ -113,12 +121,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             tvOrderDetails = itemView.findViewById(R.id.tv_order_details);
             cancelBtn = itemView.findViewById(R.id.btn_order_cancel);
             viewDetailBtn = itemView.findViewById(R.id.btn_order_view);
-
         }
     }
-
-    public interface OrderActionListener {
-        void onCancelOrderClicked(Order order);
-    }
-
 }

@@ -20,12 +20,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class Product2Adapter extends RecyclerView.Adapter<Product2Adapter.Product2ViewHolder>{
+public class Product2Adapter extends RecyclerView.Adapter<Product2Adapter.Product2ViewHolder> {
 
     private final List<Product> productList;
     private Context context;
 
-    public Product2Adapter(Context context,List<Product> productList) {
+    public Product2Adapter(Context context, List<Product> productList) {
         this.context = context;
         this.productList = productList;
     }
@@ -62,7 +62,7 @@ public class Product2Adapter extends RecyclerView.Adapter<Product2Adapter.Produc
 
     @Override
     public int getItemCount() {
-        if(productList != null){
+        if (productList != null) {
             return productList.size();
         }
         return 0;

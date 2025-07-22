@@ -39,14 +39,11 @@ public class CustomFilterAdapter extends RecyclerView.Adapter<CustomFilterAdapte
 
         int itemViewWidth = holder.itemView.getWidth();
 
-        // Xử lý sự kiện chọn/bỏ chọn
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 item.setChecked(!item.isChecked());
                 holder.checkBox.setChecked(item.isChecked());
-
-                // Cập nhật trạng thái ImageView tùy chỉnh dựa trên isChecked()
                 if (item.isChecked()) {
                     holder.customImageView.setImageResource(R.drawable.approved_ic);
                 } else {
@@ -55,7 +52,6 @@ public class CustomFilterAdapter extends RecyclerView.Adapter<CustomFilterAdapte
             }
         });
     }
-
     @Override
     public int getItemCount() {
         return filterItems.size();

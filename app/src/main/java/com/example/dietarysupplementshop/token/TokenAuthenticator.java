@@ -20,14 +20,14 @@ import okhttp3.Route;
 public class TokenAuthenticator implements Authenticator {
     private static final AuthService authService = new AuthService(MyApplication.getInstance().getTokenManager());
     private static final Object lock = new Object();
+
     @Nullable
     @Override
-    public Request authenticate(@Nullable Route route, @NonNull Response response){
+    public Request authenticate(@Nullable Route route, @NonNull Response response) {
         synchronized (lock) {
             String currentAccessToken = MyApplication.getInstance().getTokenManager().getAccessToken();
             String originalAccessToken = Objects.requireNonNull(response.request().header("Authorization")).replace("Bearer ", "");
 
-            // Kiểm tra xem access token đã được refresh chưa
             if (!originalAccessToken.equals(currentAccessToken)) {
                 return newRequestWithAccessToken(response, currentAccessToken);
             }
@@ -60,9 +60,9 @@ public class TokenAuthenticator implements Authenticator {
                 .build();
     }
 
-    public boolean refreshToken(String refreshToken){
+    public boolean refreshToken(String refreshToken) {
         String newAccessToken = authService.refreshAccessToken(refreshToken);
-        if(newAccessToken != null){
+        if (newAccessToken != null) {
             MyApplication.getInstance().getTokenManager().clearTokens();
             MyApplication.getInstance().getTokenManager().saveTokens(newAccessToken, refreshToken);
             return true;

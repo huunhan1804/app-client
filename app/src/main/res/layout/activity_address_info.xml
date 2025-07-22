@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".AddressInfoActivity">
 
@@ -80,11 +80,11 @@
                 android:layout_height="50dp"
                 android:background="@null"
                 android:gravity="center_vertical"
+                android:hint="@string/your_name"
                 android:inputType="none"
                 android:maxLines="2"
                 android:paddingStart="25dp"
                 android:paddingEnd="25dp"
-                android:hint="@string/your_name"
                 android:text=""
                 android:textColor="#000"
                 android:textSize="18sp" />
@@ -102,10 +102,10 @@
                 android:background="@null"
                 android:clickable="false"
                 android:gravity="center_vertical"
+                android:hint="@string/your_phone"
                 android:maxLines="2"
                 android:paddingStart="25dp"
                 android:paddingEnd="25dp"
-                android:hint="@string/your_phone"
                 android:text=""
                 android:textColor="#000"
                 android:textSize="18sp" />
@@ -124,26 +124,32 @@
             android:text="Address"
             android:textSize="14sp" />
 
-        <!-- Phần chọn thành phố -->
         <Spinner
             android:id="@+id/citySpinner"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_below="@+id/titleEditAddress"
             android:layout_marginTop="10dp"
-            android:background="@android:color/transparent"
+            android:background="@drawable/rounded_edittext_background"
             android:paddingStart="25dp"
             android:paddingEnd="25dp"
             android:prompt="@string/select_city" />
 
-        <!-- Phần chọn quận -->
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
+            android:contentDescription="Dropdown"
+            android:src="@drawable/ic_dropdown_arrow"
+            app:tint="@android:color/black" />
+
         <Spinner
             android:id="@+id/districtSpinner"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_below="@+id/citySpinner"
             android:layout_marginTop="10dp"
-            android:background="@android:color/transparent"
+            android:background="@drawable/rounded_edittext_background"
             android:paddingStart="25dp"
             android:paddingEnd="25dp"
             android:prompt="@string/select_district" />
@@ -154,7 +160,7 @@
             android:layout_height="50dp"
             android:layout_below="@+id/districtSpinner"
             android:layout_marginTop="10dp"
-            android:background="@android:color/transparent"
+            android:background="@drawable/rounded_edittext_background"
             android:paddingStart="25dp"
             android:paddingEnd="25dp"
             android:prompt="@string/select_ward" />
@@ -167,11 +173,11 @@
             android:background="@null"
             android:clickable="false"
             android:gravity="center_vertical"
+            android:hint="@string/your_address_detail"
             android:inputType="none"
             android:maxLines="2"
             android:paddingStart="32dp"
             android:paddingEnd="25dp"
-            android:hint="@string/your_address_detail"
             android:textColor="#000"
             android:textSize="14sp" />
 

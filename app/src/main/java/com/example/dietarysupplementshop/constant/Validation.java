@@ -20,6 +20,7 @@ public class Validation {
     public static boolean isValidEmailOrPhone(String input) {
         return isValidEmail(input) || isValidPhoneNumber(input);
     }
+
     public static boolean isValidUsernameOrEmailOrPhone(String input) {
         return isValidEmail(input) || isValidPhoneNumber(input) || isValidUsername(input);
     }
@@ -52,11 +53,11 @@ public class Validation {
         NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         return numberFormat.format(price);
     }
+
     public static String formatDate(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
         return sdf.format(date);
     }
-
 
 
 }

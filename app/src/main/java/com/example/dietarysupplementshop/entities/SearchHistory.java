@@ -10,10 +10,9 @@ public class SearchHistory {
 
     public String query;
 
-    public SearchHistory( String query) {
+    public SearchHistory(String query) {
         this.query = query;
     }
-
 
     public int getId() {
         return id;

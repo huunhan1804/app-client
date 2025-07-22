@@ -1,11 +1,12 @@
 <resources>
-    <string name="app_name">DietarySupplementShop</string>
+    <string name="app_name">CareToUShop</string>
     <string name="text_sign_in">SIGN IN</string>
     <string name="text_sign_up">SIGN UP</string>
     <string name="text_forgot_password">Forgot password?</string>
     <string name="hint_login_id">Username, Phone or Email address</string>
     <string name="hint_signup_id">Phone or Email address</string>
     <string name="hint_password">Password</string>
+    <string name="conf_password">Confirm Password</string>
     <string name="logo_app">Logo app</string>
     <string name="sign_in">SIGN IN</string>
     <string name="login_with_google">Login with google</string>
@@ -28,7 +29,6 @@
     <string name="cart">Cart</string>
     <string name="search">Search</string>
     <string name="_5">5</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="best_order">Best Order</string>
     <string name="image_product">Image Product</string>
@@ -55,6 +55,158 @@
     <string name="your_name">Your name</string>
     <string name="information_contact">Information Contact</string>
     <string name="delete_search_history">Delete search history</string>
+    <string name="confirm_password">Confirm Password</string>
 
 
+    <string name="thong_tin_shop_title">Thông tin Shop</string>
+    <string name="luu_button">Lưu</string>
+    <string name="thong_tin_shop">Thông tin Shop</string>
+    <string name="thong_tin_thue">Thông tin thuế</string>
+    <string name="ten_shop">Tên Shop *</string>
+    <string name="dia_chi_lay_hang">Địa chỉ lấy hàng *</string>
+    <string name="email">Email *</string>
+    <string name="so_dien_thoai">Số điện thoại *</string>
+    <string name="quay_lai">Quay lại</string>
+    <string name="tiep_theo">Tiếp theo</string>
+    <string name="cai_dat_van_chuyen">Cài đặt vận chuyển</string>
+    <string name="thong_tin_dinh_danh">Định danh</string>
+    <string name="change_shop_name">Change shop name</string>
+    <string name="change_address">Change address</string>
+    <string name="change_email">Change email</string>
+    <string name="change_phone">Change phone number</string>
+
+
+    <string name="loai_hinh_kinh_doanh">Loại hình kinh doanh</string>
+    <string name="ca_nhan">Cá nhân</string>
+    <string name="doanh_nghiep">Doanh nghiệp</string>
+
+    <string name="ma_so_thue_ca_nhan">Mã số thuế cá nhân</string>
+    <string name="nhap_ma_so_thue_ca_nhan">Nhập mã số thuế cá nhân (10 hoặc 13 số)</string>
+
+    <string name="ten_phap_nhan_cong_ty">Tên pháp nhân / Tên công ty</string>
+    <string name="nhap_ten_phap_nhan_cong_ty">Nhập tên đầy đủ của pháp nhân / công ty</string>
+
+    <string name="ma_so_thue_doanh_nghiep">Mã số thuế doanh nghiệp</string>
+    <string name="nhap_ma_so_thue_doanh_nghiep">Nhập mã số thuế doanh nghiệp (10 hoặc 13 số)</string>
+
+    <string name="dia_chi_dang_ky_kinh_doanh">Địa chỉ đăng ký kinh doanh</string>
+    <string name="nhap_dia_chi_dang_ky_kinh_doanh">Nhập địa chỉ theo giấy phép kinh doanh</string>
+
+    <string name="giay_phep_kinh_doanh_dk_thue">Giấy phép kinh doanh / Đăng ký thuế</string>
+    <string name="tai_len_file">Tải lên file (PDF, JPG, PNG)</string>
+    <string name="upload_icon">Icon tải lên</string>
+    <string name="delete_file">Xóa file</string>
+
+    <string name="ghi_chu_thue">Lưu ý: Thông tin thuế sẽ được sử dụng để xuất hóa đơn và kê khai theo quy định pháp luật.</string>
+
+
+    <string name="identification_type">Loại Định Danh</string>
+    <string name="identification_type_personal">Cá Nhân</string>
+    <string name="identification_type_business">Doanh Nghiệp</string>
+
+    <string name="personal_info_title">Thông Tin Cá Nhân</string>
+    <string name="full_name">Họ và Tên</string>
+    <string name="date_of_birth">Ngày sinh</string>
+    <string name="gender">Giới tính</string>
+    <string name="id_card_number">Số CMND/CCCD</string>
+    <string name="date_of_issue">Ngày cấp</string>
+    <string name="place_of_issue">Nơi cấp</string>
+    <string name="upload_id_images">Tải lên ảnh CMND/CCCD</string>
+    <string name="upload_id_front">Mặt trước CMND/CCCD</string>
+    <string name="upload_id_back">Mặt sau CMND/CCCD</string>
+
+    <string name="business_info_title">Thông Tin Doanh Nghiệp</string>
+    <string name="business_name">Tên Doanh Nghiệp</string>
+    <string name="tax_code">Mã số Thuế</string>
+    <string name="business_license_number">Số Giấy phép Kinh doanh</string>
+    <string name="upload_business_license">Tải lên Giấy phép Kinh doanh</string>
+
+    <string name="enter_full_name">Nhập họ và tên</string>
+    <string name="select_date_of_birth">Chọn ngày sinh</string>
+    <string name="select_gender">Chọn giới tính</string>
+    <string name="enter_id_number">Nhập số CMND/CCCD</string>
+    <string name="enter_date_of_issue">Nhập ngày cấp</string>
+    <string name="enter_place_of_issue">Nhập nơi cấp</string>
+    <string name="enter_business_name">Nhập tên doanh nghiệp</string>
+    <string name="enter_tax_code">Nhập mã số thuế</string>
+    <string name="enter_business_license_number">Nhập số giấy phép kinh doanh</string>
+
+    <string-array name="gender_options">
+        <item>Nam</item>
+        <item>Nữ</item>
+        <item>Khác</item>
+    </string-array>
+
+
+    <string name="toolbar_title_certificates">Thông Tin Các Chứng Chỉ</string>
+    <string name="add_certificate">Thêm Chứng Chỉ</string>
+
+    <string name="business_license">Giấy phép Kinh doanh</string>
+    <string name="professional_certificate">Chứng chỉ Hành nghề</string>
+    <string name="diploma_certificate">Bằng Tốt nghiệp / Học vấn</string>
+    <string name="other_certificates">Các Chứng Chỉ Khác</string>
+
+    <string name="certificate_name">Tên Chứng Chỉ</string>
+    <string name="upload_certificate">Tải lên chứng chỉ</string>
+
+    <string name="status_pending">Đang chờ duyệt</string>
+    <string name="status_approved">Đã duyệt</string>
+    <string name="status_rejected">Từ chối</string>
+
+    <string name="delete_certificate">Xóa chứng chỉ</string>
+    <string name="view_certificate">Xem chứng chỉ</string>
+    <string name="certificate_icon">Biểu tượng chứng chỉ</string>
+    <string name="certificate_status">Trạng thái chứng chỉ</string>
+
+    <string name="register_button">Đăng Ký</string>
+    <string name="prompt_select_shipping_unit">select shipping unit</string>
+
+
+    <string name="back_button_description">Quay lại</string>
+    <string name="add_product_title">Thêm sản phẩm</string>
+    <string name="add_image_text">Thêm ảnh</string>
+    <string name="product_description_hint">Mô tả chi tiết sản phẩm *\n(bao gồm: tên, thành phần, đối tượng sử dụng, hướng dẫn, cảnh báo, NSX, HSD, xuất xứ...)</string>
+
+    <string name="category_icon_description">Danh mục icon</string>
+    <string name="category_label">Danh mục *</string>
+    <string name="select_category_value">Chọn danh mục</string>
+    <string name="classification_icon_description">Phân loại hàng icon</string>
+    <string name="classification_label">Phân loại hàng</string>
+    <string name="info_icon_description">Thông tin</string>
+    <string name="price_icon_description">Giá icon</string>
+    <string name="price_label">Giá *</string>
+    <string name="set_price_value">Đặt</string>
+    <string name="inventory_icon_description">Kho hàng icon</string>
+    <string name="inventory_label">Kho hàng *</string>
+    <string name="default_inventory_value">0</string>
+    <string name="shipping_fee_icon_description">Phí vận chuyển icon</string>
+    <string name="shipping_fee_label">Phí vận chuyển *</string>
+    <string name="shipping_fee_value">(Cân nặng/Kích thước)</string>
+    <string name="arrow_description">Mũi tên</string>
+
+    <string name="certification_documents_title">Giấy tờ chứng nhận (Bắt buộc với TPCN)</string>
+    <string name="declaration_file_title">1. Giấy xác nhận công bố sản phẩm (*)</string>
+    <string name="select_file_button_text">Chọn file (PDF/JPG/PNG)</string>
+    <string name="no_file_selected">Chưa có file nào được chọn</string>
+    <string name="declaration_number_hint">Số đăng ký công bố sản phẩm</string>
+    <string name="declaration_date_hint">Ngày cấp (VD: 01/01/2024)</string>
+
+    <string name="food_safety_certificate_title">2. Giấy chứng nhận cơ sở đủ điều kiện an toàn thực phẩm (Nếu là nhà sản xuất/đóng gói)</string>
+    <string name="other_certificates_title">3. Các chứng nhận khác (GMP, HACCP, ISO 22000, Chứng nhận nhập khẩu, v.v.)</string>
+
+    <string name="save_button_text">Lưu</string>
+    <string name="submit_for_review_button_text">Gửi Duyệt</string>
+    <string name="remove_certificate">Xóa Chứng Chỉ</string>
+
+    <string name="status_pending_title">Đang chờ xét duyệt</string>
+    <string name="status_pending_message">Hồ sơ đăng ký người bán của bạn đang trong quá trình xét duyệt. Chúng tôi sẽ thông báo cho bạn sớm nhất có thể.</string>
+    <string name="status_approved_title">Đăng ký thành công!</string>
+    <string name="status_approved_message">Chúc mừng! Hồ sơ đăng ký người bán của bạn đã được phê duyệt. Bây giờ bạn có thể bắt đầu bán hàng.</string>
+    <string name="status_rejected_title">Đăng ký bị từ chối</string>
+    <string name="status_rejected_message">Rất tiếc, hồ sơ đăng ký người bán của bạn đã bị từ chối. Vui lòng xem lý do để đăng ký lại.</string>
+    <string name="status_unknown_title">Trạng thái không xác định</string>
+    <string name="status_unknown_message">Không thể xác định trạng thái đăng ký của bạn. Vui lòng thử lại hoặc liên hệ hỗ trợ.</string>
+    <string name="go_to_seller_dashboard">Đến trang quản lý người bán</string>
+    <string name="set_classification_value">Thiết lập phân loại</string>
+    <string name="edit_product_title">Chỉnh Sửa Sản Phẩm</string>
 </resources>

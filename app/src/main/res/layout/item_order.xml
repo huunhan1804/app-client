@@ -10,18 +10,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="?android:attr/selectableItemBackground">
+        android:padding="16dp">
 
         <!-- Product Image -->
         <ImageView
             android:id="@+id/iv_order_product"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/product_image"
+            android:layout_marginEnd="16dp"
             android:contentDescription="Product Image"
-            android:layout_marginEnd="16dp" />
+            android:src="@drawable/product_image" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -32,8 +32,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tv_order_id"
@@ -57,35 +57,35 @@
                 android:id="@+id/tv_order_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="Status: PENDING_PAYMENT"
-                android:textSize="14sp"
                 android:textColor="@android:color/holo_red_dark"
-                android:layout_marginTop="8dp" />
+                android:textSize="14sp" />
 
             <!-- Order Details -->
             <TextView
                 android:id="@+id/tv_order_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="Details: 3 items, Total: $150"
-                android:textSize="14sp"
-                android:layout_marginTop="8dp" />
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btn_order_cancel"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_weight="1"
                     android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/color_app"
                     android:text="Cancel Order"
-                    android:textSize="14sp"
-                    android:backgroundTint="@color/color_app" />
+                    android:textSize="14sp" />
 
                 <Button
                     android:id="@+id/btn_order_view"
@@ -93,9 +93,9 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
+                    android:backgroundTint="@color/color_app"
                     android:text="View Detail"
-                    android:textSize="14sp"
-                    android:backgroundTint="@color/color_app" />
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

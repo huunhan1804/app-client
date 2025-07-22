@@ -20,6 +20,7 @@ import java.util.Date;
 public class OrderDetailsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         View decorView = getWindow().getDecorView();
@@ -42,7 +43,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         AccountViewModel accountViewModel = MyApplication.getInstance().getAccountViewModel();
         long orderId = getIntent().getLongExtra("orderId", 0);
-        if(orderId != 0){
+        if (orderId != 0) {
             accountViewModel.getOrderInfo(orderId).observe(this, resource -> {
                 if (resource != null) {
                     switch (resource.getStatus()) {

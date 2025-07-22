@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     private final List<Product> productList;
     private Context context;
 
@@ -61,7 +61,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public int getItemCount() {
-        if(productList != null){
+        if (productList != null) {
             return productList.size();
         }
         return 0;
@@ -80,5 +80,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productPriceTextView = itemView.findViewById(R.id.productPriceTextView);
             productRatingBar = itemView.findViewById(R.id.ratingBar);
         }
+    }
+
+    public void updateProducts(List<Product> newProductList) {
+        this.productList.clear();
+        this.productList.addAll(newProductList);
+        notifyDataSetChanged();
     }
 }

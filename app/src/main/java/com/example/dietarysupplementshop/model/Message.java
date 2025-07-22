@@ -2,7 +2,7 @@ package com.example.dietarysupplementshop.model;
 
 public class Message {
     private String text;
-    private boolean isSent; // true if the message is sent by the user, false if received
+    private boolean isSent;
 
     public Message(String text, boolean isSent) {
         this.text = text;

@@ -6,6 +6,7 @@ import com.example.dietarysupplementshop.requests.AddToCartRequest;
 import com.example.dietarysupplementshop.requests.ChangePasswordRequest;
 import com.example.dietarysupplementshop.requests.UpdateAccountRequest;
 import com.example.dietarysupplementshop.requests.UpdateAvatarRequest;
+import com.example.dietarysupplementshop.requests.UpdateRoleRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 
 import retrofit2.Call;
@@ -15,8 +16,17 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.PUT;
 
 public interface AccountAPI {
+
+    @GET("api/account/info")
+    Call<ResponseModel<AccountInformation>> getAccountInfo();
+
+    @POST("api/account/update-role")
+    Call<ResponseModel<String>> updateRole(@Body UpdateRoleRequest request);
+
+
     @GET("/api/account/current-user")
     Call<ResponseModel<AccountInformation>> getCurrentUser();
 
@@ -25,6 +35,7 @@ public interface AccountAPI {
 
     @POST("/api/account/add-login-id")
     Call<ResponseModel<AccountInformation>> addLoginId(@Body AddLoginIdRequest addLoginIdRequest);
+
     @POST("/api/account/change-password")
     Call<ResponseModel<String>> changePassword(@Body ChangePasswordRequest changePasswordRequest);
 
@@ -36,8 +47,10 @@ public interface AccountAPI {
 
     @POST("/api/cart/increase")
     Call<ResponseModel<AccountInformation>> increaseCartItemQuantity(@Body AddToCartRequest request);
+
     @POST("/api/cart/decrease")
     Call<ResponseModel<AccountInformation>> decreaseCartItemQuantity(@Body AddToCartRequest request);
+
     @DELETE("/api/cart/delete/{cartItemId}")
     Call<ResponseModel<AccountInformation>> deleteCartItem(@Path("cartItemId") long cart_item_id);
 

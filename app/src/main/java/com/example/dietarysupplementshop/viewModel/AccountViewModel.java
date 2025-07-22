@@ -1,6 +1,9 @@
 package com.example.dietarysupplementshop.viewModel;
 
+import android.net.Uri;
+
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
@@ -18,13 +21,78 @@ import com.example.dietarysupplementshop.requests.UpdateAddressRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.repositories.Resource;
 import com.example.dietarysupplementshop.responses.OrderDetailResponse;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
-public class AccountViewModel extends ViewModel {
-    private final AccountRepository accountRepository;
+import retrofit2.Call;
 
-    private MutableLiveData<Resource<AccountInformation>> accountInfoResource;
+public class AccountViewModel extends ViewModel {
+
+
+    private final AccountRepository accountRepository;
+    private final MediatorLiveData<Resource<AccountInformation>> accountInfoResource;
+
+    public AccountViewModel() {
+        this.accountRepository = AccountRepository.getInstance();
+        this.accountInfoResource = new MediatorLiveData<>();
+        loadAccountInfo();
+    }
+
+    public LiveData<Resource<AccountInformation>> getAccountInfo() {
+        return accountInfoResource;
+    }
+
+    public void loadAccountInfo() {
+        accountInfoResource.setValue(Resource.loading(null));
+        final LiveData<Resource<AccountInformation>> source = accountRepository.fetchAccount();
+        accountInfoResource.addSource(source, resource -> {
+            accountInfoResource.setValue(resource);
+            if (resource.getStatus() != Resource.Status.LOADING) {
+                accountInfoResource.removeSource(source);
+            }
+        });
+    }
+
+    public void updateAvatar(Uri imageUri) {
+        accountInfoResource.setValue(Resource.loading(accountInfoResource.getValue() != null ? accountInfoResource.getValue().getData() : null));
+
+        Runnable uploadAction = () -> {
+            String fileName = "avatar_" + System.currentTimeMillis() + ".jpg";
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference().child("avatars/" + fileName);
+
+            imageRef.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        final LiveData<Resource<AccountInformation>> source = accountRepository.fetchUpdateAvatar(uri.toString());
+                        accountInfoResource.addSource(source, resource -> {
+                            accountInfoResource.setValue(resource);
+                            if (resource.getStatus() != Resource.Status.LOADING) {
+                                accountInfoResource.removeSource(source);
+                            }
+                        });
+                    }))
+                    .addOnFailureListener(e -> accountInfoResource.setValue(Resource.error("Tải ảnh thất bại: " + e.getMessage(), null)));
+        };
+
+        AccountInformation currentUser = accountInfoResource.getValue() != null ? accountInfoResource.getValue().getData() : null;
+        if (currentUser != null && currentUser.getAvatar_url() != null && currentUser.getAvatar_url().startsWith("https://firebasestorage.googleapis.com")) {
+            FirebaseStorage.getInstance().getReferenceFromUrl(currentUser.getAvatar_url()).delete().addOnCompleteListener(task -> uploadAction.run());
+        } else {
+            uploadAction.run();
+        }
+    }
+
+    public void updateAccountProfile(UpdateAccountRequest request) {
+        final LiveData<Resource<AccountInformation>> source = accountRepository.updateAccountProfile(request);
+        accountInfoResource.addSource(source, resource -> {
+            accountInfoResource.setValue(resource);
+            if (resource.getStatus() != Resource.Status.LOADING) {
+                accountInfoResource.removeSource(source);
+            }
+        });
+    }
+
 
     private MutableLiveData<Resource<List<Address>>> addressListResource;
     private MutableLiveData<Resource<List<Order>>> orderListResource;
@@ -32,53 +100,17 @@ public class AccountViewModel extends ViewModel {
     private String avatar_url;
 
     public String getAvatar_url() {
-        if(avatar_url == null){
+        if (avatar_url == null) {
             loadAccountInfo();
         }
         return avatar_url;
     }
 
-    public AccountViewModel() {
-        this.accountRepository = new AccountRepository();
-    }
-
-    public LiveData<Resource<AccountInformation>> getAccountInfoResource() {
-        if (accountInfoResource == null) {
-            accountInfoResource = new MutableLiveData<>();
-            loadAccountInfo();
-        }
-        return accountInfoResource;
-    }
-
-    public void loadAccountInfo() {
-        accountRepository.fetchAccount().observeForever(accountInfoResource::setValue);
-    }
-
-    public void updateAvatar(String avatarUrl) {
-        accountRepository.fetchUpdateAvatar(avatarUrl).observeForever(updatedAccountInfo -> {
-            accountInfoResource.setValue(updatedAccountInfo);
-            if (updatedAccountInfo.getStatus() == Resource.Status.SUCCESS && updatedAccountInfo.getData() != null) {
-                avatar_url = updatedAccountInfo.getData().getAvatar_url();
-            }
-        });
-    }
 
     public LiveData<Resource<String>> changePassword(ChangePasswordRequest changePasswordRequest) {
         return accountRepository.changePassword(changePasswordRequest);
     }
 
-
-
-    public LiveData<Resource<AccountInformation>> updateAccountProfile(UpdateAccountRequest request) {
-        MutableLiveData<Resource<AccountInformation>> data = new MutableLiveData<>();
-        accountRepository.updateAccountProfile(request).observeForever(accountInformationResource -> {
-            data.setValue(accountInformationResource);
-            if (accountInformationResource != null) {
-                accountInfoResource.setValue(accountInformationResource);
-            }
-        });
-        return data;
-    }
 
     public LiveData<Resource<AccountInformation>> addLoginId(String loginId) {
         MutableLiveData<Resource<AccountInformation>> data = new MutableLiveData<>();
@@ -107,9 +139,11 @@ public class AccountViewModel extends ViewModel {
     public void increaseCartItemQuantity(AddToCartRequest request) {
         accountRepository.fetchIncreaseCartItemQuantity(request).observeForever(accountInfoResource::setValue);
     }
+
     public void decreaseCartItemQuantity(AddToCartRequest request) {
         accountRepository.fetchDecreaseCartItemQuantity(request).observeForever(accountInfoResource::setValue);
     }
+
     public void deleteCartItem(long cart_item_id) {
         accountRepository.fetchDeleteCartItem(cart_item_id).observeForever(accountInfoResource::setValue);
     }
@@ -169,6 +203,7 @@ public class AccountViewModel extends ViewModel {
     public void loadOrderList() {
         accountRepository.fetchOrderList().observeForever(orderListResource::setValue);
     }
+
     public void cancelOrder(Long orderId) {
         accountRepository.cancelOrder(orderId).observeForever(orderListResource::setValue);
     }
@@ -189,10 +224,12 @@ public class AccountViewModel extends ViewModel {
         accountRepository.reloadAccountInfo();
         loadAccountInfo();
     }
+
     public void reloadAddressList() {
         accountRepository.reloadAddressList();
         loadAddressList();
     }
+
     public void reloadOrderList() {
         accountRepository.reloadOrderList();
         loadOrderList();
