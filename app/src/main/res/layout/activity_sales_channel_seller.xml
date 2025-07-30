@@ -63,6 +63,7 @@
             android:padding="16dp">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_shop_info_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -82,33 +83,34 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:contentDescription="Shop Logo"
-                        android:src="@drawable/logo_2" />
+                        android:src="@drawable/logo_2"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless" /> <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/tv_shop_name"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="Shop"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/tv_shop_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Shop"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_shopee_link"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableEnd="@drawable/ic_link_external"
-                            android:drawablePadding="4dp"
-                            android:text="ctucare.vn/shop"
-                            android:textColor="#777777"
-                            android:textSize="13sp" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_shopee_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/ic_link_external"
+                        android:drawablePadding="4dp"
+                        android:text="ctucare.vn/shop"
+                        android:textColor="#777777"
+                        android:textSize="13sp" />
+                </LinearLayout>
 
                     <TextView
                         android:id="@+id/tv_view_shop"

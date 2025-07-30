@@ -4,9 +4,7 @@ import android.util.Log;
 
 import com.example.dietarysupplementshop.MyApplication;
 import com.example.dietarysupplementshop.token.TokenAuthenticator;
-
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -18,8 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private static Retrofit retrofit;
     private static final String TAG = "ApiCallLog";
-    private static final String BASE_URL = "http://10.13.138.167:8080/";
-
+    private static final String BASE_URL = "http://10.189.6.150:8080/";
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
             TokenAuthenticator tokenAuthenticator = new TokenAuthenticator();

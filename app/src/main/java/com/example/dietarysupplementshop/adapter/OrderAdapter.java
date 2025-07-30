@@ -26,8 +26,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private Context context;
     private OrderActionListener orderActionListener;
 
+
     public interface OrderActionListener {
         void onCancelOrderClicked(Order order);
+        void onReceivedOrderClicked(Order order);
+        void onReturnRefundClicked(Order order);
     }
 
     public OrderAdapter(List<Order> orderList, Context context, OrderActionListener listener) {
@@ -73,11 +76,28 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         }
         holder.tvOrderStatus.setText("Trạng thái: " + order.getOrder_status());
 
-        if ("SHIPPING".equalsIgnoreCase(order.getOrder_status())) {
-            holder.cancelBtn.setVisibility(View.VISIBLE);
-            holder.cancelBtn.setEnabled(true);
-        } else {
-            holder.cancelBtn.setVisibility(View.GONE);
+        holder.cancelBtn.setVisibility(View.GONE);
+        holder.receivedBtn.setVisibility(View.GONE);
+        holder.returnRefundBtn.setVisibility(View.GONE);
+        holder.viewDetailBtn.setVisibility(View.VISIBLE);
+
+        String orderStatus = order.getOrder_status().toUpperCase();
+
+        switch (orderStatus) {
+            case "PENDING":
+                holder.cancelBtn.setVisibility(View.VISIBLE);
+                holder.cancelBtn.setEnabled(true);
+                break;
+            case "SHIPPING":
+                holder.receivedBtn.setVisibility(View.VISIBLE);
+                holder.receivedBtn.setEnabled(true);
+                break;
+            case "DELIVERED":
+                holder.returnRefundBtn.setVisibility(View.VISIBLE);
+                holder.returnRefundBtn.setEnabled(true);
+                break;
+            default:
+                break;
         }
 
         holder.viewDetailBtn.setOnClickListener(view -> {
@@ -89,6 +109,18 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.cancelBtn.setOnClickListener(view -> {
             if (orderActionListener != null) {
                 orderActionListener.onCancelOrderClicked(order);
+            }
+        });
+
+        holder.receivedBtn.setOnClickListener(view -> {
+            if (orderActionListener != null) {
+                orderActionListener.onReceivedOrderClicked(order);
+            }
+        });
+
+        holder.returnRefundBtn.setOnClickListener(view -> {
+            if (orderActionListener != null) {
+                orderActionListener.onReturnRefundClicked(order);
             }
         });
     }
@@ -110,7 +142,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
         ImageView ivOrderProduct;
         TextView tvOrderId, tvOrderDate, tvOrderStatus, tvOrderDetails;
-        Button cancelBtn, viewDetailBtn;
+        Button cancelBtn, viewDetailBtn, receivedBtn, returnRefundBtn; // Thêm các nút mới
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,8 +151,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             tvOrderDate = itemView.findViewById(R.id.tv_order_date);
             tvOrderStatus = itemView.findViewById(R.id.tv_order_status);
             tvOrderDetails = itemView.findViewById(R.id.tv_order_details);
+
             cancelBtn = itemView.findViewById(R.id.btn_order_cancel);
             viewDetailBtn = itemView.findViewById(R.id.btn_order_view);
-        }
+            receivedBtn = itemView.findViewById(R.id.btn_order_received);
+            returnRefundBtn = itemView.findViewById(R.id.btn_order_return_refund);}
     }
 }

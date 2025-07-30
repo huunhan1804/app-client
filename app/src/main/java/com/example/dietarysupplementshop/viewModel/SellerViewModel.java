@@ -1,17 +1,18 @@
 package com.example.dietarysupplementshop.viewModel;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.dietarysupplementshop.interfaces.RetrofitClient; // Sử dụng RetrofitClient
-import com.example.dietarysupplementshop.interfaces.SellerAPI;
 import com.example.dietarysupplementshop.model.Order;
 import com.example.dietarysupplementshop.model.ResponseModel;
+import com.example.dietarysupplementshop.interfaces.OrderAPI; // Cần import OrderAPI
+import com.example.dietarysupplementshop.interfaces.RetrofitClient; // Cần import RetrofitClient
 import com.example.dietarysupplementshop.repositories.Resource;
-import com.example.dietarysupplementshop.requests.UpdateStatusRequest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,56 +20,152 @@ import retrofit2.Response;
 
 public class SellerViewModel extends ViewModel {
 
-    private final SellerAPI sellerAPI;
+    private final OrderAPI orderAPI;
+    private MutableLiveData<Resource<List<Order>>> sellerOrderListResource;
 
     public SellerViewModel() {
-        sellerAPI = RetrofitClient.getRetrofitInstance().create(SellerAPI.class);
+        this.orderAPI = RetrofitClient.getRetrofitInstance().create(OrderAPI.class);
     }
 
     public LiveData<Resource<List<Order>>> getSellerOrders(String status) {
-        MutableLiveData<Resource<List<Order>>> data = new MutableLiveData<>();
-        data.setValue(Resource.loading(null));
-
-        sellerAPI.getSellerOrders(status).enqueue(new Callback<ResponseModel<List<Order>>>() {
-            @Override
-            public void onResponse(Call<ResponseModel<List<Order>>> call, Response<ResponseModel<List<Order>>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    data.setValue(Resource.success(response.body().getData()));
-                } else {
-                    data.setValue(Resource.error("Lỗi: " + response.code(), null, response.code()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseModel<List<Order>>> call, Throwable t) {
-                data.setValue(Resource.error("Thất bại: " + t.getMessage(), null, null));
-            }
-        });
-        return data;
+        if (sellerOrderListResource == null) {
+            sellerOrderListResource = new MutableLiveData<>();
+            loadSellerOrders(status);
+        } else {
+            // Cập nhật lại nếu trạng thái thay đổi hoặc cần refresh
+            loadSellerOrders(status);
+        }
+        return sellerOrderListResource;
     }
 
-    public LiveData<Resource<Order>> updateOrderStatus(long orderId, String newStatus) {
-        MutableLiveData<Resource<Order>> result = new MutableLiveData<>();
-        result.setValue(Resource.loading(null));
+    private void loadSellerOrders(String status) {
+        sellerOrderListResource.setValue(Resource.loading(null));
 
-        UpdateStatusRequest request = new UpdateStatusRequest(newStatus);
-
-        sellerAPI.updateOrderStatus(orderId, request).enqueue(new Callback<ResponseModel<Order>>() {
+        orderAPI.getAllSellerOrders().enqueue(new Callback<ResponseModel<List<Order>>>() {
             @Override
-            public void onResponse(Call<ResponseModel<Order>> call, Response<ResponseModel<Order>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    result.setValue(Resource.success(response.body().getData()));
+            public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    List<Order> allOrders = response.body().getData();
+                    List<Order> filteredOrders;
+                    if (status != null && !status.equals("ALL")) {
+                        filteredOrders = allOrders.stream()
+                                .filter(order -> status.equalsIgnoreCase(order.getOrder_status()))
+                                .collect(Collectors.toList());
+                    } else {
+                        filteredOrders = allOrders; // Lấy tất cả nếu status là ALL
+                    }
+                    sellerOrderListResource.setValue(Resource.success(filteredOrders));
                 } else {
-                    result.setValue(Resource.error("Cập nhật thất bại: " + response.code(), null, response.code()));
+                    String errorMessage = "Lỗi tải đơn hàng của người bán.";
+                    if (response.errorBody() != null) {
+                        try {
+                            errorMessage = response.errorBody().string();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    sellerOrderListResource.setValue(Resource.error(errorMessage, null));
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseModel<Order>> call, Throwable t) {
-                result.setValue(Resource.error("Lỗi mạng: " + t.getMessage(), null, null));
+            public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                sellerOrderListResource.setValue(Resource.error("Lỗi mạng: " + t.getMessage(), null));
             }
         });
+    }
 
-        return result;
+    // Các hành động của người bán
+    public void confirmOrder(long orderId) {
+        sellerOrderListResource.setValue(Resource.loading(sellerOrderListResource.getValue() != null ? sellerOrderListResource.getValue().getData() : null));
+        orderAPI.confirmOrder(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
+                handleSellerOrderResponse(response);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                sellerOrderListResource.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+    }
+
+    public void cancelOrderBySeller(long orderId) {
+        sellerOrderListResource.setValue(Resource.loading(sellerOrderListResource.getValue() != null ? sellerOrderListResource.getValue().getData() : null));
+        orderAPI.cancelOrder(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
+                handleSellerOrderResponse(response);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                sellerOrderListResource.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+    }
+
+    public void markOrderAsDeliveredByAgency(long orderId) {
+        sellerOrderListResource.setValue(Resource.loading(sellerOrderListResource.getValue() != null ? sellerOrderListResource.getValue().getData() : null));
+        orderAPI.markOrderAsDeliveredByAgency(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
+                handleSellerOrderResponse(response);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                sellerOrderListResource.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+    }
+
+    public void approveReturnRefund(long orderId) {
+        sellerOrderListResource.setValue(Resource.loading(sellerOrderListResource.getValue() != null ? sellerOrderListResource.getValue().getData() : null));
+        orderAPI.approveReturnRefund(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
+                handleSellerOrderResponse(response);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                sellerOrderListResource.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+    }
+
+    public void rejectReturnRefund(long orderId, String rejectionReason) {
+        sellerOrderListResource.setValue(Resource.loading(sellerOrderListResource.getValue() != null ? sellerOrderListResource.getValue().getData() : null));
+        orderAPI.rejectReturnRefund(orderId, rejectionReason).enqueue(new Callback<ResponseModel<List<Order>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
+                handleSellerOrderResponse(response);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                sellerOrderListResource.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+    }
+
+    private void handleSellerOrderResponse(Response<ResponseModel<List<Order>>> response) {
+        if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+            // Sau khi hành động thành công, load lại danh sách đơn hàng để cập nhật UI
+            String status = sellerOrderListResource.getValue() != null ? sellerOrderListResource.getValue().getData().get(0).getOrder_status() : null;
+            loadSellerOrders(status); // Load lại với status hiện tại
+        } else {
+            String errorMessage = "Lỗi xử lý đơn hàng.";
+            if (response.errorBody() != null) {
+                try {
+                    errorMessage = response.errorBody().string();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            sellerOrderListResource.setValue(Resource.error(errorMessage, null));
+        }
     }
 }

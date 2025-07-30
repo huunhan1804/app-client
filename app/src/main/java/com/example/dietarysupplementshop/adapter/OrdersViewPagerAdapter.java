@@ -27,8 +27,6 @@ public class OrdersViewPagerAdapter extends FragmentStateAdapter {
                 return OrderedFragment.newInstance("CANCELLED", null);
             case 4:
                 return OrderedFragment.newInstance("RETURNED", null);
-            case 5:
-                return OrderedFragment.newInstance("REORDER", null);
             default:
                 return OrderedFragment.newInstance("ALL", null);
         }

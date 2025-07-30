@@ -16,11 +16,11 @@ public class SellerProductPagerAdapter extends FragmentStateAdapter {
 
     public SellerProductPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
-        tabTitles.add("Còn hàng");
-        tabTitles.add("Hết hàng");
-        tabTitles.add("Chờ duyệt");
-        tabTitles.add("Vi phạm");
-        tabTitles.add("Ẩn");
+        tabTitles.add("Active");          // "Còn hàng"
+        tabTitles.add("Out of Stock");    // "Hết hàng"
+        tabTitles.add("Pending Approval");// "Chờ duyệt"
+        tabTitles.add("Violated");        // "Vi phạm" (or "Rejected")
+        tabTitles.add("Hidden");          // "Ẩn"
     }
 
     @NonNull

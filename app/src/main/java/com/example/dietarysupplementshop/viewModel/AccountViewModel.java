@@ -207,6 +207,14 @@ public class AccountViewModel extends ViewModel {
     public void cancelOrder(Long orderId) {
         accountRepository.cancelOrder(orderId).observeForever(orderListResource::setValue);
     }
+    public void markOrderAsReceived(Long orderId) {
+        accountRepository.markOrderAsReceived(orderId).observeForever(orderListResource::setValue);
+    }
+
+    public void requestReturnRefund(Long orderId) {
+        accountRepository.requestReturnRefund(orderId).observeForever(orderListResource::setValue);
+    }
+
 
     public LiveData<Resource<Order>> getOrderInfo(long orderId) {
         return accountRepository.getOrderInfo(orderId);

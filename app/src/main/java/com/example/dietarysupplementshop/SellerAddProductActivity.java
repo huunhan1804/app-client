@@ -106,31 +106,16 @@ public class SellerAddProductActivity extends AppCompatActivity {
         etProductName = findViewById(R.id.etProductName);
         btnBack = findViewById(R.id.btnBack);
         llProductImagesContainer = findViewById(R.id.llProductImagesContainer);
-
         etProductDescription = findViewById(R.id.etProductDescription);
-
         clCategory = findViewById(R.id.clCategory);
         clProductClassification = findViewById(R.id.clProductClassification);
-        clShippingFee = findViewById(R.id.clShippingFee);
-
         tvCategoryValue = findViewById(R.id.tvCategoryValue);
         tvClassificationValue = findViewById(R.id.tvClassificationValue);
         tvPriceValue = findViewById(R.id.tvPriceValue);
         tvInventoryValue = findViewById(R.id.tvInventoryValue);
-        tvShippingValue = findViewById(R.id.tvShippingValue);
-
-        btnUploadDeclarationFile = findViewById(R.id.btn_upload_declaration_file);
-        btnUploadFoodSafetyFile = findViewById(R.id.btn_upload_food_safety_file);
-        btnUploadOtherFiles = findViewById(R.id.btn_upload_other_files);
-        tvDeclarationFileName = findViewById(R.id.tv_declaration_file_name);
-        tvFoodSafetyFileName = findViewById(R.id.tv_food_safety_file_name);
-        tvOtherFilesName = findViewById(R.id.tv_other_files_name);
-        etDeclarationNumber = findViewById(R.id.et_declaration_number);
-        etDeclarationDate = findViewById(R.id.et_declaration_date);
         btnSave = findViewById(R.id.btnSave);
         btnDisplay = findViewById(R.id.btnDisplay);
         toolbarTitleTextView = findViewById(R.id.add_product_title_text);
-
         tvCategoryValue.setText(getString(R.string.select_category_value));
         tvClassificationValue.setText(getString(R.string.set_classification_value));
         tvPriceValue.setText(getString(R.string.set_price_value));
@@ -885,14 +870,8 @@ public class SellerAddProductActivity extends AppCompatActivity {
                 productName,
                 description,
                 category,
-                shippingFee,
-                declarationFileName,
-                declarationNumber,
-                declarationDate,
-                foodSafetyFileName,
-                otherFilesName,
+                productVariantRequests,
                 selectedImageUris,
-                productVariantRequests
         );
     }
 
@@ -948,7 +927,6 @@ public class SellerAddProductActivity extends AppCompatActivity {
             }
             updateVariantSummaryUI();
 
-            tvShippingValue.setText(productToEdit.getShippingFee());
 
             if (productToEdit.getImageUrl() != null && !productToEdit.getImageUrl().isEmpty()) {
                 selectedImageUris.clear();
@@ -1014,8 +992,6 @@ public class SellerAddProductActivity extends AppCompatActivity {
                     attributeInputRowDatas.add(new AttributeInputRowData("Phiên bản", "Duy nhất"));
                 }
                 updateVariantSummaryUI();
-
-                tvShippingValue.setText(product.getShippingFee());
 
                 if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
                     selectedImageUris.clear();

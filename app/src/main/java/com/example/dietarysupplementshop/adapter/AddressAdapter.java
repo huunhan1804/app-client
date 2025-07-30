@@ -81,12 +81,10 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             }
         });
     }
-
     @Override
     public int getItemCount() {
         return addressList.size();
     }
-
     public static class AddressViewHolder extends RecyclerView.ViewHolder {
 
         TextView fullnameTextView, phoneTextView, detailAddressTextView, addressTextView, defaultAddressTextView;
@@ -94,15 +92,12 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
         public AddressViewHolder(@NonNull View itemView) {
             super(itemView);
-
             fullnameTextView = itemView.findViewById(R.id.fullnameTextView);
             phoneTextView = itemView.findViewById(R.id.phoneTextView);
             detailAddressTextView = itemView.findViewById(R.id.detailAddressTextView);
             addressTextView = itemView.findViewById(R.id.AddressTextView);
             defaultAddressTextView = itemView.findViewById(R.id.defaultAddressTextView);
             editAddressButton = itemView.findViewById(R.id.editAddressButton);
-
         }
     }
-
 }

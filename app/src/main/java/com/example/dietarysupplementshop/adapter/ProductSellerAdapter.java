@@ -29,7 +29,6 @@ public class ProductSellerAdapter extends RecyclerView.Adapter<ProductSellerAdap
 
     public interface OnProductActionListener {
         void onEditProduct(ProductSeller product);
-
         void onHideProduct(ProductSeller product);
 
         void onUnHideProduct(ProductSeller product);
@@ -83,29 +82,29 @@ public class ProductSellerAdapter extends RecyclerView.Adapter<ProductSellerAdap
         holder.btnActionMore.setVisibility(View.GONE);
 
         switch (product.getProductStatus()) {
-            case "Còn hàng":
-            case "Hết hàng":
+            case "Active":
+            case "Out of Stock":
                 holder.btnActionHide.setVisibility(View.VISIBLE);
-                holder.btnActionHide.setText("Ẩn");
+                holder.btnActionHide.setText("Hide");
                 holder.btnActionEdit.setVisibility(View.VISIBLE);
                 holder.btnActionMore.setVisibility(View.VISIBLE);
                 break;
-            case "Ẩn":
+            case "Hidden":
                 holder.btnActionHide.setVisibility(View.VISIBLE);
                 holder.btnActionHide.setText("Hiện");
                 holder.btnActionEdit.setVisibility(View.VISIBLE);
                 holder.btnActionMore.setVisibility(View.VISIBLE);
                 break;
-            case "Chờ duyệt":
-            case "Vi phạm":
+            case "Pending Approval":
+            case "Violated":
                 holder.btnActionMore.setVisibility(View.VISIBLE);
                 holder.btnActionMore.setText("...");
                 break;
         }
         holder.btnActionHide.setOnClickListener(v -> {
-            if ("Ẩn".equals(holder.btnActionHide.getText().toString())) {
+            if ("Hide".equals(holder.btnActionHide.getText().toString())) {
                 listener.onHideProduct(product);
-            } else if ("Hiện".equals(holder.btnActionHide.getText().toString())) {
+            } else if ("Unhide".equals(holder.btnActionHide.getText().toString())) {
                 listener.onUnHideProduct(product);
             }
         });

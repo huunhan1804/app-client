@@ -11,7 +11,6 @@ import com.example.dietarysupplementshop.model.ResponseModel;
 import com.example.dietarysupplementshop.requests.AddProductRequest;
 import com.example.dietarysupplementshop.requests.SearchRequest;
 import com.example.dietarysupplementshop.responses.ProductInformation;
-// import com.example.dietarysupplementshop.services.ProductApiService; // Xóa import này nếu không dùng ProductApiService.ProductCallback nữa
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

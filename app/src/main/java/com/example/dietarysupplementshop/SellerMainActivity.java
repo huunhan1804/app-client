@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 public class SellerMainActivity extends AppCompatActivity {
     private TextView tvViewShop;
@@ -19,11 +21,14 @@ public class SellerMainActivity extends AppCompatActivity {
     private LinearLayout llShopeeAds;
     private LinearLayout llSupportCenter;
 
+    private ImageView imgShopLogo; // Khai báo ImageView cho logo shop
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales_channel_seller);
+        imgShopLogo = findViewById(R.id.img_shop_logo);
 
         tvViewShop = findViewById(R.id.tv_view_shop);
         tvViewOrderHistory = findViewById(R.id.tv_view_order_history);
@@ -99,6 +104,34 @@ public class SellerMainActivity extends AppCompatActivity {
 //                 startActivity(intent);
             }
         });
+
+        // Gán listener cho TextView "Xem Shop"
+        tvViewShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Truyền SHOP_ID và SHOP_NAME thực tế của người bán này
+                // Bạn cần lấy SHOP_ID và SHOP_NAME từ ViewModel hoặc Intent nếu đã được truyền vào SellerMainActivity
+                // Ví dụ: Long currentSellerShopId = ...; String currentSellerShopName = ...;
+                // Để đơn giản, tôi sẽ dùng giá trị mặc định hoặc giả định.
+                long dummyShopId = 1; // Thay bằng ID shop thực tế của người bán hiện tại
+                String dummyShopName = "Shop của tôi"; // Thay bằng tên shop thực tế
+                Intent intent = new Intent(SellerMainActivity.this, ShopSellerActivity.class);
+                intent.putExtra("SHOP_ID", dummyShopId);
+                intent.putExtra("SHOP_NAME", dummyShopName);
+                startActivity(intent);
+            }
+        });
+
+        // Gán listener cho ImageView logo shop (để vào Profile)
+        if (imgShopLogo != null) {
+            imgShopLogo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SellerMainActivity.this, ProfileActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView tvViewCancelledOrders = findViewById(R.id.tv_view_cancelled_orders);
         tvViewCancelledOrders.setOnClickListener(new View.OnClickListener() {

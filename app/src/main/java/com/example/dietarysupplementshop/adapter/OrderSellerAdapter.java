@@ -24,12 +24,9 @@ public class OrderSellerAdapter extends RecyclerView.Adapter<OrderSellerAdapter.
 
     private List<Order> orderList;
     private OnOrderActionButtonClickListener listener;
-
     public interface OnOrderActionButtonClickListener {
         void onActionButton1Click(Order order, int position);
-
         void onActionButton2Click(Order order, int position);
-
         void onItemClick(Order order, int position);
     }
 
@@ -122,7 +119,7 @@ public class OrderSellerAdapter extends RecyclerView.Adapter<OrderSellerAdapter.
                 holder.actionButton1.setVisibility(View.VISIBLE);
                 holder.actionButton1.setText("Xem chi tiết");
                 holder.actionButton2.setVisibility(View.VISIBLE);
-                holder.actionButton2.setText("Liên hệ vận chuyển");
+                holder.actionButton2.setText("Đã Giao");
                 break;
             case "DELIVERED":
                 holder.orderStatusTextView.setTextColor(Color.parseColor("#4CAF50"));
@@ -140,13 +137,6 @@ public class OrderSellerAdapter extends RecyclerView.Adapter<OrderSellerAdapter.
                 holder.actionButton1.setText("Xem yêu cầu");
                 holder.actionButton2.setVisibility(View.VISIBLE);
                 holder.actionButton2.setText("Đồng ý hoàn tiền");
-                break;
-            case "DELIVERY FAILED":
-                holder.orderStatusTextView.setTextColor(Color.parseColor("#9C27B0"));
-                holder.actionButton1.setVisibility(View.VISIBLE);
-                holder.actionButton1.setText("Xem chi tiết");
-                holder.actionButton2.setVisibility(View.VISIBLE);
-                holder.actionButton2.setText("Giao lại");
                 break;
             default:
                 holder.orderStatusTextView.setTextColor(Color.BLACK);

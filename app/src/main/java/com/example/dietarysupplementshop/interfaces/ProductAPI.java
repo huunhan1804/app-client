@@ -36,21 +36,23 @@ public interface ProductAPI {
     Call<ResponseModel> getListSearchProduct(@Body SearchRequest searchRequest);
 
 
-    @GET("seller/products")
+    // thuộc về agency
+
+    @GET("api/products")
     Call<List<ProductSeller>> getAllSellerProducts();
 
-    @GET("seller/products")
+    @GET("api/products")
     Call<List<ProductSeller>> getSellerProductsByStatus(@Query("status") String status);
 
-    @POST("seller/products")
+    @POST("api/products")
     Call<ProductSeller> addProduct(@Body AddProductRequest productRequest);
 
-    @PUT("seller/products/{productId}")
+    @PUT("api/products/{productId}")
     Call<ProductSeller> updateProductStatus(@Path("productId") String productId, @Query("newStatus") String newStatus);
 
-    @PUT("seller/products/{productId}")
+    @PUT("api/products/{productId}")
     Call<ProductSeller> updateProduct(@Path("productId") String productId, @Body AddProductRequest productRequest);
 
-    @PUT("seller/products/{productId}")
+    @PUT("api/products/{productId}")
     Call<Void> deleteProduct(String productId);
 }

@@ -111,14 +111,49 @@ public class OrderedFragment extends Fragment implements OrderAdapter.OrderActio
         showDialogConfirmCancelOrder(order);
     }
 
+    @Override
+    public void onReceivedOrderClicked(Order order) {
+        showDialogConfirmReceivedOrder(order);
+    }
+
+    @Override
+    public void onReturnRefundClicked(Order order) {
+        showDialogConfirmReturnRefund(order);
+    }
+
+
     private void showDialogConfirmCancelOrder(Order order) {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-        builder.setTitle("Confirm Cancel Order");
-        builder.setMessage("Are you sure you want to cancel this order?");
-        builder.setPositiveButton("Yes", (dialog, which) -> {
+        builder.setTitle("Xác nhận Hủy đơn hàng");
+        builder.setMessage("Bạn có chắc chắn muốn hủy đơn hàng #" + order.getOrder_id() + " này không?");
+        builder.setPositiveButton("Có", (dialog, which) -> {
             accountViewModel.cancelOrder(order.getOrder_id());
         });
-        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton("Không", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
+
+    private void showDialogConfirmReceivedOrder(Order order) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        builder.setTitle("Xác nhận Đã nhận đơn hàng");
+        builder.setMessage("Bạn đã nhận được đơn hàng #" + order.getOrder_id() + " này chưa? Thao tác này sẽ cập nhật trạng thái đơn hàng thành 'Đã giao'.");
+        builder.setPositiveButton("Đã nhận", (dialog, which) -> {
+            accountViewModel.markOrderAsReceived(order.getOrder_id());
+        });
+        builder.setNegativeButton("Chưa", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+    private void showDialogConfirmReturnRefund(Order order) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        builder.setTitle("Yêu cầu Trả hàng/Hoàn tiền");
+        builder.setMessage("Bạn có chắc chắn muốn yêu cầu trả hàng/hoàn tiền cho đơn hàng #" + order.getOrder_id() + " này không? Quá trình này có thể cần liên hệ với cửa hàng.");
+        builder.setPositiveButton("Đồng ý", (dialog, which) -> {
+            accountViewModel.requestReturnRefund(order.getOrder_id());
+        });
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+
 }

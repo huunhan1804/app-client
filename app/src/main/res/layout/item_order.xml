@@ -86,6 +86,35 @@
                     android:backgroundTint="@color/color_app"
                     android:text="Cancel Order"
                     android:textSize="14sp" />
+                <Button
+                    android:id="@+id/btn_order_received"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đã nhận"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="@color/color_app"
+                    android:textColor="@android:color/white"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/btn_order_return_refund"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trả hàng/Hoàn tiền"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="@color/color_app"
+                    android:textColor="@android:color/white"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/btn_order_reorder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mua lại"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="@color/color_app"
+                    android:textColor="@android:color/white"
+                    android:visibility="gone"/>
 
                 <Button
                     android:id="@+id/btn_order_view"

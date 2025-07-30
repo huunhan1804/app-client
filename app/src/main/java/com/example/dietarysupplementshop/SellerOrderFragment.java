@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -102,19 +104,63 @@ public class SellerOrderFragment extends Fragment implements OrderSellerAdapter.
                 }
             }
         });
+        // Lắng nghe các kết quả từ các hành động của người bán
+        sellerViewModel.getSellerOrders(status).observe(getViewLifecycleOwner(), resource -> {
+            if (resource != null) {
+                switch (resource.getStatus()) {
+                    case SUCCESS:
+                        Toast.makeText(getContext(), "Cập nhật trạng thái đơn hàng thành công!", Toast.LENGTH_SHORT).show();
+                        sellerViewModel.getSellerOrders(status);
+                        break;
+                    case ERROR:
+                        Toast.makeText(getContext(), "Lỗi: " + resource.getMessage(), Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        });
     }
 
     @Override
     public void onActionButton1Click(Order order, int position) {
-        Toast.makeText(getContext(), "Xử lý nút 1 cho đơn: " + order.getOrder_id(), Toast.LENGTH_SHORT).show();
-        if ("PENDING".equals(order.getOrder_status())) {
-            // sellerViewModel.updateOrderStatus(order.getOrder_id(), "CONFIRMED");
+        // Xử lý nút Hành động 1 dựa trên trạng thái đơn hàng
+        switch (order.getOrder_status()) {
+            case "PENDING":
+                showConfirmDialog("Xác nhận đơn hàng", "Bạn muốn xác nhận đơn hàng #" + order.getOrder_id() + " này?",
+                        () -> sellerViewModel.confirmOrder(order.getOrder_id()));
+                break;
+            case "SHIPPING":
+            case "DELIVERED":
+            case "CANCELLED":
+            case "DELIVERY FAILED":
+                // Đối với các trạng thái này, nút 1 là "Xem chi tiết"
+                Toast.makeText(getContext(), "Xem chi tiết đơn: " + order.getOrder_id(), Toast.LENGTH_SHORT).show();
+                // Intent intent = new Intent(getActivity(), SellerOrderDetailActivity.class);
+                // intent.putExtra("orderId", order.getOrder_id());
+                // startActivity(intent);
+                break;
+            case "RETURNED":
+                Toast.makeText(getContext(), "Xem yêu cầu trả hàng/hoàn tiền của đơn: " + order.getOrder_id(), Toast.LENGTH_SHORT).show();
+                // Có thể mở một dialog hoặc activity mới để hiển thị chi tiết yêu cầu trả hàng
+                break;
         }
     }
 
     @Override
     public void onActionButton2Click(Order order, int position) {
-        Toast.makeText(getContext(), "Xử lý nút 2 cho đơn: " + order.getOrder_id(), Toast.LENGTH_SHORT).show();
+        // Xử lý nút Hành động 2 dựa trên trạng thái đơn hàng
+        switch (order.getOrder_status()) {
+            case "PENDING":
+                showConfirmDialog("Hủy đơn hàng", "Bạn có chắc chắn muốn hủy đơn hàng #" + order.getOrder_id() + " này?",
+                        () -> sellerViewModel.cancelOrderBySeller(order.getOrder_id()));
+                break;
+            case "SHIPPING":
+                showConfirmDialog("Xác nhận đã giao hàng", "Bạn xác nhận đơn hàng #" + order.getOrder_id() + " đã được giao thành công?",
+                        () -> sellerViewModel.markOrderAsDeliveredByAgency(order.getOrder_id()));
+                break;
+            case "RETURNED":
+                showReturnRefundDialog(order);
+                break;
+        }
     }
 
     @Override
@@ -123,5 +169,51 @@ public class SellerOrderFragment extends Fragment implements OrderSellerAdapter.
         // Intent intent = new Intent(getActivity(), SellerOrderDetailActivity.class);
         // intent.putExtra("orderId", order.getOrder_id());
         // startActivity(intent);
+    }
+
+    private void showConfirmDialog(String title, String message, Runnable onConfirm) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Có", (dialog, which) -> onConfirm.run())
+                .setNegativeButton("Không", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void showReturnRefundDialog(Order order) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Xử lý yêu cầu Trả hàng/Hoàn tiền");
+        builder.setMessage("Bạn muốn Đồng ý hoàn tiền hay Từ chối yêu cầu của đơn hàng #" + order.getOrder_id() + "?");
+
+        builder.setPositiveButton("Đồng ý", (dialog, which) -> {
+            sellerViewModel.approveReturnRefund(order.getOrder_id());
+        });
+
+        builder.setNegativeButton("Từ chối", (dialog, which) -> {
+            // Hiển thị dialog nhập lý do từ chối
+            showRejectReasonDialog(order);
+        });
+
+        builder.setNeutralButton("Hủy", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+    private void showRejectReasonDialog(Order order) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Lý do từ chối");
+        final EditText reasonInput = new EditText(getContext());
+        reasonInput.setHint("Nhập lý do từ chối trả hàng/hoàn tiền...");
+        builder.setView(reasonInput);
+
+        builder.setPositiveButton("Gửi", (dialog, which) -> {
+            String reason = reasonInput.getText().toString().trim();
+            if (reason.isEmpty()) {
+                Toast.makeText(getContext(), "Lý do không được để trống.", Toast.LENGTH_SHORT).show();
+            } else {
+                sellerViewModel.rejectReturnRefund(order.getOrder_id(), reason);
+            }
+        });
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 }

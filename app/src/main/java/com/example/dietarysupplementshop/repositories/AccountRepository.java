@@ -513,6 +513,54 @@ public class AccountRepository {
 
         return data;
     }
+    public LiveData<Resource<List<Order>>> markOrderAsReceived(long orderId) {
+        MutableLiveData<Resource<List<Order>>> data = new MutableLiveData<>();
+        data.setValue(Resource.loading(null));
+        orderAPI.markOrderAsReceived(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Order> orderList = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Order>>() {
+                    }.getType());
+                    data.setValue(Resource.success(orderList));
+                    cachedOrders = orderList;
+                } else {
+                    handleErrorResponse(response, data);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                data.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+
+        return data;
+    }
+    public LiveData<Resource<List<Order>>> requestReturnRefund(long orderId) {
+        MutableLiveData<Resource<List<Order>>> data = new MutableLiveData<>();
+        data.setValue(Resource.loading(null));
+        orderAPI.requestReturnRefund(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Order> orderList = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Order>>() {
+                    }.getType());
+                    data.setValue(Resource.success(orderList));
+                    cachedOrders = orderList;
+                } else {
+                    handleErrorResponse(response, data);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                data.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+
+        return data;
+    }
 
     public LiveData<Resource<Order>> addOrder(OrderRequest request) {
         MutableLiveData<Resource<Order>> data = new MutableLiveData<>();
@@ -615,5 +663,4 @@ public class AccountRepository {
         cachedOrders = null;
         fetchOrderList();
     }
-
 }
