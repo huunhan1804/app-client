@@ -1,4 +1,6 @@
 package com.example.dietarysupplementshop.requests;
+import android.net.Uri;
+
 import java.util.List;
 
 public class AddProductRequest {
@@ -10,7 +12,7 @@ public class AddProductRequest {
     private List<ProductVariantRequest> variants;
 
     public AddProductRequest(String productName, String description, String category,
-                             List<String> imageUrls, List<ProductVariantRequest> variants) {
+                             List<Uri> imageUrls, List<ProductVariantRequest> variants) {
         this.productName = productName;
         this.description = description;
         this.category = category;

@@ -689,8 +689,6 @@ public class SellerAddProductActivity extends AppCompatActivity {
 
         tvInventoryValue.setText(totalQuantity + " sản phẩm");
     }
-
-
     private AddProductRequest collectProductData() {
         String productName = Objects.requireNonNull(etProductName.getText()).toString().trim();
         String description = Objects.requireNonNull(etProductDescription.getText()).toString().trim();
