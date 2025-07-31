@@ -8,7 +8,7 @@ public class AddProductRequest {
     private String description;
     private String category;
 
-    private List<String> imageUrls;
+    private List<Uri> imageUrls;
     private List<ProductVariantRequest> variants;
 
     public AddProductRequest(String productName, String description, String category,
@@ -45,11 +45,11 @@ public class AddProductRequest {
         this.category = category;
     }
 
-    public List<String> getImageUrls() {
+    public List<Uri> getImageUrls() {
         return imageUrls;
     }
 
-    public void setImageUrls(List<String> imageUrls) {
+    public void setImageUrls(List<Uri> imageUrls) {
         this.imageUrls = imageUrls;
     }
 

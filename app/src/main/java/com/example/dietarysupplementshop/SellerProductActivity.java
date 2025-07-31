@@ -15,7 +15,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.dietarysupplementshop.adapter.ProductSellerAdapter;
 import com.example.dietarysupplementshop.adapter.SellerProductPagerAdapter;
 import com.example.dietarysupplementshop.model.ProductSeller;
-import com.example.dietarysupplementshop.services.ProductApiService;
 import com.example.dietarysupplementshop.viewModel.SellerProductViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -23,7 +22,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SellerProductActivity extends AppCompatActivity implements ProductSellerAdapter.OnProductActionListener {
@@ -66,7 +64,6 @@ public class SellerProductActivity extends AppCompatActivity implements ProductS
                 updateFragmentData();
             }
         });
-
 
         setupListeners(backButton, searchButton, chatButton, addNewProductButton);
         observeViewModel();
@@ -161,20 +158,25 @@ public class SellerProductActivity extends AppCompatActivity implements ProductS
     @Override
     public void onDeleteProduct(ProductSeller product) {
 
-        ProductApiService.getInstance().getAllSellerProducts(new ProductApiService.ProductCallback<List<ProductSeller>>() {
-            @Override
-            public void onSuccess(List<ProductSeller> result) {
-                result.removeIf(p -> p.getProductId().equals(product.getProductId()));
-                viewModel.loadAllSellerProducts(); // Force refresh
-                Toast.makeText(SellerProductActivity.this, "Đã xóa (mô phỏng): " + product.getProductName(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                Toast.makeText(SellerProductActivity.this, "Lỗi khi xóa (mô phỏng): " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
+
+//    @Override
+//    public void onDeleteProduct(ProductSeller product) {
+//
+//        ProductApiService.getInstance().getAllSellerProducts(new ProductApiService.ProductCallback<List<ProductSeller>>() {
+//            @Override
+//            public void onSuccess(List<ProductSeller> result) {
+//                result.removeIf(p -> p.getProductId().equals(product.getProductId()));
+//                viewModel.loadAllSellerProducts(); // Force refresh
+//                Toast.makeText(SellerProductActivity.this, "Đã xóa (mô phỏng): " + product.getProductName(), Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onError(Throwable t) {
+//                Toast.makeText(SellerProductActivity.this, "Lỗi khi xóa (mô phỏng): " + t.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     @Override
     public void onViewProductDetail(ProductSeller product) {

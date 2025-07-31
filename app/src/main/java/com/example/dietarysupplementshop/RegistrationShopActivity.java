@@ -3,6 +3,7 @@ package com.example.dietarysupplementshop;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -87,6 +88,7 @@ public class RegistrationShopActivity extends AppCompatActivity {
         String address = etAddress.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String phoneNumber = etPhoneNumber.getText().toString().trim();
+        Log.d("DEBUG_DATA", "RegistrationShopActivity collected: " + shopRegistrationData.getShopName() + ", " + shopRegistrationData.getEmail());
 
         if (shopName.isEmpty()) {
             tilShopName.setError("Vui lòng nhập tên cửa hàng.");

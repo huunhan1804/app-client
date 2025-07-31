@@ -84,6 +84,7 @@ public class ShopCertificatesInformationRegistrationActivity extends AppCompatAc
             shopRegistrationData.setBusinessLicenseUrl(savedInstanceState.getString("businessLicenseUrl"));
             shopRegistrationData.setProfessionalCertificateUrl(savedInstanceState.getString("professionalCertificateUrl"));
             shopRegistrationData.setDiplomaCertificateUrl(savedInstanceState.getString("diplomaCertificateUrl"));
+            shopRegistrationData = (ShopRegistrationData) savedInstanceState.getSerializable("shopRegistrationData");
 
             bindViews();
 
@@ -100,7 +101,20 @@ public class ShopCertificatesInformationRegistrationActivity extends AppCompatAc
                 addCertificateSlot(llDiplomaCertificates, Uri.parse(shopRegistrationData.getDiplomaCertificateUrl()), CertificateType.DIPLOMA_CERTIFICATE);
             }
         } else {
+            shopRegistrationData = (ShopRegistrationData) getIntent().getSerializableExtra("shopRegistrationData");
+            idCardFrontUri = getIntent().getParcelableExtra("idFrontImageUri");
+            idCardBackUri = getIntent().getParcelableExtra("idBackImageUri");
 
+            if (shopRegistrationData == null) {
+                Toast.makeText(this, "Lỗi: Mất dữ liệu đăng ký cửa hàng.", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
+            if (idCardFrontUri == null || idCardBackUri == null) {
+                Toast.makeText(this, "Lỗi: Mất dữ liệu ảnh CCCD.", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
             shopRegistrationData.setBusinessLicenseUrl(null);
             shopRegistrationData.setProfessionalCertificateUrl(null);
             shopRegistrationData.setDiplomaCertificateUrl(null);
@@ -120,10 +134,10 @@ public class ShopCertificatesInformationRegistrationActivity extends AppCompatAc
         super.onSaveInstanceState(outState);
         outState.putParcelable("idCardFrontUri", idCardFrontUri);
         outState.putParcelable("idCardBackUri", idCardBackUri);
-        // LƯU CÁC URL TỪ shopRegistrationData VÀO savedInstanceState
         outState.putString("businessLicenseUrl", shopRegistrationData.getBusinessLicenseUrl());
         outState.putString("professionalCertificateUrl", shopRegistrationData.getProfessionalCertificateUrl());
         outState.putString("diplomaCertificateUrl", shopRegistrationData.getDiplomaCertificateUrl());
+        outState.putSerializable("shopRegistrationData", shopRegistrationData);
     }
 
     private void bindViews() {
@@ -141,9 +155,46 @@ public class ShopCertificatesInformationRegistrationActivity extends AppCompatAc
         findViewById(R.id.btn_add_professional_certificate).setOnClickListener(v -> openPickerFor(CertificateType.PROFESSIONAL_CERTIFICATE));
         findViewById(R.id.btn_add_diploma_certificate).setOnClickListener(v -> openPickerFor(CertificateType.DIPLOMA_CERTIFICATE));
         findViewById(R.id.btn_back_form).setOnClickListener(v -> onBackPressed());
+
+        // THAY ĐỔI LỚN Ở ĐÂY:
         findViewById(R.id.btn_complete_registration).setOnClickListener(v -> {
-            if (validateAndCollectData()) {
-                showConfirmationDialog(shopRegistrationData);
+            if (validateAndCollectData()) { // Hàm này chỉ kiểm tra hợp lệ các URL đã có và URI cục bộ
+                showLoading(true); // Bắt đầu hiển thị loading khi chuẩn bị upload ảnh CCCD
+                // Tải ảnh CCCD lên Firebase trước
+                uploadIdCardToFirebase(idCardFrontUri, idCardBackUri)
+                        .addOnSuccessListener(idCardUrls -> {
+                            // GÁN CÁC URL TỪ FIREBASE VÀO ĐỐI TƯỢNG DATA SAU KHI UPLOAD THÀNH CÔNG
+                            shopRegistrationData.setIdCardFrontUrl(idCardUrls[0]);
+                            shopRegistrationData.setIdCardBackUrl(idCardUrls[1]);
+
+                            // Thêm log để kiểm tra lại dữ liệu sau khi có đủ URL ảnh CCCD
+                            Log.d("PRE_DIALOG_FINAL_CHECK", "ShopRegistrationData before final dialog: " +
+                                    "Shop Name: " + shopRegistrationData.getShopName() +
+                                    ", Address: " + shopRegistrationData.getAddress() +
+                                    ", Email: " + shopRegistrationData.getEmail() +
+                                    ", Phone: " + shopRegistrationData.getPhoneNumber() +
+                                    ", Tax Number: " + shopRegistrationData.getTaxNumber() +
+                                    ", Full Name: " + shopRegistrationData.getFullName() +
+                                    ", DOB: " + shopRegistrationData.getDateOfBirth() +
+                                    ", Gender: " + shopRegistrationData.getGender() +
+                                    ", ID Number: " + shopRegistrationData.getIdCardNumber() +
+                                    ", Date of Issue: " + shopRegistrationData.getDateOfIssue() +
+                                    ", Place of Issue: " + shopRegistrationData.getPlaceOfIssue() +
+                                    ", ID Front URL: " + shopRegistrationData.getIdCardFrontUrl() +
+                                    ", ID Back URL: " + shopRegistrationData.getIdCardBackUrl() +
+                                    ", Business License URL: " + shopRegistrationData.getBusinessLicenseUrl() +
+                                    ", Professional Cert URL: " + shopRegistrationData.getProfessionalCertificateUrl() +
+                                    ", Diploma Cert URL: " + shopRegistrationData.getDiplomaCertificateUrl());
+
+                            showLoading(false); // Ẩn loading sau khi upload ảnh CCCD xong
+
+                            // BÂY GIỜ MỚI HIỂN THỊ DIALOG XÁC NHẬN VỚI DỮ LIỆU ĐẦY ĐỦ
+                            showConfirmationDialog(shopRegistrationData);
+                        })
+                        .addOnFailureListener(e -> {
+                            showLoading(false);
+                            Toast.makeText(this, "Lỗi khi tải ảnh CCCD: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        });
             }
         });
     }
@@ -415,11 +466,30 @@ public class ShopCertificatesInformationRegistrationActivity extends AppCompatAc
         confirmationMessage.append("Giấy phép kinh doanh: ").append(data.getBusinessLicenseUrl() != null ? data.getBusinessLicenseUrl() : "Chưa có").append("\n");
         confirmationMessage.append("Chứng chỉ chuyên môn: ").append(data.getProfessionalCertificateUrl() != null ? data.getProfessionalCertificateUrl() : "Chưa có").append("\n");
         confirmationMessage.append("Chứng chỉ học vị: ").append(data.getDiplomaCertificateUrl() != null ? data.getDiplomaCertificateUrl() : "Chưa có");
+        Log.d("CONFIRM_DATA_DEBUG", "ShopRegistrationData before dialog: " +
+                "Shop Name: " + data.getShopName() +
+                ", Address: " + data.getAddress() +
+                ", Email: " + data.getEmail() +
+                ", Phone: " + data.getPhoneNumber() +
+                ", Tax Number: " + data.getTaxNumber() +
+                ", Full Name: " + data.getFullName() +
+                ", DOB: " + data.getDateOfBirth() +
+                ", Gender: " + data.getGender() +
+                ", ID Number: " + data.getIdCardNumber() +
+                ", Date of Issue: " + data.getDateOfIssue() +
+                ", Place of Issue: " + data.getPlaceOfIssue() +
+                ", ID Front URL: " + data.getIdCardFrontUrl() +
+                ", ID Back URL: " + data.getIdCardBackUrl() +
+                ", Business License URL: " + data.getBusinessLicenseUrl() +
+                ", Professional Cert URL: " + data.getProfessionalCertificateUrl() +
+                ", Diploma Cert URL: " + data.getDiplomaCertificateUrl());
 
 
         new AlertDialog.Builder(this)
+                .setTitle("Xác nhận thông tin đăng ký") // Thêm tiêu đề cho dễ nhìn
+                .setMessage(confirmationMessage.toString())
                 .setPositiveButton("Xác nhận & Gửi", (dialog, which) -> {
-                    submitRegistrationData(data); // CHỈ TRUYỀN data
+                    submitRegistrationData(data);
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
@@ -427,68 +497,56 @@ public class ShopCertificatesInformationRegistrationActivity extends AppCompatAc
 
     private void submitRegistrationData(ShopRegistrationData data) {
         showLoading(true);
-        uploadIdCardToFirebase(idCardFrontUri, idCardBackUri)
-                .addOnSuccessListener(idCardUrls -> {
-                    String finalIdCardFrontUrl = idCardUrls[0];
-                    String finalIdCardBackUrl = idCardUrls[1];
 
-                    data.setIdCardFrontUrl(finalIdCardFrontUrl);
-                    data.setIdCardBackUrl(finalIdCardBackUrl);
-
-                    viewModel.submitRegistration(data)
-                            .observe(this, resource -> {
-                                showLoading(false);
-                                if (resource == null) return;
-
-                                switch (resource.getStatus()) {
-                                    case LOADING:
-                                        showLoading(true);
-                                        break;
-                                    case SUCCESS:
-                                        AgencyInfoDTO agencyInfoResponse = resource.getData();
-                                        if (agencyInfoResponse != null) {
-                                            String statusFromBackend = agencyInfoResponse.getStatus();
-                                            if ("pending".equalsIgnoreCase(statusFromBackend)) { // So sánh không phân biệt chữ hoa chữ thường
-                                                Toast.makeText(this, "Hồ sơ đã được gửi thành công và đang chờ xét duyệt!", Toast.LENGTH_LONG).show();
-                                            } else if ("approved".equalsIgnoreCase(statusFromBackend)) {
-                                                Toast.makeText(this, "Hồ sơ đã được duyệt rồi. Vui lòng chuyển sang kênh người bán.", Toast.LENGTH_LONG).show();
-                                            } else if ("rejected".equalsIgnoreCase(statusFromBackend)) {
-                                                Toast.makeText(this, "Hồ sơ đã bị từ chối trước đó. Vui lòng xem lý do và đăng ký lại.", Toast.LENGTH_LONG).show();
-                                            } else {
-                                                Toast.makeText(this, "Đăng ký thành công nhưng trạng thái không rõ. Vui lòng kiểm tra lại.", Toast.LENGTH_LONG).show();
-                                            }
-                                        } else {
-                                            Toast.makeText(this, "Đăng ký thành công nhưng không nhận được dữ liệu trạng thái.", Toast.LENGTH_LONG).show();
-                                        }
-                                        Intent intent = new Intent(this, SellerRegistrationStatusActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                        break;
-                                    case ERROR:
-                                        showLoading(false);
-                                        String errorMessage = resource.getMessage();
-                                        Log.e(TAG, "Registration ERROR: " + errorMessage);
-
-                                        String toastMessage;
-                                        if (errorMessage != null && errorMessage.contains("đã có một đơn đăng ký người bán đang chờ duyệt")) {
-                                            toastMessage = "Bạn đã có một đơn đăng ký người bán đang chờ duyệt. Vui lòng đợi phê duyệt.";
-                                        } else {
-                                            toastMessage = "Lỗi: " + (errorMessage != null ? errorMessage : "Không xác định");
-                                        }
-                                        Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show();
-
-                                        Intent statusIntent = new Intent(this, SellerRegistrationStatusActivity.class);
-                                        statusIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(statusIntent);
-                                        finish();
-                                        break;
-                                }
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Lỗi tải ảnh CCCD: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        viewModel.submitRegistration(data)
+                .observe(this, resource -> {
                     showLoading(false);
+                    if (resource == null) return;
+
+                    switch (resource.getStatus()) {
+                        case LOADING:
+                            // showLoading(true) đã được gọi ở đầu phương thức này
+                            break;
+                        case SUCCESS:
+                            AgencyInfoDTO agencyInfoResponse = resource.getData();
+                            if (agencyInfoResponse != null) {
+                                String statusFromBackend = agencyInfoResponse.getStatus();
+                                if ("pending".equalsIgnoreCase(statusFromBackend)) {
+                                    Toast.makeText(this, "Hồ sơ đã được gửi thành công và đang chờ xét duyệt!", Toast.LENGTH_LONG).show();
+                                } else if ("approved".equalsIgnoreCase(statusFromBackend)) {
+                                    Toast.makeText(this, "Hồ sơ đã được duyệt rồi. Vui lòng chuyển sang kênh người bán.", Toast.LENGTH_LONG).show();
+                                } else if ("rejected".equalsIgnoreCase(statusFromBackend)) {
+                                    Toast.makeText(this, "Hồ sơ đã bị từ chối trước đó. Vui lòng xem lý do và đăng ký lại.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(this, "Đăng ký thành công nhưng trạng thái không rõ. Vui lòng kiểm tra lại.", Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(this, "Đăng ký thành công nhưng không nhận được dữ liệu trạng thái.", Toast.LENGTH_LONG).show();
+                            }
+                            Intent intent = new Intent(this, SellerRegistrationStatusActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                            break;
+                        case ERROR:
+                            // showLoading(false) đã được gọi ở đầu phương thức này
+                            String errorMessage = resource.getMessage();
+                            Log.e(TAG, "Registration ERROR: " + errorMessage);
+
+                            String toastMessage;
+                            if (errorMessage != null && errorMessage.contains("đã có một đơn đăng ký người bán đang chờ duyệt")) {
+                                toastMessage = "Bạn đã có một đơn đăng ký người bán đang chờ duyệt. Vui lòng đợi phê duyệt.";
+                            } else {
+                                toastMessage = "Lỗi: " + (errorMessage != null ? errorMessage : "Không xác định");
+                            }
+                            Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show();
+
+                            Intent statusIntent = new Intent(this, SellerRegistrationStatusActivity.class);
+                            statusIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(statusIntent);
+                            finish();
+                            break;
+                    }
                 });
     }
 
