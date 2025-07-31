@@ -845,14 +845,6 @@ public class SellerAddProductActivity extends AppCompatActivity {
         String productName = Objects.requireNonNull(etProductName.getText()).toString().trim();
         String description = Objects.requireNonNull(etProductDescription.getText()).toString().trim();
         String category = tvCategoryValue.getText().toString();
-        String shippingFee = tvShippingValue.getText().toString();
-
-        String declarationFileName = tvDeclarationFileName.getText().toString();
-        String foodSafetyFileName = tvFoodSafetyFileName.getText().toString();
-        String otherFilesName = tvOtherFilesName.getText().toString();
-
-        String declarationNumber = Objects.requireNonNull(etDeclarationNumber.getText()).toString().trim();
-        String declarationDate = Objects.requireNonNull(etDeclarationDate.getText()).toString().trim();
 
         List<ProductVariantRequest> productVariantRequests = new ArrayList<>();
         for (ConfiguredProductVariant cpv : configuredProductVariants) {
@@ -860,9 +852,8 @@ public class SellerAddProductActivity extends AppCompatActivity {
             productVariantRequests.add(new ProductVariantRequest(variantName, cpv.originPrice, cpv.salePrice, cpv.quantityInStock));
         }
 
-        if (!isProductDataValid(productName, description, category, selectedImageUris,
-                productVariantRequests, shippingFee, declarationFileName,
-                declarationNumber, declarationDate, foodSafetyFileName)) {
+        if (!isProductDataValid(productName, description, category, selectedImageUris, productVariantRequests
+                )) {
             return null;
         }
 
@@ -870,20 +861,19 @@ public class SellerAddProductActivity extends AppCompatActivity {
                 productName,
                 description,
                 category,
-                productVariantRequests,
                 selectedImageUris,
+                productVariantRequests,
+
         );
     }
 
     private boolean isProductDataValid(String productName, String description, String category,
-                                       List<Uri> images, List<ProductVariantRequest> variants, String shippingFee,
-                                       String declarationFileName, String declarationNumber, String declarationDate,
-                                       String foodSafetyFileName) {
+                                       List<Uri> images, List<ProductVariantRequest> variants
+                                       ) {
         if (productName.isEmpty() || description.isEmpty() ||
                 category.equals(getString(R.string.select_category_value)) ||
                 images.isEmpty() ||
-                variants.isEmpty() ||
-                shippingFee.equals(getString(R.string.shipping_fee_value))) {
+                variants.isEmpty()) {
             return false;
         }
 
