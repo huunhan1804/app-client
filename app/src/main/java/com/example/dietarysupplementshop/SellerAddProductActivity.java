@@ -55,17 +55,13 @@ public class SellerAddProductActivity extends AppCompatActivity {
     private TextInputEditText etProductDescription;
     private ConstraintLayout clCategory;
     private ConstraintLayout clProductClassification;
-    private ConstraintLayout clShippingFee;
 
     private TextView tvCategoryValue;
     private TextView tvClassificationValue;
     private TextView tvPriceValue;
     private TextView tvInventoryValue;
-    private TextView tvShippingValue;
 
-    private Button btnUploadDeclarationFile, btnUploadFoodSafetyFile, btnUploadOtherFiles;
-    private TextView tvDeclarationFileName, tvFoodSafetyFileName, tvOtherFilesName;
-    private TextInputEditText etDeclarationNumber, etDeclarationDate;
+
     private Button btnSave, btnDisplay;
     private TextView toolbarTitleTextView;
 
@@ -120,7 +116,6 @@ public class SellerAddProductActivity extends AppCompatActivity {
         tvClassificationValue.setText(getString(R.string.set_classification_value));
         tvPriceValue.setText(getString(R.string.set_price_value));
         tvInventoryValue.setText(getString(R.string.default_inventory_value));
-        tvShippingValue.setText(getString(R.string.shipping_fee_value));
     }
 
     private void initLaunchers() {
@@ -142,23 +137,6 @@ public class SellerAddProductActivity extends AppCompatActivity {
                 }
         );
 
-        pickFileLauncher = registerForActivityResult(
-                new ActivityResultContracts.OpenDocument(),
-                uri -> {
-                    if (uri != null) {
-                        String fileName = getFileName(uri);
-                        if ("declaration".equals(currentUploadPurpose)) {
-                            tvDeclarationFileName.setText(fileName);
-                        } else if ("food_safety".equals(currentUploadPurpose)) {
-                            tvFoodSafetyFileName.setText(fileName);
-                        } else if ("other_files".equals(currentUploadPurpose)) {
-                            tvOtherFilesName.setText(fileName);
-                        }
-                        updateButtonState();
-                    }
-                    currentUploadPurpose = null;
-                }
-        );
     }
 
     private void setupListeners() {
@@ -174,24 +152,13 @@ public class SellerAddProductActivity extends AppCompatActivity {
 
         clCategory.setOnClickListener(v -> showCategorySelectionDialog());
         clProductClassification.setOnClickListener(v -> showProductVariantsManagementDialog());
-        clShippingFee.setOnClickListener(v -> showShippingFeeInputDialog()); // Vẫn giữ riêng shipping fee
 
-        btnUploadDeclarationFile.setOnClickListener(v -> {
-            currentUploadPurpose = "declaration";
-            pickFileLauncher.launch(new String[]{"application/pdf", "image/*", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
-        });
 
-        btnUploadFoodSafetyFile.setOnClickListener(v -> {
-            currentUploadPurpose = "food_safety";
-            pickFileLauncher.launch(new String[]{"application/pdf", "image/*"});
-        });
 
-        btnUploadOtherFiles.setOnClickListener(v -> {
-            currentUploadPurpose = "other_files";
-            pickFileLauncher.launch(new String[]{"application/pdf", "image/*", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-        });
 
-        etDeclarationDate.setOnClickListener(v -> showDatePickerDialog());
+
+
+
 
         etProductDescription.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -199,18 +166,8 @@ public class SellerAddProductActivity extends AppCompatActivity {
                 updateButtonState();
             }
         });
-        etDeclarationNumber.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateButtonState();
-            }
-        });
-        etDeclarationDate.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateButtonState();
-            }
-        });
+
+
 
         btnSave.setOnClickListener(v -> {
             AddProductRequest request = collectProductData();
@@ -581,107 +538,6 @@ public class SellerAddProductActivity extends AppCompatActivity {
     }
 
 
-    private void showShippingFeeInputDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Nhập phí vận chuyển");
-
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(30, 20, 30, 0);
-
-        RadioGroup radioGroup = new RadioGroup(this);
-        RadioButton rbFree = new RadioButton(this);
-        rbFree.setText("Miễn phí");
-        rbFree.setTag("Miễn phí");
-        radioGroup.addView(rbFree);
-
-        RadioButton rbFixed = new RadioButton(this);
-        rbFixed.setText("Phí cố định");
-        rbFixed.setTag("Phí cố định");
-        radioGroup.addView(rbFixed);
-
-        final EditText etFixedFee = new EditText(this);
-        etFixedFee.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        etFixedFee.setHint("Nhập số tiền (VD: 25000)");
-        etFixedFee.setVisibility(View.GONE);
-        layout.addView(radioGroup);
-        layout.addView(etFixedFee);
-
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            RadioButton checkedRadioButton = group.findViewById(checkedId);
-            if (checkedRadioButton != null) {
-                if ("Phí cố định".equals(checkedRadioButton.getTag())) {
-                    etFixedFee.setVisibility(View.VISIBLE);
-                } else {
-                    etFixedFee.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        String currentShipping = tvShippingValue.getText().toString();
-        if ("Miễn phí".equals(currentShipping)) {
-            rbFree.setChecked(true);
-        } else if (currentShipping.startsWith("Phí cố định")) {
-            rbFixed.setChecked(true);
-            etFixedFee.setVisibility(View.VISIBLE);
-            String fee = currentShipping.replace("Phí cố định (", "").replace(" VNĐ)", "").replace(",", "").trim();
-            etFixedFee.setText(fee);
-        }
-
-        builder.setView(layout);
-
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            int selectedId = radioGroup.getCheckedRadioButtonId();
-            if (selectedId != -1) {
-                RadioButton selectedRadioButton = radioGroup.findViewById(selectedId);
-                String selectedOption = (String) selectedRadioButton.getTag();
-                if ("Miễn phí".equals(selectedOption)) {
-                    tvShippingValue.setText("Miễn phí");
-                } else if ("Phí cố định".equals(selectedOption)) {
-                    String feeStr = etFixedFee.getText().toString().trim();
-                    if (!feeStr.isEmpty()) {
-                        try {
-                            double fee = Double.parseDouble(feeStr);
-                            if (fee < 0) {
-                                Toast.makeText(this, "Phí cố định không được âm.", Toast.LENGTH_SHORT).show();
-                                tvShippingValue.setText(getString(R.string.shipping_fee_value));
-                            } else {
-                                tvShippingValue.setText(String.format("Phí cố định (%,.0f VNĐ)", fee));
-                            }
-                        } catch (NumberFormatException e) {
-                            Toast.makeText(this, "Phí cố định không hợp lệ.", Toast.LENGTH_SHORT).show();
-                            tvShippingValue.setText(getString(R.string.shipping_fee_value));
-                        }
-                    } else {
-                        Toast.makeText(this, "Vui lòng nhập phí cố định.", Toast.LENGTH_SHORT).show();
-                        tvShippingValue.setText(getString(R.string.shipping_fee_value));
-                    }
-                }
-            } else {
-                tvShippingValue.setText(getString(R.string.shipping_fee_value));
-            }
-            updateButtonState();
-        });
-        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.cancel());
-        builder.show();
-    }
-
-
-    private void showDatePickerDialog() {
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    String date = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                    etDeclarationDate.setText(date);
-                    updateButtonState();
-                }, year, month, day);
-        datePickerDialog.show();
-    }
-
     private void updateButtonState() {
         boolean isProductNameValid = !Objects.requireNonNull(etProductName.getText()).toString().trim().isEmpty();
         boolean isDescriptionValid = !Objects.requireNonNull(etProductDescription.getText()).toString().trim().isEmpty();
@@ -704,23 +560,17 @@ public class SellerAddProductActivity extends AppCompatActivity {
             areAllVariantQuantitiesValid = false;
         }
 
-        boolean isShippingFeeSet = !tvShippingValue.getText().toString().equals(getString(R.string.shipping_fee_value));
 
-        boolean isDeclarationFileUploaded = !tvDeclarationFileName.getText().toString().equals(getString(R.string.no_file_selected));
-        boolean isDeclarationNumberEntered = !Objects.requireNonNull(etDeclarationNumber.getText()).toString().trim().isEmpty();
-        boolean isDeclarationDateEntered = !Objects.requireNonNull(etDeclarationDate.getText()).toString().trim().isEmpty();
-        boolean isFoodSafetyFileUploaded = !tvFoodSafetyFileName.getText().toString().equals(getString(R.string.no_file_selected));
 
         boolean canSave = isProductNameValid && isDescriptionValid && isCategorySelected && areImagesSelected &&
-                areVariantsConfigured && areAllVariantPricesValid && areAllVariantQuantitiesValid && isShippingFeeSet;
+                areVariantsConfigured && areAllVariantPricesValid && areAllVariantQuantitiesValid ;
         btnSave.setEnabled(canSave);
         btnSave.setTextColor(canSave ? getResources().getColor(R.color.color_app, null) : getResources().getColor(android.R.color.darker_gray, null));
         btnSave.setBackgroundResource(R.drawable.rounded_button_border);
         btnSave.setBackgroundTintList(null);
 
 
-        boolean canSubmitForReview = canSave && isDeclarationFileUploaded && isDeclarationNumberEntered &&
-                isDeclarationDateEntered && isFoodSafetyFileUploaded;
+        boolean canSubmitForReview = canSave;
         btnDisplay.setEnabled(canSubmitForReview);
         btnDisplay.setBackgroundTintList(getResources().getColorStateList(canSubmitForReview ? R.color.color_app : android.R.color.darker_gray, null));
         btnDisplay.setTextColor(getResources().getColor(android.R.color.white, null));
@@ -862,7 +712,7 @@ public class SellerAddProductActivity extends AppCompatActivity {
                 description,
                 category,
                 selectedImageUris,
-                productVariantRequests,
+                productVariantRequests
 
         );
     }
@@ -928,12 +778,6 @@ public class SellerAddProductActivity extends AppCompatActivity {
                 }
             }
 
-            tvDeclarationFileName.setText(getString(R.string.no_file_selected));
-            tvFoodSafetyFileName.setText(getString(R.string.no_file_selected));
-            tvOtherFilesName.setText(getString(R.string.no_file_selected));
-            etDeclarationNumber.setText("");
-            etDeclarationDate.setText("");
-
             updateButtonState();
         }
     }
@@ -992,12 +836,6 @@ public class SellerAddProductActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-
-                tvDeclarationFileName.setText(getString(R.string.no_file_selected));
-                tvFoodSafetyFileName.setText(getString(R.string.no_file_selected));
-                tvOtherFilesName.setText(getString(R.string.no_file_selected));
-                etDeclarationNumber.setText("");
-                etDeclarationDate.setText("");
 
                 updateButtonState();
             }
