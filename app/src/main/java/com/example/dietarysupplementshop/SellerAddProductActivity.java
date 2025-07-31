@@ -866,13 +866,13 @@ public class SellerAddProductActivity extends AppCompatActivity {
             return null;
         }
 
-        return new AddProductRequest(
-                productName,
-                description,
-                category,
-                productVariantRequests,
-                selectedImageUris,
-        );
+//        return new AddProductRequest(
+//                productName,
+//                description,
+//                category,
+//                productVariantRequests,
+//                selectedImageUris,
+//        );
     }
 
     private boolean isProductDataValid(String productName, String description, String category,
