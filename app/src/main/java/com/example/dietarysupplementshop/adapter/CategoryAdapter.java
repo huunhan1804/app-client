@@ -39,7 +39,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category category;
         category = mCategoryList.get(position);
-        if(category == null){
+        if (category == null) {
             return;
         }
         holder.category_name.setText(category.getCategory_name());
@@ -49,8 +49,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, SearchResultActivity.class);
-            intent.putExtra("categoryId",category.getCategory_id());
-            intent.putExtra("categoryName",category.getCategory_name());
+            intent.putExtra("categoryId", category.getCategory_id());
+            intent.putExtra("categoryName", category.getCategory_name());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
@@ -59,12 +59,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public int getItemCount() {
-        if(mCategoryList != null){
+        if (mCategoryList != null) {
             return mCategoryList.size();
         }
         return 0;
     }
-
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
         private final ImageView category_image;
         private final TextView category_name;

@@ -11,8 +11,8 @@ import com.example.dietarysupplementshop.OrderedFragment;
 // import com.example.dietarysupplementshop.ProfileFragment; // Không trực tiếp tạo ở đây nữa
 // import com.example.dietarysupplementshop.ProfileActivity; // Không liên quan
 
-import com.example.dietarysupplementshop.BuyerProfileOverviewFragment; // THÊM IMPORT NÀY
-import com.example.dietarysupplementshop.ProfileFragment;
+import com.example.dietarysupplementshop.CustomerProfileFragment; // THÊM IMPORT NÀY
+
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -29,7 +29,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 2:
                 return new CartFragment();
             case 3:
-                return new BuyerProfileOverviewFragment();
+                return new CustomerProfileFragment();
             default:
                 return new HomeFragment();
         }

@@ -32,7 +32,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="best_order">Best Order</string>
     <string name="image_product">Image Product</string>
-    <string name="best_seller">Best Seller</string>
+    <string name="best_agency">Best Agency</string>
     <string name="filter">Filter</string>
     <string name="icon">Icon</string>
     <string name="order_information">Order Information</string>
@@ -206,7 +206,7 @@
     <string name="status_rejected_message">Rất tiếc, hồ sơ đăng ký người bán của bạn đã bị từ chối. Vui lòng xem lý do để đăng ký lại.</string>
     <string name="status_unknown_title">Trạng thái không xác định</string>
     <string name="status_unknown_message">Không thể xác định trạng thái đăng ký của bạn. Vui lòng thử lại hoặc liên hệ hỗ trợ.</string>
-    <string name="go_to_seller_dashboard">Đến trang quản lý người bán</string>
+    <string name="go_to_agency_dashboard">Đến trang quản lý người bán</string>
     <string name="set_classification_value">Thiết lập phân loại</string>
     <string name="edit_product_title">Chỉnh Sửa Sản Phẩm</string>
 </resources>

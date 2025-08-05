@@ -94,9 +94,9 @@ public class CartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
 
         rcvRelatedProduct = view.findViewById(R.id.recyclerView);
-        FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
+        //FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
         rcvRelatedProduct.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        rcvRelatedProduct.setAdapter(fakeProductAdapter);
+        //rcvRelatedProduct.setAdapter(fakeProductAdapter);
         productViewModel.getListRelatedProduct(1).observe(getViewLifecycleOwner(), products -> {
             relatedProduct = products;
             productAdapter = new ProductAdapter(relatedProduct, getContext());

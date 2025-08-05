@@ -7,23 +7,20 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import com.example.dietarysupplementshop.R;
-import com.example.dietarysupplementshop.SellerRegistrationActivity;
-
 public class ChoiceRoleActivity extends AppCompatActivity {
 
-    private CardView buyerCard;
-    private CardView sellerCard;
+    private CardView customerCard;
+    private CardView agencyCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choice_role);
 
-        buyerCard = findViewById(R.id.buyerCard);
-        sellerCard = findViewById(R.id.sellerCard);
+        customerCard = findViewById(R.id.customerCard);
+        agencyCard = findViewById(R.id.agencyCard);
 
-        buyerCard.setOnClickListener(new View.OnClickListener() {
+        customerCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ChoiceRoleActivity.this, HomepageActivity.class);
@@ -32,10 +29,10 @@ public class ChoiceRoleActivity extends AppCompatActivity {
             }
         });
 
-        sellerCard.setOnClickListener(new View.OnClickListener() {
+        agencyCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ChoiceRoleActivity.this, SellerRegistrationActivity.class);
+                Intent intent = new Intent(ChoiceRoleActivity.this, AgencyWelcomeRegistrationActivity.class);
                 startActivity(intent);
             }
         });

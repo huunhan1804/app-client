@@ -7,34 +7,33 @@
     android:background="@drawable/rounded_edittext_background"
     android:layout_marginBottom="4dp">
 
-    <TextView
-        android:id="@+id/tvVariantName"
+    <EditText
+        android:id="@+id/etVariantName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:text="Tên biến thể"
+        android:hint="Tên biến thể"
         android:textColor="@android:color/black"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:layout_gravity="center_vertical"/>
-
+        android:layout_gravity="center_vertical"
+        android:inputType="text" />
     <EditText
-        android:id="@+id/etVariantOriginPrice"
+        android:id="@+id/etVariantListPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:hint="Giá gốc"
+        android:hint="Giá bán"
         android:inputType="numberDecimal"
         android:gravity="end"
         android:paddingEnd="8dp"
         android:textSize="14sp"/>
-
     <EditText
         android:id="@+id/etVariantSalePrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:hint="Giá bán"
+        android:hint="Giá khuyến mãi"
         android:inputType="numberDecimal"
         android:gravity="end"
         android:paddingEnd="8dp"
@@ -45,7 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1.5"
-        android:hint="SL"
+        android:hint="Số Lượng"
         android:inputType="number"
         android:gravity="end"
         android:textSize="14sp"/>

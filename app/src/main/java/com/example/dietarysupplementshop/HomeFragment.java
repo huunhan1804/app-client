@@ -30,15 +30,15 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private RecyclerView rcvCategory;
-    private RecyclerView rcvBestSeller;
+    private RecyclerView rcvBestAgency;
     private RecyclerView rcvBestOrder;
 
     private List<Category> mCategoryList;
-    private List<Product> mBestSellerList;
+    private List<Product> mBestAgencyList;
     private List<Product> mBestOrderList;
 
     private CategoryAdapter categoryAdapter;
-    private ProductAdapter productBestSellerAdapter;
+    private ProductAdapter productBestAgencyAdapter;
     private ProductAdapter productBestOrderAdapter;
 
     private ProductViewModel productViewModel;
@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         rcvCategory = view.findViewById(R.id.categoryRecyclerView);
-        rcvBestSeller = view.findViewById(R.id.bestSellerRecyclerView);
+        rcvBestAgency = view.findViewById(R.id.bestAgencyRecyclerView);
         rcvBestOrder = view.findViewById(R.id.bestOrderRecyclerView);
 
         imageSlider = view.findViewById(R.id.imageSlider);
@@ -86,14 +86,14 @@ public class HomeFragment extends Fragment {
         slideModels.add(new SlideModel(R.drawable.slide_2, ScaleTypes.FIT));
         imageSlider.setImageList(slideModels, ScaleTypes.FIT);
 
-        FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
-        rcvBestSeller.setAdapter(fakeProductAdapter);
-        rcvBestOrder.setAdapter(fakeProductAdapter);
+        //FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
+       // rcvBestAgency.setAdapter(fakeProductAdapter);
+       // rcvBestOrder.setAdapter(fakeProductAdapter);
 
-        productViewModel.getBestSellers().observe(getViewLifecycleOwner(), products -> {
-            mBestSellerList = products;
-            ProductAdapter productAdapter = new ProductAdapter(mBestSellerList, requireContext());
-            rcvBestSeller.setAdapter(productAdapter);
+        productViewModel.getBestAgencys().observe(getViewLifecycleOwner(), products -> {
+            mBestAgencyList = products;
+            ProductAdapter productAdapter = new ProductAdapter(mBestAgencyList, requireContext());
+            rcvBestAgency.setAdapter(productAdapter);
         });
 
         productViewModel.getBestOrders().observe(getViewLifecycleOwner(), products -> {

@@ -53,5 +53,5 @@ public interface OrderAPI {
 
     // API để người bán lấy các đơn hàng liên quan đến sản phẩm của họ
     @GET("api/agency-info/orders/all")
-    Call<ResponseModel<List<Order>>> getAllSellerOrders();
+    Call<ResponseModel<List<Order>>> getAllAgencyOrders();
 }

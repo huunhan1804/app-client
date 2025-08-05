@@ -46,18 +46,17 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
-                android:id="@+id/bestSellerTitle"
+                android:id="@+id/bestTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:text="@string/best_seller"
+                android:text="@string/best_agency"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <!-- Best Seller RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bestSellerRecyclerView"
+                android:id="@+id/bestAgencyRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

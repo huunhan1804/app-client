@@ -104,22 +104,22 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".SellerRegistrationStatusActivity"
+            android:name=".AgencyRegistrationStatusActivity"
             android:exported="false" />
         <activity
-            android:name=".RegistrationShopActivity"
+            android:name=".AgencyRegistrationFormActivity"
             android:exported="false" />
         <activity
-            android:name=".ShopCertificatesInformationRegistrationActivity"
+            android:name=".AgencyCertificatesInformationRegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".ShopIdentifierInformationRegistrationActivity"
+            android:name=".AgencyIdentifierInformationRegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".ShopTaxInformationRegistrationActivity"
+            android:name=".AgencyTaxInformationRegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".ShopSellerActivity"
+            android:name=".ShopAgencyActivity"
             android:exported="false" />
         <activity
             android:name=".HealthHubCtucareActivity"
@@ -131,19 +131,19 @@
             android:name=".MembershipActivity"
             android:exported="false" />
         <activity
-            android:name=".SellerRegistrationActivity"
+            android:name=".AgencyWelcomeRegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".SellerProductActivity"
+            android:name=".AgencyProductActivity"
             android:exported="false" />
         <activity
-            android:name=".SellerAddProductActivity"
+            android:name=".AgencyAddProductActivity"
             android:exported="false" />
         <activity
-            android:name=".SellerOrderActivity"
+            android:name=".AgencyOrderActivity"
             android:exported="false" />
         <activity
-            android:name=".SalesPerformanceActivity"
+            android:name=".AgencySalesPerformanceActivity"
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
@@ -151,7 +151,7 @@
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
-            android:name=".SellerCreateVoucherActivity"
+            android:name=".AgencyCreateCouponActivity"
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
@@ -163,7 +163,7 @@
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
-            android:name=".SellerMainActivity"
+            android:name=".AgencyMainActivity"
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
@@ -175,6 +175,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<!--        <activity-->
+<!--            android:name=".AgencyProductActivity"-->
+<!--            android:exported="true"-->
+<!--            android:launchMode="singleTask">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

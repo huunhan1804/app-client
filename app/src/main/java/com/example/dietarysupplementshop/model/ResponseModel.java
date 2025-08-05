@@ -49,4 +49,7 @@ public class ResponseModel<T> {
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
+    public boolean isSuccess() {
+        return status == 200;
+    }
 }

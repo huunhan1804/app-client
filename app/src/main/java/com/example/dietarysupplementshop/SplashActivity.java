@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log; // <-- Đảm bảo import này có
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -63,7 +63,7 @@ public class SplashActivity extends AppCompatActivity {
                         Log.d(TAG, "observeAccountInfo: SUCCESS - Data received from backend:");
                         Log.d(TAG, " - Account ID: " + resource.getData().getId());
                         Log.d(TAG, " - Role Code: " + resource.getData().getRole_code());
-                        Log.d(TAG, " - Status (Seller Reg): " + resource.getData().getStatus());
+                        Log.d(TAG, " - Status (Agency Reg): " + resource.getData().getStatus());
                         Log.d(TAG, " - Rejection Reason: " + resource.getData().getRejectionReason());
                         handleLoginSuccess(resource.getData());
                     } else {
@@ -80,6 +80,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void handleLoginSuccess(AccountInformation data) {
+        String status = data.getStatus();
+        String roleCode = data.getRole_code();
         List<CartItem> cartItems = data.getCart_info().getCartItem();
         if (cartItems != null && !cartItems.isEmpty()) {
             MyApplication.getInstance().sendNotification(
@@ -87,8 +89,6 @@ public class SplashActivity extends AppCompatActivity {
                     "Bạn có sản phẩm trong giỏ hàng. Hãy kiểm tra ngay!"
             );
         }
-
-        String status = data.getStatus();
         if (status == null) {
             status = "NOT_REGISTERED";
             Log.w(TAG, "handleLoginSuccess: Status from backend was null, set to NOT_REGISTERED.");
@@ -97,7 +97,7 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(TAG, "handleLoginSuccess: Final status for switch = " + status);
 
         SharedPreferences prefs = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
-        boolean hasAcknowledged = prefs.getBoolean("SELLER_APPROVAL_ACKNOWLEDGED", false);
+        boolean hasAcknowledged = prefs.getBoolean("AGENCY_APPROVAL_ACKNOWLEDGED", false);
         Log.d(TAG, "handleLoginSuccess: hasAcknowledged = " + hasAcknowledged);
 
         Class<?> destinationActivity;
@@ -105,26 +105,35 @@ public class SplashActivity extends AppCompatActivity {
         switch (status) {
             case "APPROVED":
                 if (hasAcknowledged) {
-                    destinationActivity = SellerMainActivity.class;
-                    Log.i(TAG, "handleLoginSuccess: Status APPROVED & Acknowledged. Navigating to SellerMainActivity.");
+                    destinationActivity = AgencyMainActivity.class;
+                    Log.i(TAG, "handleLoginSuccess: Status APPROVED & Acknowledged. Navigating to AgencyMainActivity.");
                 } else {
-                    destinationActivity = SellerRegistrationStatusActivity.class;
-                    Log.i(TAG, "handleLoginSuccess: Status APPROVED & Not Acknowledged. Navigating to SellerRegistrationStatusActivity.");
+                    destinationActivity = AgencyRegistrationStatusActivity.class;
+                    Log.i(TAG, "handleLoginSuccess: Status APPROVED & Not Acknowledged. Navigating to AgencyRegistrationStatusActivity.");
                 }
                 break;
             case "PENDING":
-                destinationActivity = SellerRegistrationStatusActivity.class;
-                Log.i(TAG, "handleLoginSuccess: Status PENDING. Navigating to SellerRegistrationStatusActivity.");
+                destinationActivity = AgencyRegistrationStatusActivity.class;
+                Log.i(TAG, "handleLoginSuccess: Status PENDING. Navigating to AgencyRegistrationStatusActivity.");
                 break;
             case "REJECTED":
-                destinationActivity = SellerRegistrationStatusActivity.class;
-                Log.i(TAG, "handleLoginSuccess: Status REJECTED. Navigating to SellerRegistrationStatusActivity.");
+                destinationActivity = AgencyRegistrationStatusActivity.class;
+                Log.i(TAG, "handleLoginSuccess: Status REJECTED. Navigating to AgencyRegistrationStatusActivity.");
                 break;
             case "NOT_REGISTERED":
             default:
                 destinationActivity = HomepageActivity.class;
                 Log.i(TAG, "handleLoginSuccess: Status NOT_REGISTERED or default. Navigating to HomepageActivity.");
                 break;
+        }
+        if (roleCode.equals("agency")) {
+            if (hasAcknowledged) {
+                destinationActivity = AgencyMainActivity.class;
+                Log.i(TAG, "handleLoginSuccess: Role is AGENCY & Acknowledged. Navigating to AgencyMainActivity.");
+            } else {
+                destinationActivity = AgencyRegistrationStatusActivity.class;
+                Log.i(TAG, "handleLoginSuccess: Role is AGENCY & Not Acknowledged. Navigating to AgencyRegistrationStatusActivity.");
+            }
         }
 
         navigateTo(destinationActivity);

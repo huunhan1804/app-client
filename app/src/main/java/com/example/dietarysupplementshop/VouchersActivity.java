@@ -44,7 +44,7 @@ public class VouchersActivity extends AppCompatActivity implements VoucherAdapte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vouchers_buyer);
+        setContentView(R.layout.activity_vouchers_customer);
 
         if (getIntent().hasExtra("CART_ID")) {
             cartIdForApplyingVoucher = getIntent().getLongExtra("CART_ID", -1L);

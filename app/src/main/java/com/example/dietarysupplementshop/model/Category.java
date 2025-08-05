@@ -37,4 +37,6 @@ public class Category {
     public void setCategory_url(String category_url) {
         this.category_url = category_url;
     }
+
+
 }

@@ -612,7 +612,7 @@ public class AccountRepository {
         return data;
     }
 
-    public LiveData<Resource<String>> updateSellerRole(long accountId, String roleCode) {
+    public LiveData<Resource<String>> updateAgencyRole(long accountId, String roleCode) {
         MutableLiveData<Resource<String>> data = new MutableLiveData<>();
         data.setValue(Resource.loading(null));
 

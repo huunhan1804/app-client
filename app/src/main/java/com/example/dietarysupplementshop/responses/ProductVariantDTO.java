@@ -1,20 +1,22 @@
 package com.example.dietarysupplementshop.responses;
 
+
 public class ProductVariantDTO {
     private Long product_variant_id;
     private String product_variant_name;
     private String product_variant_image_url;
-    private String origin_price;
+    private String list_price; // Đổi tên từ origin_price để nhất quán
     private String sale_price;
-    private int quantity_in_stock;
+    private int inventory_quantity; // Đổi tên từ quantity_in_stock để nhất quán
 
-    public ProductVariantDTO(Long product_variant_id, String product_variant_name, String product_variant_image_url, String origin_price, String sale_price, int quantity_in_stock) {
+    public ProductVariantDTO(Long product_variant_id, String product_variant_name, String product_variant_image_url, String list_price, String sale_price, int inventory_quantity) {
         this.product_variant_id = product_variant_id;
         this.product_variant_name = product_variant_name;
         this.product_variant_image_url = product_variant_image_url;
-        this.origin_price = origin_price;
         this.sale_price = sale_price;
-        this.quantity_in_stock = quantity_in_stock;
+        this.list_price = list_price;
+        this.inventory_quantity = inventory_quantity;
+
     }
 
     public ProductVariantDTO() {
@@ -44,14 +46,6 @@ public class ProductVariantDTO {
         this.product_variant_image_url = product_variant_image_url;
     }
 
-    public String getOrigin_price() {
-        return origin_price;
-    }
-
-    public void setOrigin_price(String origin_price) {
-        this.origin_price = origin_price;
-    }
-
     public String getSale_price() {
         return sale_price;
     }
@@ -60,11 +54,19 @@ public class ProductVariantDTO {
         this.sale_price = sale_price;
     }
 
-    public int getQuantity_in_stock() {
-        return quantity_in_stock;
+    public String getList_price() {
+        return list_price;
     }
 
-    public void setQuantity_in_stock(int quantity_in_stock) {
-        this.quantity_in_stock = quantity_in_stock;
+    public void setList_price(String list_price) {
+        this.list_price = list_price;
+    }
+
+    public int getInventory_quantity() {
+        return inventory_quantity;
+    }
+
+    public void setInventory_quantity(int inventory_quantity) {
+        this.inventory_quantity = inventory_quantity;
     }
 }

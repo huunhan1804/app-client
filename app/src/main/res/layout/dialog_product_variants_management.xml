@@ -9,40 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Thiết lập thuộc tính sản phẩm"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"/>
-
-        <LinearLayout
-            android:id="@+id/llAttributeInputsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="8dp"/>
-
-        <Button
-            android:id="@+id/btnAddAttribute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Thêm thuộc tính"
-            android:layout_gravity="end"
-            android:layout_marginBottom="16dp"
-            style="@style/Widget.MaterialComponents.Button.TextButton"/>
-        <Button
-            android:id="@+id/btnGenerateVariants"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tạo biến thể"
-            android:layout_marginBottom="16dp"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:backgroundTint="@color/color_app"
-            android:textColor="@android:color/white"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,6 +16,13 @@
             android:textStyle="bold"
             android:textSize="18sp"
             android:layout_marginBottom="8dp"/>
+        <Button
+            android:id="@+id/btnAddVariant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thêm biến thể"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_marginBottom="16dp"/>
 
         <TableLayout
             android:id="@+id/tlVariantInputs"
@@ -62,7 +35,7 @@
             android:id="@+id/tvNoVariantsHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vui lòng thêm thuộc tính và nhấn 'Tạo biến thể'."
+            android:text="Chưa có biến thể nào. Nhấn 'Thêm biến thể' để bắt đầu."
             android:textColor="@android:color/darker_gray"
             android:gravity="center"
             android:padding="16dp"

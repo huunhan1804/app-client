@@ -21,7 +21,7 @@ public class ProductViewModel extends ViewModel {
     private CategoryRepository categoryRepository;
     private MutableLiveData<ProductInformation> productInfo;
 
-    private MutableLiveData<List<Product>> bestSellers;
+    private MutableLiveData<List<Product>> bestAgencys;
     private MutableLiveData<List<Product>> bestOrders;
 
     private MutableLiveData<List<Product>> relatedProduct;
@@ -32,17 +32,17 @@ public class ProductViewModel extends ViewModel {
         this.categoryRepository = new CategoryRepository();
     }
 
-    public LiveData<List<Product>> getBestSellers() {
-        if (bestSellers == null) {
-            bestSellers = new MutableLiveData<>();
-            loadBestSellers();
+    public LiveData<List<Product>> getBestAgencys() {
+        if (bestAgencys == null) {
+            bestAgencys = new MutableLiveData<>();
+            loadBestAgencys();
         }
-        return bestSellers;
+        return bestAgencys;
     }
 
-    private void loadBestSellers() {
-        productRepository.fetchBestSellers().observeForever(data -> {
-            bestSellers.setValue(data);
+    private void loadBestAgencys() {
+        productRepository.fetchBestAgencys().observeForever(data -> {
+            bestAgencys.setValue(data);
         });
     }
 

@@ -1,27 +1,18 @@
 package com.example.dietarysupplementshop.interfaces;
 
-import com.example.dietarysupplementshop.model.ProductSeller;
 import com.example.dietarysupplementshop.model.ResponseModel;
-import com.example.dietarysupplementshop.requests.AddProductRequest;
 import com.example.dietarysupplementshop.requests.SearchRequest;
 import com.example.dietarysupplementshop.responses.ProductInformation;
 
-import java.util.List;
-
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import retrofit2.http.*;
 
 public interface ProductAPI {
     @GET("api/product/all-by-category/{categoryId}")
     Call<ResponseModel> getListProductByCategory(@Path("categoryId") long categoryId);
 
-    @GET("api/product/best-seller")
-    Call<ResponseModel> getListBestSellerProduct();
+    @GET("api/product/best-agency")
+    Call<ResponseModel> getListBestAgencyProduct();
 
     @GET("api/product/best-order")
     Call<ResponseModel> getListBestOrderProduct();
@@ -35,24 +26,4 @@ public interface ProductAPI {
     @POST("api/product/search")
     Call<ResponseModel> getListSearchProduct(@Body SearchRequest searchRequest);
 
-
-    // thuộc về agency
-
-    @GET("api/products")
-    Call<List<ProductSeller>> getAllSellerProducts();
-
-    @GET("api/products")
-    Call<List<ProductSeller>> getSellerProductsByStatus(@Query("status") String status);
-
-    @POST("api/products")
-    Call<ProductSeller> addProduct(@Body AddProductRequest productRequest);
-
-    @PUT("api/products/{productId}")
-    Call<ProductSeller> updateProductStatus(@Path("productId") String productId, @Query("newStatus") String newStatus);
-
-    @PUT("api/products/{productId}")
-    Call<ProductSeller> updateProduct(@Path("productId") String productId, @Body AddProductRequest productRequest);
-
-    @PUT("api/products/{productId}")
-    Call<Void> deleteProduct(String productId);
 }

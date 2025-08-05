@@ -84,11 +84,11 @@ public class CartItemCheckoutAdapter extends RecyclerView.Adapter<CartItemChecko
 
                     holder.increaseQuantityButton.setOnClickListener(view -> {
                         int currentQuantity = Integer.parseInt(holder.quantityTextView.getText().toString());
-                        if (currentQuantity < variant.getQuantity_in_stock()) {
+                        if (currentQuantity < variant.getInventory_quantity()) {
                             currentQuantity++;
                             holder.quantityTextView.setText(String.valueOf(currentQuantity));
                         }
-                        if (currentQuantity >= variant.getQuantity_in_stock()) {
+                        if (currentQuantity >= variant.getInventory_quantity()) {
                             holder.increaseQuantityButton.setVisibility(View.INVISIBLE);
                         }
                     });

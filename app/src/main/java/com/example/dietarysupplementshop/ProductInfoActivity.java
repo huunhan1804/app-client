@@ -22,7 +22,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -40,14 +39,12 @@ import com.example.dietarysupplementshop.model.Shop;
 import com.example.dietarysupplementshop.requests.AddToCartRequest;
 import com.example.dietarysupplementshop.requests.OrderRequest;
 import com.example.dietarysupplementshop.responses.ProductInformation;
-import com.example.dietarysupplementshop.repositories.Resource;
 import com.example.dietarysupplementshop.util.CircleAnimationUtil;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 import com.example.dietarysupplementshop.viewModel.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProductInfoActivity extends AppCompatActivity {
 
@@ -190,7 +187,7 @@ public class ProductInfoActivity extends AppCompatActivity {
         Shop shop = productInfo.getShop();
         if (shop != null) {
             btnViewShop.setOnClickListener(v -> {
-                Intent intent = new Intent(ProductInfoActivity.this, ShopSellerActivity.class);
+                Intent intent = new Intent(ProductInfoActivity.this, ShopAgencyActivity.class);
                 intent.putExtra("SHOP_ID", shop.getShopId());
                 intent.putExtra("SHOP_NAME", shop.getShopName());
                 startActivity(intent);

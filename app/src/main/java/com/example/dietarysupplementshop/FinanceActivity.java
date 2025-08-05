@@ -25,7 +25,7 @@ public class FinanceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seller_finance);
+        setContentView(R.layout.activity_agency_finance);
 
         backArrow = findViewById(R.id.back_arrow);
         toolbarTitle = findViewById(R.id.toolbar_title);
