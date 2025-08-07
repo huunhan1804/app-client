@@ -209,11 +209,12 @@ public class AgencyAddProductActivity extends AppCompatActivity {
         }
 
         btnAddVariant.setOnClickListener(v -> {
-            ConfiguredProductVariant newVariant = new ConfiguredProductVariant("Duy nhất", 0.0, 0.0, 0, null);
+            ConfiguredProductVariant newVariant = new ConfiguredProductVariant("", 0.0, 0.0, 0, null);
             configuredProductVariants.add(newVariant);
             addVariantRowToTable(tlVariantInputs, inflater, newVariant);
             tvNoVariantsHint.setVisibility(View.GONE);
         });
+
 
         builder.setView(dialogView);
         builder.setPositiveButton("Lưu", (dialog, which) -> {
@@ -384,7 +385,7 @@ public class AgencyAddProductActivity extends AppCompatActivity {
                 }
             } else {
                 configuredProductVariants.add(new ConfiguredProductVariant(
-                        "Duy nhất",
+                        "",
                         Double.parseDouble(productToEdit.getProduct_list_price()),
                         Double.parseDouble(productToEdit.getProduct_sale_price()),
                         productToEdit.getQuantity_in_stock(),
