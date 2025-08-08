@@ -6,14 +6,17 @@ public class UpdateAccountRequest {
     private String fullname;
     private String gender;
     private String birthday;
+    private String phone;
+
 
     public UpdateAccountRequest() {
     }
 
-    public UpdateAccountRequest(String fullname, String gender, String birthday) {
+    public UpdateAccountRequest(String fullname, String gender, String birthday, String phone) {
         this.fullname = fullname;
         this.gender = gender;
         this.birthday = birthday;
+        this.phone = phone;
     }
 
     public String getFullname() {
@@ -38,5 +41,11 @@ public class UpdateAccountRequest {
 
     public void setBirthday(String birthday) {
         this.birthday = birthday;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

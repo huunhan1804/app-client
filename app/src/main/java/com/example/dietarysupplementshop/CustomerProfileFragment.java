@@ -218,8 +218,8 @@ public class CustomerProfileFragment extends Fragment {
 
     public void onOtherFunctionClick(View view) {
         if (view.getId() == R.id.customer_support) {
-            Toast.makeText(getContext(), "Chuyển đến Trung tâm hỗ trợ", Toast.LENGTH_SHORT).show();
-
+            Intent intent = new Intent(getActivity(), SupportCenterActivity.class);
+            startActivity(intent);
         }
     }
 }

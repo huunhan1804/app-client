@@ -104,37 +104,41 @@ public class SplashActivity extends AppCompatActivity {
 
         switch (status) {
             case "APPROVED":
-                if (hasAcknowledged) {
-                    destinationActivity = AgencyMainActivity.class;
-                    Log.i(TAG, "handleLoginSuccess: Status APPROVED & Acknowledged. Navigating to AgencyMainActivity.");
+                // Ưu tiên kiểm tra trạng thái trước.
+                // Nếu đã được duyệt, mới tiếp tục kiểm tra vai trò để phân luồng.
+                if (roleCode.equals("agency")) {
+                    if (hasAcknowledged) {
+                        destinationActivity = AgencyMainActivity.class;
+                        Log.i(TAG, "handleLoginSuccess: Status APPROVED & Role AGENCY & Acknowledged. Navigating to AgencyMainActivity.");
+                    } else {
+                        destinationActivity = AgencyRegistrationStatusActivity.class;
+                        Log.i(TAG, "handleLoginSuccess: Status APPROVED & Role AGENCY & Not Acknowledged. Navigating to AgencyRegistrationStatusActivity.");
+                    }
                 } else {
-                    destinationActivity = AgencyRegistrationStatusActivity.class;
-                    Log.i(TAG, "handleLoginSuccess: Status APPROVED & Not Acknowledged. Navigating to AgencyRegistrationStatusActivity.");
+                    // Trường hợp ngoại lệ: status APPROVED nhưng role không phải agency
+                    // Có thể là lỗi từ backend, hoặc là user đã đăng ký từ lâu rồi
+                    // Nên đưa về trang chủ, có thể hiển thị thông báo lỗi
+                    destinationActivity = HomepageActivity.class;
+                    Log.w(TAG, "handleLoginSuccess: Status APPROVED but role is not AGENCY. Navigating to HomepageActivity.");
                 }
                 break;
             case "PENDING":
-                destinationActivity = AgencyRegistrationStatusActivity.class;
-                Log.i(TAG, "handleLoginSuccess: Status PENDING. Navigating to AgencyRegistrationStatusActivity.");
-                break;
             case "REJECTED":
+                // Nếu trạng thái là PENDING hoặc REJECTED, không cần quan tâm đến vai trò
+                // Chỉ cần chuyển đến màn hình trạng thái để người dùng xem thông tin
                 destinationActivity = AgencyRegistrationStatusActivity.class;
-                Log.i(TAG, "handleLoginSuccess: Status REJECTED. Navigating to AgencyRegistrationStatusActivity.");
+                Log.i(TAG, "handleLoginSuccess: Status " + status + ". Navigating to AgencyRegistrationStatusActivity.");
                 break;
             case "NOT_REGISTERED":
             default:
+                // Các trạng thái khác hoặc không xác định đều về trang chủ
                 destinationActivity = HomepageActivity.class;
-                Log.i(TAG, "handleLoginSuccess: Status NOT_REGISTERED or default. Navigating to HomepageActivity.");
+                Log.i(TAG, "handleLoginSuccess: Status " + status + " or default. Navigating to HomepageActivity.");
                 break;
         }
-        if (roleCode.equals("agency")) {
-            if (hasAcknowledged) {
-                destinationActivity = AgencyMainActivity.class;
-                Log.i(TAG, "handleLoginSuccess: Role is AGENCY & Acknowledged. Navigating to AgencyMainActivity.");
-            } else {
-                destinationActivity = AgencyRegistrationStatusActivity.class;
-                Log.i(TAG, "handleLoginSuccess: Role is AGENCY & Not Acknowledged. Navigating to AgencyRegistrationStatusActivity.");
-            }
-        }
+
+        // Xóa khối if thừa
+        // Logic này đã được lồng vào bên trong case "APPROVED" phía trên
 
         navigateTo(destinationActivity);
     }

@@ -78,7 +78,7 @@ public class ProductAgencyAdapter extends RecyclerView.Adapter<ProductAgencyAdap
 
             builder.setItems(options, (dialog, which) -> {
                 if (which == 0) {
-                    // Ẩn/hiện sản phẩm
+
                     String newStatus = product.getApprovalStatus().getStatusCode().equals("HIDDEN")
                             ? "PENDING" // Khi hiện -> chuyển về chờ duyệt
                             : "HIDDEN"; // Khi ẩn

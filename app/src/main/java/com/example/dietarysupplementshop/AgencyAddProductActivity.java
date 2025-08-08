@@ -1,11 +1,13 @@
 package com.example.dietarysupplementshop;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -273,7 +275,9 @@ public class AgencyAddProductActivity extends AppCompatActivity {
     }
 
     private void addVariantRowToTable(TableLayout tlVariantInputs, LayoutInflater inflater, ConfiguredProductVariant variant) {
+
         TableRow row = (TableRow) inflater.inflate(R.layout.variant_input_row, tlVariantInputs, false);
+
         EditText etVariantName = row.findViewById(R.id.etVariantName);
         EditText etVariantOriginPrice = row.findViewById(R.id.etVariantListPrice);
         EditText etVariantSalePrice = row.findViewById(R.id.etVariantSalePrice);
@@ -286,6 +290,13 @@ public class AgencyAddProductActivity extends AppCompatActivity {
             etVariantQuantity.setText(variant.quantityInStock >= 0 ? String.valueOf(variant.quantityInStock) : "");
         }
         tlVariantInputs.addView(row);
+        if (etVariantName != null) {
+            etVariantName.requestFocus();
+
+            // 2. Mở bàn phím ảo một cách thủ công
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(etVariantName, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     private static class ConfiguredProductVariant {

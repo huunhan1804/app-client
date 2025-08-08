@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,6 +106,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         } else if (id == R.id.editButton) {
             Toast.makeText(getContext(), "Email không thể thay đổi.", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.editPhoneButton) {
+            showPhoneDialog();
         } else if (id == R.id.editGenderButton) {
             showGenderDialog();
         } else if (id == R.id.editBirthdateButton) {
@@ -180,8 +182,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 .setItems(genders, (dialog, which) -> {
                     String newGender = genders[which];
                     genderEditText.setText(newGender);
-
-                    UpdateAccountRequest request = new UpdateAccountRequest(fullnameEditText.getText().toString(), newGender, currentBirthdate);
+                    UpdateAccountRequest request = new UpdateAccountRequest(fullnameEditText.getText().toString(), newGender, currentBirthdate, phoneEditText.getText().toString());
                     accountViewModel.updateAccountProfile(request);
                 })
                 .show();
@@ -197,17 +198,45 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             birthdateEditText.setText(newBirthdate);
             currentBirthdate = newBirthdate;
 
-            UpdateAccountRequest request = new UpdateAccountRequest(fullnameEditText.getText().toString(), genderEditText.getText().toString(), newBirthdate);
+            UpdateAccountRequest request = new UpdateAccountRequest(fullnameEditText.getText().toString(), genderEditText.getText().toString(), newBirthdate, phoneEditText.getText().toString());
             accountViewModel.updateAccountProfile(request);
 
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void showPhoneDialog() {
+        Context context = requireContext();
+        final EditText input = new EditText(context);
+        input.setHint("Nhập số điện thoại mới");
+        input.setText(phoneEditText.getText().toString());
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        new AlertDialog.Builder(context)
+                .setTitle("Cập nhật số điện thoại")
+                .setView(input)
+                .setPositiveButton("Cập nhật", (dialog, which) -> {
+                    String newPhone = input.getText().toString().trim();
+                    if (!newPhone.isEmpty()) {
+                        phoneEditText.setText(newPhone);
+
+                        UpdateAccountRequest request = new UpdateAccountRequest(
+                                fullnameEditText.getText().toString(),
+                                genderEditText.getText().toString(),
+                                currentBirthdate,
+                                newPhone
+                        );
+                        accountViewModel.updateAccountProfile(request);
+                    } else {
+                        Toast.makeText(context, "Vui lòng nhập số điện thoại hợp lệ", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     private void signOut() {
         if (getActivity() == null) return;
         MyApplication.getInstance().getTokenManager().clearTokens();
         GoogleSignIn.getClient(getActivity(), new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()).signOut();
-
         Intent intent = new Intent(getActivity(), SignInActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

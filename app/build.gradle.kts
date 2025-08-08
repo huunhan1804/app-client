@@ -53,7 +53,9 @@ android {
 
 dependencies {
     // Glide (để tải ảnh)
-    implementation ("com.github.bumptech.glide:glide:4.13.0") // Hoặc phiên bản mới nhất
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation ("com.github.bumptech.glide:glide:4.13.0")
+    implementation("com.google.firebase:firebase-database:22.0.0") // Hoặc phiên bản mới nhất
     annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
     implementation ("com.makeramen:roundedimageview:2.3.0")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")

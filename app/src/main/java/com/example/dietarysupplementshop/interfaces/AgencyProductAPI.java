@@ -18,7 +18,7 @@ import retrofit2.http.Query;
 
 public interface AgencyProductAPI {
 
-    @POST("api/agency/products/add")
+    @POST("api/agency/product/add")
     Call<ResponseModel<ProductInfoDTO>> createProduct(@Body AddNewProductRequest request);
 
     @PUT("api/agency/products/{productId}")

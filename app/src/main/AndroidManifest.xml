@@ -167,6 +167,14 @@
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
+            android:name=".SupportCenterActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".SupportCenterChatActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
             android:name=".SplashActivity"
             android:exported="true"
             android:launchMode="singleTask">

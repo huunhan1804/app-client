@@ -11,7 +11,7 @@ public interface ProductAPI {
     @GET("api/product/all-by-category/{categoryId}")
     Call<ResponseModel> getListProductByCategory(@Path("categoryId") long categoryId);
 
-    @GET("api/product/best-agency")
+    @GET("api/product/best-seller")
     Call<ResponseModel> getListBestAgencyProduct();
 
     @GET("api/product/best-order")

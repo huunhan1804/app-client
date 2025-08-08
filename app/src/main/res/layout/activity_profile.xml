@@ -16,13 +16,15 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            app:navigationIcon="@drawable/ic_arrow_back"
             app:title="Hồ sơ"
-            app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_arrow_back" /> <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/profile_fragment_container"
-        android:name="com.example.dietarysupplementshop.ProfileFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+            app:titleTextColor="@color/white" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/profile_fragment_container"
+            android:name="com.example.dietarysupplementshop.ProfileFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
@@ -31,9 +33,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#80000000"
-        android:visibility="gone"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:visibility="gone">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animationView"

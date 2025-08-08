@@ -163,7 +163,7 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
 
     private void updateUIForStatus(String status) {
         Log.d(TAG, "updateUIForStatus called with status: " + status);
-
+        String trimmedStatus = status != null ? status.trim() : "NOT_REGISTERED";
         btnGoToAgencyChannel.setVisibility(View.GONE);
         btnViewRejectionReason.setVisibility(View.GONE);
         btnReapply.setVisibility(View.GONE);
@@ -172,7 +172,7 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
         btnGoToHomepage.setVisibility(View.GONE);
 
 
-        switch (status) {
+        switch (trimmedStatus) {
             case STATUS_PENDING:
                 imgStatusIcon.setImageResource(R.drawable.ic_status_pending);
                 tvStatusMainMessage.setText(R.string.status_pending_title);

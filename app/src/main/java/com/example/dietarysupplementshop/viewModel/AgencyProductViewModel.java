@@ -57,12 +57,11 @@ public class AgencyProductViewModel extends ViewModel {
                     }
                 });
     }
-
     public void deleteProduct(long productId) {
         _isLoading.setValue(true);
         productRepository.deleteProduct(productId, new AgencyProductRepository.ApiCallback<ProductInfoDTO>() {
             @Override
-            public void onSuccess(ProductInfoDTO result) { // Sửa Void thành ProductInfoDTO
+            public void onSuccess(ProductInfoDTO result) {
                 loadAllAgencyProducts();
                 _isLoading.postValue(false);
             }

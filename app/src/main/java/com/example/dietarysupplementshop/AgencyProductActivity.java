@@ -31,7 +31,7 @@ public class AgencyProductActivity extends AppCompatActivity implements ProductA
     private AgencyProductPagerAdapter pagerAdapter;
     private AgencyProductViewModel viewModel;
     private ProgressBar progressBar;
-    private List<ProductInfoDTO> allProducts = new ArrayList<>(); // Đã đổi sang ProductInfoDTO
+    private List<ProductInfoDTO> allProducts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
