@@ -1,79 +1,92 @@
 package com.example.dietarysupplementshop;
 
+
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
-import com.example.dietarysupplementshop.adapter.ProductAdapter; // Dùng lại adapter sản phẩm
+import com.example.dietarysupplementshop.adapter.ProductAdapter;
 import com.example.dietarysupplementshop.repositories.Resource;
-import com.example.dietarysupplementshop.viewModel.ShopViewModel;
+import com.example.dietarysupplementshop.viewModel.ProductViewModel;
+
 import java.util.ArrayList;
 
 public class ShopAgencyActivity extends AppCompatActivity {
-
-    private ShopViewModel shopViewModel;
-    private ImageView backArrow, shopAvatar;
-    private TextView agencyName;
-    private RecyclerView productRecyclerView;
     private ProductAdapter productAdapter;
+    private RecyclerView recyclerView;
+    private ProductViewModel productViewModel;
+    private ImageView shopAvatarImageView;
+    private TextView shopNameTextView;
+    private ProgressBar progressBar;
 
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_agency);
 
-        initViews();
-        shopViewModel = new ViewModelProvider(this).get(ShopViewModel.class);
+        shopAvatarImageView = findViewById(R.id.shopAvatarImageView);
+        shopNameTextView = findViewById(R.id.shopNameTextView);
+        recyclerView = findViewById(R.id.recyclerViewShopProduct);
+        progressBar = findViewById(R.id.progressBar);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        long shopId = getIntent().getLongExtra("SHOP_ID", -1);
+        long agencyId = getIntent().getLongExtra("SHOP_ID", -1);
         String shopName = getIntent().getStringExtra("SHOP_NAME");
+        String shopAvatar = getIntent().getStringExtra("SHOP_AVATAR");
+        String shopAddress = getIntent().getStringExtra("SHOP_ADDRESS");
+        String shopPhone = getIntent().getStringExtra("SHOP_PHONE");
+        String shopEmail = getIntent().getStringExtra("SHOP_EMAIL");
 
-        if (shopName != null) {
-            agencyName.setText(shopName);
-        }
-
-        if (shopId != -1) {
-            setupRecyclerView();
-            observeViewModel(shopId);
-        } else {
+        if (agencyId == -1) {
             Toast.makeText(this, "Không tìm thấy thông tin shop", Toast.LENGTH_SHORT).show();
             finish();
+            return;
         }
-    }
 
-    private void initViews() {
-        backArrow = findViewById(R.id.back_arrow_shop_agency);
-        shopAvatar = findViewById(R.id.shopAvatarImageView);
-        agencyName = findViewById(R.id.agency_name);
-        productRecyclerView = findViewById(R.id.product_recycler_view);
+        shopNameTextView.setText(shopName);
+        if (shopAvatar != null) {
+            Glide.with(this).load(shopAvatar).into(shopAvatarImageView);
+        } else {
+            shopAvatarImageView.setImageResource(R.drawable.logo_2);
+        }
 
-        backArrow.setOnClickListener(v -> finish());
-    }
-
-    private void setupRecyclerView() {
-        productRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         productAdapter = new ProductAdapter(new ArrayList<>(), this);
-        productRecyclerView.setAdapter(productAdapter);
-    }
+        recyclerView.setAdapter(productAdapter);
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
-    private void observeViewModel(long shopId) {
-        shopViewModel.getShopDetails(shopId).observe(this, resource -> {
-            if (resource.getStatus() == Resource.Status.SUCCESS && resource.getData() != null) {
-                agencyName.setText(resource.getData().getShopName());
-                Glide.with(this).load(resource.getData().getAvatarUrl()).into(shopAvatar);
-            }
-        });
-
-        shopViewModel.getShopProducts(shopId, 0).observe(this, resource -> {
-            if (resource.getStatus() == Resource.Status.SUCCESS && resource.getData() != null) {
-                productAdapter.updateProducts(resource.getData().getContent());
-            } else if (resource.getStatus() == Resource.Status.ERROR) {
-                Toast.makeText(this, resource.getMessage(), Toast.LENGTH_SHORT).show();
+        productViewModel.getProductByAgency(agencyId).observe(this, resource -> {
+            if (resource != null) {
+                switch (resource.getStatus()) {
+                    case LOADING:
+                        progressBar.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                        break;
+                    case SUCCESS:
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        if (resource.getData() != null) {
+                            productAdapter.updateProducts(resource.getData());
+                        }
+                        break;
+                    case ERROR:
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        Toast.makeText(this, "Lỗi: " + resource.getMessage(), Toast.LENGTH_LONG).show();
+                        break;
+                }
             }
         });
     }

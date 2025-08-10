@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp">
 
@@ -16,6 +15,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Trạng thái + tồn kho -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,8 +28,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Trạng thái: Còn hàng"
-                android:textColor="#333333"
+                android:text="Trạng thái: Đã duyệt"
+                android:textColor="#333"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -38,19 +38,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="Tồn kho:"
-                android:textColor="#666666"
+                android:textColor="#666"
                 android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tvStockQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="97"
-                android:textColor="#333333"
+                android:textColor="#333"
                 android:textSize="13sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="97" />
         </LinearLayout>
 
+        <!-- Ảnh + tên + giá -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,7 +66,8 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/rounded_card_background"
                 android:scaleType="centerCrop"
-                android:src="@drawable/product_image" />
+                android:src="@drawable/product_image"
+                android:contentDescription="@string/product_image_description" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -80,21 +82,22 @@
                     android:layout_marginBottom="4dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:text="[ảnh thật] Suit 3 Chi Tiết Cổ Rời Yếm Ren Rời Cho Bé"
                     android:textColor="@android:color/black"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    tools:text="[ảnh thật] Suit 3 Chi Tiết Cổ Rời Yếm Ren Rời Cho Bé" />
 
                 <TextView
                     android:id="@+id/productPriceTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="₫140.000 - ₫290.000"
                     android:textColor="@color/color_app"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="₫140.000 - ₫290.000" />
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Đã bán -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -106,21 +109,20 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="4dp"
-                android:contentDescription="Sold"
                 android:src="@drawable/sold"
-                app:tint="#666666" />
+                app:tint="#666"
+                android:contentDescription="@string/sold_icon_description" />
 
             <TextView
                 android:id="@+id/tvSold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="3"
-                android:textColor="#666666"
-                android:textSize="13sp" />
-
+                android:textColor="#666"
+                android:textSize="13sp"
+                tools:text="3" />
         </LinearLayout>
 
+        <!-- Nút hành động -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -131,22 +133,24 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
+                android:layout_marginEnd="8dp"
                 android:text="Sửa"
-                android:textColor="@color/color_app"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <Button
-                android:id="@+id/btnActionMore"
+                android:id="@+id/btnActionDelete"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_weight="1"
-                android:text="..."
-                android:textColor="@color/color_app"
-                android:textSize="14sp" />
-
+                android:layout_marginEnd="8dp"
+                android:text="Xóa"
+                android:textSize="14sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

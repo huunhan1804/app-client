@@ -9,8 +9,8 @@ import com.example.dietarysupplementshop.ProductListFragment;
 
 public class AgencyProductPagerAdapter extends FragmentStateAdapter {
 
-    private final String[] tabTitles = {"Còn hàng", "Hết hàng", "Chờ duyệt", "Vi phạm", "Ẩn"};
-    private final String[] statusCodes = {"APPROVED", "OUT_OF_STOCK", "PENDING", "REJECTED", "HIDDEN"};
+    private final String[] tabTitles = {"Đã duyệt", "Chờ duyệt", "Từ chối"};
+    private final String[] statusCodes = {"APPROVED", "PENDING", "REJECTED"};
 
     public AgencyProductPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);

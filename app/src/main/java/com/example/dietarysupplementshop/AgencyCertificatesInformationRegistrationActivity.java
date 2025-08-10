@@ -165,7 +165,7 @@ public class AgencyCertificatesInformationRegistrationActivity extends AppCompat
 
                             // Thêm log để kiểm tra lại dữ liệu sau khi có đủ URL ảnh CCCD
                             Log.d("PRE_DIALOG_FINAL_CHECK", "AgencyRegistrationData before final dialog: " +
-                                    "Shop Name: " + agencyRegistrationData.getShopName() +
+                                    "ShopInfo Name: " + agencyRegistrationData.getShopName() +
                                     ", Address: " + agencyRegistrationData.getAddress() +
                                     ", Email: " + agencyRegistrationData.getEmail() +
                                     ", Phone: " + agencyRegistrationData.getPhoneNumber() +
@@ -463,7 +463,7 @@ public class AgencyCertificatesInformationRegistrationActivity extends AppCompat
         confirmationMessage.append("Chứng chỉ chuyên môn: ").append(data.getProfessionalCertificateUrl() != null ? data.getProfessionalCertificateUrl() : "Chưa có").append("\n");
         confirmationMessage.append("Chứng chỉ học vị: ").append(data.getDiplomaCertificateUrl() != null ? data.getDiplomaCertificateUrl() : "Chưa có");
         Log.d("CONFIRM_DATA_DEBUG", "AgencyRegistrationData before dialog: " +
-                "Shop Name: " + data.getShopName() +
+                "ShopInfo Name: " + data.getShopName() +
                 ", Address: " + data.getAddress() +
                 ", Email: " + data.getEmail() +
                 ", Phone: " + data.getPhoneNumber() +

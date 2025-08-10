@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/message_sent_background"
         android:padding="10dp"
-        android:text="Xin chào shop ạ!"
+        android:text="Xin chào shopInfo ạ!"
         android:textColor="@color/white"
         android:textSize="16sp" />
 </LinearLayout>

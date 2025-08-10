@@ -6,7 +6,6 @@ import java.util.List;
 
 public class ProductAgency {
     private long product_id;
-    private long application_id;
     private String product_name;
     private String product_description;
     private List<String> image_url;

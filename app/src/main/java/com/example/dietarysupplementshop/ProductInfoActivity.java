@@ -1,6 +1,7 @@
 package com.example.dietarysupplementshop;
 
 import android.animation.Animator;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -32,13 +35,17 @@ import com.bumptech.glide.Glide;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.example.dietarysupplementshop.adapter.FeedbackAdapter;
 import com.example.dietarysupplementshop.adapter.ProductAdapter;
 import com.example.dietarysupplementshop.model.Address;
 import com.example.dietarysupplementshop.model.OrderDetail;
-import com.example.dietarysupplementshop.model.Shop;
+import com.example.dietarysupplementshop.repositories.Resource;
+import com.example.dietarysupplementshop.requests.AddFeedbackRequest;
 import com.example.dietarysupplementshop.requests.AddToCartRequest;
 import com.example.dietarysupplementshop.requests.OrderRequest;
+import com.example.dietarysupplementshop.responses.FeedbackDTO;
 import com.example.dietarysupplementshop.responses.ProductInformation;
+import com.example.dietarysupplementshop.responses.ShopInfoDTO;
 import com.example.dietarysupplementshop.util.CircleAnimationUtil;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 import com.example.dietarysupplementshop.viewModel.ProductViewModel;
@@ -71,17 +78,53 @@ public class ProductInfoActivity extends AppCompatActivity {
     private boolean isDescriptionExpanded = false;
     private ProductInformation currentProductInformation;
     private View viewForPopup;
-
+    private RatingBar averageRatingBar;
+    private TextView totalFeedbackText;
+    private RecyclerView feedbackRecyclerView;
+    private Button btnWriteFeedback;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_info);
-
         initViews();
         initViewModels();
         setupRecyclerViews();
         setupStaticClickListeners();
         getIntentData();
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        feedbackRecyclerView = findViewById(R.id.feedbackRecyclerView);
+        totalFeedbackText = findViewById(R.id.totalFeedbackText);
+        averageRatingBar = findViewById(R.id.averageRatingBar);
+
+        // Lấy productId từ Intent
+        long productId = getIntent().getLongExtra("productId", -1);
+
+        // Lắng nghe dữ liệu ProductInformation
+        if (productId != -1) {
+            productViewModel.getProductInformation(productId).observe(this, productInfo -> {
+                if (productInfo != null && productInfo.getFeedback_list() != null) {
+                    List<FeedbackDTO> feedbackList = productInfo.getFeedback_list();
+
+                    if (!feedbackList.isEmpty()) {
+                        feedbackRecyclerView.setVisibility(View.VISIBLE);
+                        totalFeedbackText.setText("(" + feedbackList.size() + " đánh giá)");
+                        feedbackRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                        feedbackRecyclerView.setAdapter(new FeedbackAdapter(feedbackList));
+                    } else {
+                        // Ẩn RecyclerView nếu không có feedback
+                        feedbackRecyclerView.setVisibility(View.GONE);
+                        totalFeedbackText.setText("(0 đánh giá)");
+                    }
+                    // Hiển thị điểm rating trung bình
+                    averageRatingBar.setRating((float) productInfo.getRating());
+                } else {
+                    // Xử lý trường hợp không có dữ liệu
+                    feedbackRecyclerView.setVisibility(View.GONE);
+                    totalFeedbackText.setText("(0 đánh giá)");
+                    averageRatingBar.setRating(0f);
+                }
+            });
+        }
     }
 
     private void initViews() {
@@ -99,6 +142,10 @@ public class ProductInfoActivity extends AppCompatActivity {
         shopNameTextView = findViewById(R.id.shopNameTextView);
         rcvRelatedProduct = findViewById(R.id.recyclerView);
         relatedProductsTitle = findViewById(R.id.textRelatedProduct);
+        feedbackRecyclerView = findViewById(R.id.feedbackRecyclerView);
+        averageRatingBar = findViewById(R.id.averageRatingBar);
+        totalFeedbackText = findViewById(R.id.totalFeedbackText);
+        btnWriteFeedback = findViewById(R.id.btnWriteFeedback);
     }
 
     private void initViewModels() {
@@ -124,6 +171,9 @@ public class ProductInfoActivity extends AppCompatActivity {
     }
 
     private void setupStaticClickListeners() {
+        btnWriteFeedback.setOnClickListener(v -> {
+            showFeedbackPopup();
+        });
         backButton.setOnClickListener(v -> finish());
         readMoreTextView.setOnClickListener(v -> toggleDescription());
         chatIcon.setOnClickListener(v -> {
@@ -131,17 +181,65 @@ public class ProductInfoActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+    private void showFeedbackPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_feedback, null); // Cần tạo layout này
+        builder.setView(dialogView);
+        RatingBar ratingBar = dialogView.findViewById(R.id.ratingBarInput);
+        EditText commentInput = dialogView.findViewById(R.id.etComment);
+
+        builder.setTitle("Viết đánh giá của bạn");
+        builder.setPositiveButton("Gửi", (dialog, which) -> {
+            // Lấy dữ liệu từ dialog
+            int rating = (int) ratingBar.getRating();
+            String comment = commentInput.getText().toString();
+
+            if (currentProductInformation != null && rating > 0) {
+                AddFeedbackRequest request = new AddFeedbackRequest(currentProductInformation.getProduct_id(), rating, comment);
+                productViewModel.addFeedback(request).observe(this, resource -> {
+                    if (resource.getStatus() == Resource.Status.SUCCESS) {
+                        Toast.makeText(this, "Đánh giá của bạn đã được gửi!", Toast.LENGTH_SHORT).show();
+                        // Cập nhật lại UI hoặc tải lại dữ liệu feedback
+                    } else if (resource.getStatus() == Resource.Status.ERROR) {
+                        Toast.makeText(this, "Lỗi: " + resource.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Vui lòng chọn số sao để đánh giá.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+//    private void observeProductData(long productId) {
+//        productViewModel.getProductInformation(productId).observe(this, productInfo -> {
+//            if (productInfo != null) {
+//                ShopInfoDTO shopInfo = productInfo.getShop_info();
+//                // Nếu shopInfo có thể null, bạn kiểm tra trước khi dùng
+//                if (shopInfo != null) {
+//                    updateShopInfo(shopInfo);
+//                }
+//                updateUI(productInfo);
+//            }
+//        });
+//    }
 
     private void observeProductData(long productId) {
         productViewModel.getProductInformation(productId).observe(this, productInfo -> {
             if (productInfo != null) {
-                Shop fakeShop = new Shop(1L, "Cửa Hàng Dinh Dưỡng ABC (Test)", "https://picsum.photos/id/1025/200");
-                productInfo.setShop(fakeShop);
+                // Gán giá trị cho biến
+                currentProductInformation = productInfo;
 
+                ShopInfoDTO shopInfo = productInfo.getShop_info();
+                if (shopInfo != null) {
+                    updateShopInfo(shopInfo);
+                }
                 updateUI(productInfo);
             }
         });
     }
+
     private void observeRelatedProducts(long productId) {
         productViewModel.getListRelatedProduct(productId).observe(this, products -> {
             if (products != null && !products.isEmpty()) {
@@ -169,27 +267,33 @@ public class ProductInfoActivity extends AppCompatActivity {
         imageSlider.setImageList(slideModels, ScaleTypes.FIT);
 
         updateDescription(productInfo.getProduct_description());
-        updateShopInfo(productInfo.getShop());
+        updateShopInfo(productInfo.getShop_info());
         setupDynamicClickListeners(productInfo);
     }
 
-    private void updateShopInfo(Shop shop) {
-        if (shop != null) {
+
+    private void updateShopInfo(ShopInfoDTO shopInfo) {
+        if (shopInfo != null) {
             findViewById(R.id.shopInfoContainer).setVisibility(View.VISIBLE);
-            shopNameTextView.setText(shop.getShopName());
-            Glide.with(this).load(shop.getAvatarUrl()).placeholder(R.drawable.logo_2).into(shopAvatarImageView);
+            shopNameTextView.setText(shopInfo.getShopName());
+            Glide.with(this)
+                    .load(shopInfo.getShopAvatar())
+                    .placeholder(R.drawable.logo_2)
+                    .into(shopAvatarImageView);
         } else {
             findViewById(R.id.shopInfoContainer).setVisibility(View.GONE);
         }
     }
 
+
     private void setupDynamicClickListeners(ProductInformation productInfo) {
-        Shop shop = productInfo.getShop();
-        if (shop != null) {
+        ShopInfoDTO shopInfo = productInfo.getShop_info();
+        if (shopInfo != null) {
             btnViewShop.setOnClickListener(v -> {
                 Intent intent = new Intent(ProductInfoActivity.this, ShopAgencyActivity.class);
-                intent.putExtra("SHOP_ID", shop.getShopId());
-                intent.putExtra("SHOP_NAME", shop.getShopName());
+                intent.putExtra("SHOP_ID", shopInfo.getShopId());
+                intent.putExtra("SHOP_NAME", shopInfo.getShopName());
+                intent.putExtra("SHOP_AVATAR", shopInfo.getShopAvatar());
                 startActivity(intent);
             });
         }

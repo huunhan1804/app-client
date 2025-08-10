@@ -1,5 +1,6 @@
 package com.example.dietarysupplementshop;
 
+
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,12 +51,24 @@ public class ProductListFragment extends Fragment implements ProductAgencyAdapte
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ProductAgencyAdapter(getContext(), productList, this, viewModel);
         recyclerView.setAdapter(adapter);
+
+        // Lắng nghe LiveData dựa trên statusCode của fragment
+        if ("APPROVED".equals(statusCode)) {
+            viewModel.approvedProducts.observe(getViewLifecycleOwner(), this::updateProductList);
+        } else if ("PENDING".equals(statusCode)) {
+            viewModel.pendingProducts.observe(getViewLifecycleOwner(), this::updateProductList);
+        } else if ("REJECTED".equals(statusCode)) {
+            viewModel.rejectedProducts.observe(getViewLifecycleOwner(), this::updateProductList);
+        }
+
         return view;
     }
 
     public void updateProductList(List<ProductInfoDTO> products) {
         productList.clear();
-        productList.addAll(products);
+        if (products != null) {
+            productList.addAll(products);
+        }
         if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
@@ -63,11 +76,13 @@ public class ProductListFragment extends Fragment implements ProductAgencyAdapte
 
     @Override
     public void onEditProduct(ProductInfoDTO product) {
+        // Gọi phương thức từ Activity để xử lý việc chuyển màn hình
         ((ProductAgencyAdapter.OnProductActionListener) requireActivity()).onEditProduct(product);
     }
 
     @Override
     public void onDeleteProduct(ProductInfoDTO product) {
+        // Gọi phương thức từ Activity để xử lý việc xóa
         ((ProductAgencyAdapter.OnProductActionListener) requireActivity()).onDeleteProduct(product);
     }
 }

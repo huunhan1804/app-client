@@ -7,12 +7,15 @@ import com.example.dietarysupplementshop.interfaces.ProductAPI;
 import com.example.dietarysupplementshop.interfaces.RetrofitClient;
 import com.example.dietarysupplementshop.model.Product;
 import com.example.dietarysupplementshop.model.ResponseModel;
+import com.example.dietarysupplementshop.requests.AddFeedbackRequest;
 import com.example.dietarysupplementshop.requests.SearchRequest;
+import com.example.dietarysupplementshop.responses.FeedbackDTO;
 import com.example.dietarysupplementshop.responses.ProductInformation;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -49,6 +52,29 @@ public class ProductRepository {
         }
         callback.onError(errorMessage);
     }
+    public LiveData<Resource<FeedbackDTO>> addFeedback(AddFeedbackRequest request) {
+        MutableLiveData<Resource<FeedbackDTO>> data = new MutableLiveData<>();
+        data.setValue(Resource.loading(null));
+        productAPI.addFeedback(request).enqueue(new Callback<ResponseModel<FeedbackDTO>>() {
+            @Override
+            public void onResponse(Call<ResponseModel<FeedbackDTO>> call, Response<ResponseModel<FeedbackDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().isSuccess()) {
+                        data.setValue(Resource.success(response.body().getData()));
+                    } else {
+                        data.setValue(Resource.error(response.body().getMessage(), null));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel<FeedbackDTO>> call, Throwable t) {
+                data.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+        return data;
+    }
+
 
     public LiveData<List<Product>> fetchBestAgencys() {
         MutableLiveData<List<Product>> data = new MutableLiveData<>();
@@ -99,6 +125,7 @@ public class ProductRepository {
         return data;
     }
 
+
     public LiveData<List<Product>> fetchRelated(long productId) {
         MutableLiveData<List<Product>> data = new MutableLiveData<>();
         productAPI.getListRelatedProduct(productId).enqueue(new Callback<ResponseModel>() {
@@ -115,6 +142,7 @@ public class ProductRepository {
         });
         return data;
     }
+
     public LiveData<Resource<List<Product>>> fetchProductResult(SearchRequest searchRequest) {
         MutableLiveData<Resource<List<Product>>> data = new MutableLiveData<>();
         data.setValue(Resource.loading(null));
@@ -162,6 +190,30 @@ public class ProductRepository {
         });
         return data;
     }
+    public LiveData<Resource<List<Product>>> getProductByAgency(Long agencyId) {
+        MutableLiveData<Resource<List<Product>>> data = new MutableLiveData<>();
+        data.setValue(Resource.loading(null));
+        productAPI.getListProductByAgency(agencyId).enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Type listType = new TypeToken<List<Product>>() {
+                    }.getType();
+                    List<Product> productList = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
+                    data.setValue(Resource.success(productList));
+                } else {
+                    handleErrorResponse(response, data);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                data.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+        return data;
+    }
+
     private void handleErrorResponse(Response<?> response, MutableLiveData<Resource<List<Product>>> data) {
         String errorMessage = "Lỗi không xác định.";
         if (response.errorBody() != null) {
@@ -176,5 +228,4 @@ public class ProductRepository {
         }
         data.setValue(Resource.error(errorMessage, null));
     }
-
 }

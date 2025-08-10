@@ -1,19 +1,19 @@
-package com.example.dietarysupplementshop.model;
+package com.example.dietarysupplementshop.responses;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
-public class ApprovalStatus implements Serializable {
-    @SerializedName("status_id")
+public class ApprovalStatusDTO implements Serializable {
+    @SerializedName("statusId")
     private int statusId;
 
-    @SerializedName("status_code")
+    @SerializedName("statusCode")
     private String statusCode;
 
-    @SerializedName("status_name")
+    @SerializedName("statusName")
     private String statusName;
 
+    // Getters and Setters
     public int getStatusId() { return statusId; }
     public void setStatusId(int statusId) { this.statusId = statusId; }
     public String getStatusCode() { return statusCode; }

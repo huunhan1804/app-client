@@ -104,7 +104,7 @@ public class AgencyMainActivity extends AppCompatActivity {
             }
         });
 
-        // Gán listener cho TextView "Xem Shop"
+        // Gán listener cho TextView "Xem ShopInfo"
         tvViewShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +113,7 @@ public class AgencyMainActivity extends AppCompatActivity {
                 // Ví dụ: Long currentAgencyShopId = ...; String currentAgencyShopName = ...;
                 // Để đơn giản, tôi sẽ dùng giá trị mặc định hoặc giả định.
                 long dummyShopId = 1; // Thay bằng ID shop thực tế của người bán hiện tại
-                String dummyShopName = "Shop của tôi"; // Thay bằng tên shop thực tế
+                String dummyShopName = "ShopInfo của tôi"; // Thay bằng tên shop thực tế
                 Intent intent = new Intent(AgencyMainActivity.this, ShopAgencyActivity.class);
                 intent.putExtra("SHOP_ID", dummyShopId);
                 intent.putExtra("SHOP_NAME", dummyShopName);

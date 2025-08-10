@@ -1,3 +1,4 @@
+// File: com/example/dietarysupplementshop/viewModel/AgencyAddProductViewModel.java
 package com.example.dietarysupplementshop.viewModel;
 
 import android.net.Uri;
@@ -11,12 +12,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import com.example.dietarysupplementshop.repositories.AgencyProductRepository; // Sử dụng repository mới
+import com.example.dietarysupplementshop.repositories.AgencyProductRepository;
 import com.example.dietarysupplementshop.requests.AddNewProductRequest;
-import com.example.dietarysupplementshop.requests.AddProductVariantsRequest; // Thêm import
 import com.example.dietarysupplementshop.requests.UpdateProductRequest;
-import com.example.dietarysupplementshop.responses.ProductInfoDTO;
-import com.example.dietarysupplementshop.model.ProductAgency;
+import com.example.dietarysupplementshop.responses.ProductFullDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +23,20 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class AgencyAddProductViewModel extends ViewModel {
-    private final AgencyProductRepository productRepository; // Sử dụng repository mới
+    private final AgencyProductRepository productRepository;
     private final FirebaseStorage storage;
 
-    // LiveData giữ nguyên
-    private final MutableLiveData<Boolean> _isAddingProduct = new MutableLiveData<>(false);
-    public LiveData<Boolean> isAddingProduct = _isAddingProduct;
+    private final MutableLiveData<Boolean> _isProcessing = new MutableLiveData<>(false);
+    public LiveData<Boolean> isProcessing = _isProcessing;
 
-    private final MutableLiveData<Boolean> _productAddedSuccessfully = new MutableLiveData<>(false);
-    public LiveData<Boolean> productAddedSuccessfully = _productAddedSuccessfully;
+    private final MutableLiveData<Boolean> _actionSuccessful = new MutableLiveData<>(false);
+    public LiveData<Boolean> actionSuccessful = _actionSuccessful;
 
     private final MutableLiveData<String> _errorMessage = new MutableLiveData<>();
     public LiveData<String> errorMessage = _errorMessage;
 
-    private final MutableLiveData<ProductInfoDTO> _productToEdit = new MutableLiveData<>();
-    public LiveData<ProductInfoDTO> productToEdit = _productToEdit;
+    private final MutableLiveData<ProductFullDTO> _productToEdit = new MutableLiveData<>();
+    public LiveData<ProductFullDTO> productToEdit = _productToEdit;
 
     public interface UploadImageCallback {
         void onSuccess(List<String> imageUrls);
@@ -46,47 +44,79 @@ public class AgencyAddProductViewModel extends ViewModel {
     }
 
     public AgencyAddProductViewModel() {
-        productRepository = new AgencyProductRepository(); // Khởi tạo repository mới
+        productRepository = new AgencyProductRepository();
         storage = FirebaseStorage.getInstance();
     }
 
     public void uploadImages(List<Uri> imageUris, @NonNull final UploadImageCallback callback) {
-        // Giữ nguyên logic upload ảnh
+        if (imageUris == null || imageUris.isEmpty()) {
+            callback.onSuccess(new ArrayList<>());
+            return;
+        }
+
+        List<Task<Uri>> uploadTasks = new ArrayList<>();
+        for (Uri uri : imageUris) {
+            StorageReference imageRef = storage.getReference().child("product_images/" + UUID.randomUUID().toString());
+            uploadTasks.add(imageRef.putFile(uri).continueWithTask(task -> {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                return imageRef.getDownloadUrl();
+            }));
+        }
+
+        Tasks.whenAllSuccess(uploadTasks)
+                .addOnSuccessListener(list -> callback.onSuccess(
+                        list.stream().map(Object::toString).collect(Collectors.toList())))
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
     }
 
     public void createProduct(AddNewProductRequest request) {
-        _isAddingProduct.setValue(true);
-        productRepository.createProduct(request, new AgencyProductRepository.ApiCallback<ProductInfoDTO>() {
+        _isProcessing.setValue(true);
+        productRepository.createProduct(request, new AgencyProductRepository.ApiCallback<ProductFullDTO>() {
             @Override
-            public void onSuccess(ProductInfoDTO result) {
-                _productAddedSuccessfully.postValue(true);
-                _isAddingProduct.postValue(false);
+            public void onSuccess(ProductFullDTO result) {
+                _actionSuccessful.postValue(true);
+                _isProcessing.postValue(false);
             }
             @Override
             public void onError(String errorMessage) {
                 _errorMessage.postValue(errorMessage);
-                _isAddingProduct.postValue(false);
+                _isProcessing.postValue(false);
             }
         });
     }
 
     public void updateProduct(Long productId, UpdateProductRequest request) {
-        _isAddingProduct.setValue(true);
-        productRepository.updateProduct(productId, request, new AgencyProductRepository.ApiCallback<ProductInfoDTO>() {
+        _isProcessing.setValue(true);
+        productRepository.updateProduct(productId, request, new AgencyProductRepository.ApiCallback<ProductFullDTO>() {
             @Override
-            public void onSuccess(ProductInfoDTO result) {
-                _productAddedSuccessfully.postValue(true);
-                _isAddingProduct.postValue(false);
+            public void onSuccess(ProductFullDTO result) {
+                _actionSuccessful.postValue(true);
+                _isProcessing.postValue(false);
             }
             @Override
             public void onError(String errorMessage) {
                 _errorMessage.postValue(errorMessage);
-                _isAddingProduct.postValue(false);
+                _isProcessing.postValue(false);
             }
         });
     }
 
-    public void loadProductForEdit(ProductInfoDTO product) {
-        _productToEdit.setValue(product);
+    public void loadProductForEdit(Long productId) {
+        _isProcessing.setValue(true);
+        productRepository.getProductDetails(productId, new AgencyProductRepository.ApiCallback<ProductFullDTO>() {
+            @Override
+            public void onSuccess(ProductFullDTO result) {
+                _productToEdit.postValue(result);
+                _isProcessing.postValue(false);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                _errorMessage.postValue(errorMessage);
+                _isProcessing.postValue(false);
+            }
+        });
     }
 }

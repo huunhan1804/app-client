@@ -127,11 +127,11 @@ public class AddToCartHandling {
         ImageButton increaseQuantityButton = popupView.findViewById(R.id.increaseQuantityButton);
         increaseQuantityButton.setOnClickListener(view -> {
             int currentQuantity = Integer.parseInt(quantityTextView.getText().toString());
-            if (currentQuantity < variant.getInventory_quantity()) {
+            if (currentQuantity < variant.getQuantity_in_stock()) {
                 currentQuantity++;
                 quantityTextView.setText(String.valueOf(currentQuantity));
             }
-            if (currentQuantity >= variant.getInventory_quantity()) {
+            if (currentQuantity >= variant.getQuantity_in_stock()) {
                 increaseQuantityButton.setVisibility(View.INVISIBLE);
             }
         });

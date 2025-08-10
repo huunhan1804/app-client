@@ -1,10 +1,10 @@
+// File: com/example/dietarysupplementshop/requests/AddProductVariantsRequest.java
 package com.example.dietarysupplementshop.requests;
 
 import java.io.Serializable;
 
 public class AddProductVariantsRequest implements Serializable {
 
-    private Long product_variant_id;
     private String product_variant_name;
     private double list_price;
     private double sale_price;
@@ -14,6 +14,7 @@ public class AddProductVariantsRequest implements Serializable {
     public AddProductVariantsRequest() {
     }
 
+    // ĐÃ SỬA: Constructor để khớp với logic tạo mới
     public AddProductVariantsRequest(String product_variant_name, double list_price, double sale_price, int inventory_quantity, int sold_amount) {
         this.product_variant_name = product_variant_name;
         this.list_price = list_price;
@@ -22,22 +23,7 @@ public class AddProductVariantsRequest implements Serializable {
         this.sold_amount = sold_amount;
     }
 
-    public AddProductVariantsRequest(Long product_variant_id, String product_variant_name, double list_price, double sale_price, int inventory_quantity, int sold_amount) {
-        this.product_variant_id = product_variant_id;
-        this.product_variant_name = product_variant_name;
-        this.list_price = list_price;
-        this.sale_price = sale_price;
-        this.inventory_quantity = inventory_quantity;
-        this.sold_amount = sold_amount;
-    }
-
-    public Long getProduct_variant_id() {
-        return product_variant_id;
-    }
-
-    public void setProduct_variant_id(Long product_variant_id) {
-        this.product_variant_id = product_variant_id;
-    }
+    // ĐÃ XÓA constructor với product_variant_id
 
     public String getProduct_variant_name() {
         return product_variant_name;

@@ -19,7 +19,25 @@ import com.example.dietarysupplementshop.viewModel.AgencyProductViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.example.dietarysupplementshop.adapter.ProductAgencyAdapter;
+import com.example.dietarysupplementshop.adapter.AgencyProductPagerAdapter;
+import com.example.dietarysupplementshop.responses.ProductInfoDTO;
+import com.example.dietarysupplementshop.viewModel.AgencyProductViewModel;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,7 +49,7 @@ public class AgencyProductActivity extends AppCompatActivity implements ProductA
     private AgencyProductPagerAdapter pagerAdapter;
     private AgencyProductViewModel viewModel;
     private ProgressBar progressBar;
-    private List<ProductInfoDTO> allProducts = new ArrayList<>();
+    private Button addNewProductButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +58,7 @@ public class AgencyProductActivity extends AppCompatActivity implements ProductA
 
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.productsViewPager);
-        Button addNewProductButton = findViewById(R.id.addNewProductButton);
-        ImageView backButton = findViewById(R.id.backButton);
-        ImageView searchButton = findViewById(R.id.searchButton);
-        ImageView chatButton = findViewById(R.id.chatButton);
+        addNewProductButton = findViewById(R.id.addNewProductButton);
         progressBar = findViewById(R.id.progressBar);
 
         viewModel = new ViewModelProvider(this).get(AgencyProductViewModel.class);
@@ -58,21 +73,22 @@ public class AgencyProductActivity extends AppCompatActivity implements ProductA
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                updateFragmentData(position);
+                String statusCode = pagerAdapter.getStatusCode(position);
+                viewModel.loadProductsByStatus(statusCode);
             }
         });
 
-        setupListeners(backButton, searchButton, chatButton, addNewProductButton);
+        setupListeners();
         observeViewModel();
+
+        // Tải dữ liệu ban đầu cho tab đầu tiên
+        viewModel.loadProductsByStatus(pagerAdapter.getStatusCode(0));
     }
 
-    private void setupListeners(ImageView backButton, ImageView searchButton, ImageView chatButton, Button addNewProductButton) {
-        backButton.setOnClickListener(v -> finish());
-        searchButton.setOnClickListener(v -> Toast.makeText(this, "Tìm kiếm sản phẩm", Toast.LENGTH_SHORT).show());
-        chatButton.setOnClickListener(v -> Toast.makeText(this, "Mở chat", Toast.LENGTH_SHORT).show());
-
+    private void setupListeners() {
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
         addNewProductButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AgencyProductActivity.this, AgencyAddProductActivity.class);
+            Intent intent = new Intent(this, AgencyAddProductActivity.class);
             startActivity(intent);
         });
     }
@@ -88,68 +104,24 @@ public class AgencyProductActivity extends AppCompatActivity implements ProductA
             }
         });
 
-        viewModel.allAgencyProducts.observe(this, products -> {
-            if (products != null) {
-                allProducts = products;
-                updateTabCounts(allProducts);
-                updateFragmentData(viewPager.getCurrentItem());
-            }
-        });
+        // Lắng nghe dữ liệu cho các tab và cập nhật số lượng
+        viewModel.approvedProducts.observe(this, products -> updateTabCount(0, "Đã duyệt", products));
+        viewModel.pendingProducts.observe(this, products -> updateTabCount(1, "Chờ duyệt", products));
+        viewModel.rejectedProducts.observe(this, products -> updateTabCount(2, "Từ chối", products));
     }
 
-    private void updateFragmentData(int position) {
-        String statusCode = pagerAdapter.getStatusCode(position);
-
-        List<ProductInfoDTO> filteredProducts = allProducts.stream()
-                .filter(p -> {
-                    String productStatus = p.getApprovalStatus().getStatusCode();
-                    if ("APPROVED".equals(statusCode)) {
-                        return "APPROVED".equals(productStatus) && p.getQuantity_in_stock() > 0;
-                    } else if ("OUT_OF_STOCK".equals(statusCode)) {
-                        return "APPROVED".equals(productStatus) && p.getQuantity_in_stock() <= 0;
-                    }
-                    return statusCode.equals(productStatus);
-                })
-                .collect(Collectors.toList());
-
-        ProductListFragment fragment = (ProductListFragment) getSupportFragmentManager()
-                .findFragmentByTag("f" + pagerAdapter.getItemId(position));
-        if (fragment != null) {
-            fragment.updateProductList(filteredProducts);
-        }
-    }
-
-    private void updateTabCounts(List<ProductInfoDTO> products) {
-        Map<String, Long> statusCounts = products.stream()
-                .collect(Collectors.groupingBy(p -> p.getApprovalStatus().getStatusCode(), Collectors.counting()));
-
-        long approvedCount = products.stream().filter(p -> p.getApprovalStatus().getStatusCode().equals("APPROVED") && p.getQuantity_in_stock() > 0).count();
-        long outOfStockCount = products.stream().filter(p -> p.getApprovalStatus().getStatusCode().equals("APPROVED") && p.getQuantity_in_stock() <= 0).count();
-
-        for (int i = 0; i < pagerAdapter.getItemCount(); i++) {
-            String tabTitle = pagerAdapter.getTabTitle(i);
-            String statusCode = pagerAdapter.getStatusCode(i);
-            long count;
-
-            if (statusCode.equals("APPROVED")) {
-                count = approvedCount;
-            } else if (statusCode.equals("OUT_OF_STOCK")) {
-                count = outOfStockCount;
-            } else {
-                count = statusCounts.getOrDefault(statusCode, 0L);
-            }
-
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            if (tab != null) {
-                tab.setText(tabTitle + " (" + count + ")");
-            }
+    private void updateTabCount(int position, String title, List<ProductInfoDTO> products) {
+        TabLayout.Tab tab = tabLayout.getTabAt(position);
+        if (tab != null) {
+            int count = products != null ? products.size() : 0;
+            tab.setText(title + " (" + count + ")");
         }
     }
 
     @Override
     public void onEditProduct(ProductInfoDTO product) {
         Intent intent = new Intent(this, AgencyAddProductActivity.class);
-        intent.putExtra("product_to_edit", product);
+        intent.putExtra("product_id_to_edit", product.getProduct_id());
         startActivity(intent);
     }
 
@@ -161,6 +133,6 @@ public class AgencyProductActivity extends AppCompatActivity implements ProductA
     @Override
     protected void onResume() {
         super.onResume();
-        viewModel.loadAllAgencyProducts();
+        viewModel.loadAllTabs();
     }
 }

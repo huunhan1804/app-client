@@ -139,7 +139,7 @@ public class CustomerProfileFragment extends Fragment {
             // Trường hợp 1: Đã là người bán và trạng thái được duyệt.
             // Chú ý: Cả hai điều kiện này phải khớp để tránh lỗi logic
             memberLevel.setText("Thành viên Bán hàng");
-            tvAgencyChannelText.setText("Quản lý Shop");
+            tvAgencyChannelText.setText("Quản lý ShopInfo");
             btnAgencyChannel.setOnClickListener(v -> {
                 // Chuyển thẳng đến màn hình quản lý shop
                 startActivity(new Intent(getActivity(), AgencyMainActivity.class));

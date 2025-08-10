@@ -1,8 +1,12 @@
 package com.example.dietarysupplementshop.interfaces;
 
 import com.example.dietarysupplementshop.model.ResponseModel;
+import com.example.dietarysupplementshop.requests.AddFeedbackRequest;
 import com.example.dietarysupplementshop.requests.SearchRequest;
+import com.example.dietarysupplementshop.responses.FeedbackDTO;
 import com.example.dietarysupplementshop.responses.ProductInformation;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -26,4 +30,8 @@ public interface ProductAPI {
     @POST("api/product/search")
     Call<ResponseModel> getListSearchProduct(@Body SearchRequest searchRequest);
 
+    @GET("api/product/all-by-agency/{agencyId}")
+    Call<ResponseModel> getListProductByAgency(@Path("agencyId") long agencyId);
+    @POST("api/product/feedback/add")
+    Call<ResponseModel<FeedbackDTO>> addFeedback(@Body AddFeedbackRequest request);
 }

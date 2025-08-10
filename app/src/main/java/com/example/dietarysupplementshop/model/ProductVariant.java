@@ -6,22 +6,26 @@ public class ProductVariant implements Serializable {
     private Long product_variant_id;
     private Long product_id;
     private String product_variant_name;
-    private double list_price;
-    private double sale_price;
+    private String origin_price;
+    private String sale_price;
     private int inventory_quantity;
     private int sold_amount;
     private int desired_quantity;
+    private int quantity_in_stock;
     public ProductVariant() {
     }
 
-    public ProductVariant(Long product_variant_id, Long product_id, String product_variant_name, double list_price, double sale_price, int inventory_quantity, int sold_amount) {
-        this.product_variant_id = product_variant_id;
+    public ProductVariant(Long product_variant_id, Long product_id, String product_variant_name, String origin_price, String sale_price, int inventory_quantity, int sold_amount, int desired_quantity, int quantity_in_stock) {
+    this.product_variant_id = product_variant_id;
         this.product_id = product_id;
         this.product_variant_name = product_variant_name;
-        this.list_price = list_price;
+        this.origin_price  = origin_price;
         this.sale_price = sale_price;
         this.inventory_quantity = inventory_quantity;
         this.sold_amount = sold_amount;
+        this.desired_quantity = desired_quantity;
+        this.quantity_in_stock = quantity_in_stock;
+
     }
 
     // Getters and Setters
@@ -49,21 +53,7 @@ public class ProductVariant implements Serializable {
         this.product_variant_name = product_variant_name;
     }
 
-    public double getList_price() {
-        return list_price;
-    }
 
-    public void setList_price(double list_price) {
-        this.list_price = list_price;
-    }
-
-    public double getSale_price() {
-        return sale_price;
-    }
-
-    public void setSale_price(double sale_price) {
-        this.sale_price = sale_price;
-    }
 
     public int getInventory_quantity() {
         return inventory_quantity;
@@ -87,10 +77,12 @@ public class ProductVariant implements Serializable {
                 "product_variant_id=" + product_variant_id +
                 ", product_id=" + product_id +
                 ", product_variant_name='" + product_variant_name + '\'' +
-                ", list_price=" + list_price +
+                ", origin_price=" + origin_price +
                 ", sale_price=" + sale_price +
                 ", inventory_quantity=" + inventory_quantity +
                 ", sold_amount=" + sold_amount +
+                ", desired_quantity=" + desired_quantity +
+                ", quantity_in_stock=" + quantity_in_stock+
                 '}';
     }
 }

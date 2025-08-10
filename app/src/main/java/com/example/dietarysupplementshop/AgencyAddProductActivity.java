@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,22 +27,25 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.example.dietarysupplementshop.model.Category;
 import com.example.dietarysupplementshop.requests.AddNewProductRequest;
 import com.example.dietarysupplementshop.requests.AddProductVariantsRequest;
 import com.example.dietarysupplementshop.requests.UpdateProductRequest;
-import com.example.dietarysupplementshop.responses.ProductInfoDTO;
+import com.example.dietarysupplementshop.requests.UpdateProductVariantRequest;
+import com.example.dietarysupplementshop.responses.ProductFullDTO;
 import com.example.dietarysupplementshop.responses.ProductVariantDTO;
 import com.example.dietarysupplementshop.viewModel.AgencyAddProductViewModel;
+import com.example.dietarysupplementshop.viewModel.CategoryViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class AgencyAddProductActivity extends AppCompatActivity {
 
     private static final int MAX_IMAGE_COUNT = 5;
-
     private TextInputEditText etProductName;
     private ImageButton btnBack;
     private LinearLayout llProductImagesContainer;
@@ -54,13 +58,14 @@ public class AgencyAddProductActivity extends AppCompatActivity {
     private TextView tvInventoryValue;
     private Button btnSave, btnDisplay;
     private TextView toolbarTitleTextView;
+    private CategoryViewModel categoryViewModel;
+    private List<Category> availableCategories = new ArrayList<>(); // Danh sách danh mục động
 
     private List<Uri> selectedImageUris = new ArrayList<>();
     private ActivityResultLauncher<String> pickMultipleImagesLauncher;
     private AgencyAddProductViewModel viewModel;
-    private ProductInfoDTO productToEdit;
+    private ProductFullDTO productToEdit;
     private long selectedCategoryId;
-
     private List<ConfiguredProductVariant> configuredProductVariants = new ArrayList<>();
     private TableLayout tlVariantInputs;
     private TextView tvNoVariantsHint;
@@ -72,20 +77,27 @@ public class AgencyAddProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_agency_add_product);
 
         viewModel = new ViewModelProvider(this).get(AgencyAddProductViewModel.class);
-
-        if (getIntent().hasExtra("product_to_edit")) {
-            productToEdit = (ProductInfoDTO) getIntent().getSerializableExtra("product_to_edit");
-        }
+        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
 
         initViews();
         initLaunchers();
         setupListeners();
         observeViewModel();
-        loadProductDataForEdit();
-        updateButtonState();
-        updateVariantSummaryUI();
-        displaySelectedImages();
+
+        // GỌI HÀM NÀY ĐỂ LẤY DANH MỤC
+        categoryViewModel.loadCategories();
+
+        if (getIntent().hasExtra("product_id_to_edit")) {
+            long productId = getIntent().getLongExtra("product_id_to_edit", -1);
+            if (productId != -1) {
+                viewModel.loadProductForEdit(productId);
+            }
+        } else {
+            displaySelectedImages();
+            updateButtonState();
+        }
     }
+
 
     private void initViews() {
         etProductName = findViewById(R.id.etProductName);
@@ -112,9 +124,11 @@ public class AgencyAddProductActivity extends AppCompatActivity {
                 new ActivityResultContracts.GetMultipleContents(),
                 uris -> {
                     if (uris != null && !uris.isEmpty()) {
+                        int currentImageCount = selectedImageUris.size();
                         for (Uri uri : uris) {
-                            if (selectedImageUris.size() < MAX_IMAGE_COUNT) {
+                            if (currentImageCount < MAX_IMAGE_COUNT) {
                                 selectedImageUris.add(uri);
+                                currentImageCount++;
                             } else {
                                 Toast.makeText(this, "Đã đạt giới hạn " + MAX_IMAGE_COUNT + " ảnh.", Toast.LENGTH_SHORT).show();
                                 break;
@@ -143,21 +157,31 @@ public class AgencyAddProductActivity extends AppCompatActivity {
         });
         clCategory.setOnClickListener(v -> showCategorySelectionDialog());
         clProductClassification.setOnClickListener(v -> showProductVariantsManagementDialog());
-
         btnSave.setOnClickListener(v -> uploadImagesAndSubmit());
-        btnDisplay.setOnClickListener(v -> {
-            uploadImagesAndSubmit();
-            Toast.makeText(this, "Sản phẩm đã được gửi xét duyệt (mô phỏng)", Toast.LENGTH_LONG).show();
-        });
+        btnDisplay.setOnClickListener(v -> uploadImagesAndSubmit());
     }
 
     private void showCategorySelectionDialog() {
-        final String[] categories = {"Thực phẩm chức năng", "Vitamin", "Khoáng chất", "Thảo dược", "Dinh dưỡng thể thao", "Sản phẩm giảm cân"};
+        // **SỬA LỖI**: Logic hiển thị hộp thoại phải được gọi khi dữ liệu đã có sẵn.
+        if (availableCategories != null && !availableCategories.isEmpty()) {
+            showCategoryDialog(availableCategories);
+        } else {
+            Toast.makeText(this, "Đang tải danh mục...", Toast.LENGTH_SHORT).show();
+            // Không cần return nữa, vì observeViewModel sẽ xử lý
+        }
+    }
+
+    private void showCategoryDialog(List<Category> categories) {
+        String[] categoryNames = categories.stream()
+                .map(Category::getCategory_name)
+                .toArray(String[]::new);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Chọn danh mục");
-        builder.setItems(categories, (dialog, which) -> {
-            tvCategoryValue.setText(categories[which]);
-            selectedCategoryId = which + 1;
+        builder.setItems(categoryNames, (dialog, which) -> {
+            Category selectedCategory = categories.get(which);
+            tvCategoryValue.setText(selectedCategory.getCategory_name());
+            selectedCategoryId = selectedCategory.getCategory_id();
             updateButtonState();
         });
         builder.show();
@@ -183,6 +207,7 @@ public class AgencyAddProductActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onError(String error) {
                 Toast.makeText(AgencyAddProductActivity.this, "Lỗi khi upload ảnh: " + error, Toast.LENGTH_SHORT).show();
@@ -193,7 +218,6 @@ public class AgencyAddProductActivity extends AppCompatActivity {
     private void showProductVariantsManagementDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Quản lý phân loại, giá và tồn kho");
-
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_product_variants_management, null);
         tlVariantInputs = dialogView.findViewById(R.id.tlVariantInputs);
@@ -216,7 +240,6 @@ public class AgencyAddProductActivity extends AppCompatActivity {
             addVariantRowToTable(tlVariantInputs, inflater, newVariant);
             tvNoVariantsHint.setVisibility(View.GONE);
         });
-
 
         builder.setView(dialogView);
         builder.setPositiveButton("Lưu", (dialog, which) -> {
@@ -246,7 +269,7 @@ public class AgencyAddProductActivity extends AppCompatActivity {
 
                 try {
                     originPrice = Double.parseDouble(listPriceStr);
-                    salePrice = salePriceStr.isEmpty() ? originPrice : Double.parseDouble(salePriceStr);
+                    salePrice = salePriceStr.isEmpty() ? 0.0 : Double.parseDouble(salePriceStr);
                     quantity = Integer.parseInt(quantityStr);
                 } catch (NumberFormatException e) {
                     Toast.makeText(this, "Giá hoặc số lượng không hợp lệ.", Toast.LENGTH_SHORT).show();
@@ -260,7 +283,10 @@ public class AgencyAddProductActivity extends AppCompatActivity {
                     break;
                 }
 
-                tempConfiguredVariants.add(new ConfiguredProductVariant(variantName, originPrice, salePrice, quantity, null, 0));
+                Long variantId = (i < configuredProductVariants.size()) ? configuredProductVariants.get(i).variantId : null;
+                int soldAmount = (i < configuredProductVariants.size()) ? configuredProductVariants.get(i).soldAmount : 0;
+
+                tempConfiguredVariants.add(new ConfiguredProductVariant(variantName, originPrice, salePrice, quantity, variantId, soldAmount));
             }
 
             if (!hasInvalidData) {
@@ -275,7 +301,6 @@ public class AgencyAddProductActivity extends AppCompatActivity {
     }
 
     private void addVariantRowToTable(TableLayout tlVariantInputs, LayoutInflater inflater, ConfiguredProductVariant variant) {
-
         TableRow row = (TableRow) inflater.inflate(R.layout.variant_input_row, tlVariantInputs, false);
 
         EditText etVariantName = row.findViewById(R.id.etVariantName);
@@ -292,8 +317,6 @@ public class AgencyAddProductActivity extends AppCompatActivity {
         tlVariantInputs.addView(row);
         if (etVariantName != null) {
             etVariantName.requestFocus();
-
-            // 2. Mở bàn phím ảo một cách thủ công
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(etVariantName, InputMethodManager.SHOW_IMPLICIT);
         }
@@ -305,8 +328,6 @@ public class AgencyAddProductActivity extends AppCompatActivity {
         public double salePrice = 0.0;
         public int quantityInStock = 0;
         public Long variantId;
-
-        // THAY ĐỔI: Thêm sold_amount vào constructor
         public int soldAmount;
 
         public ConfiguredProductVariant(String variantName, double originPrice, double salePrice, int quantityInStock, Long variantId) {
@@ -318,7 +339,6 @@ public class AgencyAddProductActivity extends AppCompatActivity {
             this.soldAmount = 0;
         }
 
-        // THAY ĐỔI: Thêm constructor đầy đủ
         public ConfiguredProductVariant(String variantName, double originPrice, double salePrice, int quantityInStock, Long variantId, int soldAmount) {
             this.variantName = variantName;
             this.originPrice = originPrice;
@@ -329,89 +349,78 @@ public class AgencyAddProductActivity extends AppCompatActivity {
         }
     }
 
-    // THAY ĐỔI: Cập nhật hàm collectUpdateProductData
-    private UpdateProductRequest collectUpdateProductData(List<String> imageUrls) {
-        String productName = Objects.requireNonNull(etProductName.getText()).toString().trim();
-        String description = Objects.requireNonNull(etProductDescription.getText()).toString().trim();
-        if (productName.isEmpty() || description.isEmpty() || selectedCategoryId == 0 || configuredProductVariants.isEmpty() || imageUrls.isEmpty()) {
-            return null;
-        }
-
-        double listPrice = 0.0;
-        double salePrice = 0.0;
-        List<AddProductVariantsRequest> addProductVariantsRequests = new ArrayList<>();
-
-        if (!configuredProductVariants.isEmpty()) {
-            listPrice = configuredProductVariants.get(0).originPrice;
-            salePrice = configuredProductVariants.get(0).salePrice;
-
-            for (ConfiguredProductVariant cpv : configuredProductVariants) {
-                addProductVariantsRequests.add(new AddProductVariantsRequest(
-                        cpv.variantName,
-                        cpv.originPrice,
-                        cpv.salePrice,
-                        cpv.quantityInStock,
-                        cpv.soldAmount
-                ));
-            }
-        }
-
-        UpdateProductRequest request = new UpdateProductRequest();
-        request.setProduct_id(productToEdit.getProduct_id());
-        request.setProduct_name(productName);
-        request.setProduct_description(description);
-        request.setCategory_id(selectedCategoryId);
-        request.setImage_urls(imageUrls);
-        request.setProduct_list_price(listPrice);
-        request.setProduct_sale_price(salePrice);
-        request.setProduct_variant_list(addProductVariantsRequests);
-
-        return request;
-    }
-
-    private void loadProductDataForEdit() {
-        if (productToEdit != null) {
+    private void loadProductDataForEdit(ProductFullDTO product) {
+        if (product != null) {
+            productToEdit = product;
             if (toolbarTitleTextView != null) {
                 toolbarTitleTextView.setText(getString(R.string.edit_product_title));
             }
 
-            etProductName.setText(productToEdit.getProduct_name());
-            etProductDescription.setText(productToEdit.getProduct_description());
+            etProductName.setText(product.getProduct_name());
+            etProductDescription.setText(product.getProduct_description());
 
-            if (productToEdit.getCategory() != null) {
-                tvCategoryValue.setText(productToEdit.getCategory().getCategory_name());
-                selectedCategoryId = productToEdit.getCategory().getCategory_id();
+            Category category = product.getCategory();
+            if (category != null && category.getCategory_name() != null) {
+                tvCategoryValue.setText(category.getCategory_name());
+                selectedCategoryId = category.getCategory_id();
+            } else {
+                tvCategoryValue.setText(getString(R.string.select_category_value));
+                selectedCategoryId = 0;
             }
 
             configuredProductVariants.clear();
 
-            if (productToEdit.getProduct_variant_list() != null && !productToEdit.getProduct_variant_list().isEmpty()) {
-                for (ProductVariantDTO variantDTO : productToEdit.getProduct_variant_list()) {
+            if (product.getProduct_variant_list() != null && !product.getProduct_variant_list().isEmpty()) {
+                for (ProductVariantDTO variantDTO : product.getProduct_variant_list()) {
+                    double originPrice = 0.0;
+                    double salePrice = 0.0;
+                    if (variantDTO.getOrigin_price() != null) {
+                        originPrice = Double.parseDouble(variantDTO.getOrigin_price());
+                    }
+                    if (variantDTO.getSale_price() != null) {
+                        salePrice = Double.parseDouble(variantDTO.getSale_price());
+                    }
+
                     configuredProductVariants.add(new ConfiguredProductVariant(
                             variantDTO.getProduct_variant_name(),
-                            Double.parseDouble(variantDTO.getList_price()),
-                            Double.parseDouble(variantDTO.getSale_price()),
-                            variantDTO.getInventory_quantity(),
-                            variantDTO.getProduct_variant_id()));
+                            originPrice,
+                            salePrice,
+                            variantDTO.getQuantity_in_stock(),
+                            variantDTO.getProduct_variant_id(),
+                            variantDTO.getSold_amount()
+                    ));
                 }
             } else {
+                double price = 0.0;
+                if (product.getProduct_price() != null) {
+                    try {
+                        String priceString = product.getProduct_price().replaceAll("[^\\d,]", "").replace(",", ".");
+                        price = Double.parseDouble(priceString);
+                    } catch (NumberFormatException e) {
+                        Log.e("ParseError", "Could not parse price: " + product.getProduct_price(), e);
+                    }
+                }
+
                 configuredProductVariants.add(new ConfiguredProductVariant(
                         "",
-                        Double.parseDouble(productToEdit.getProduct_list_price()),
-                        Double.parseDouble(productToEdit.getProduct_sale_price()),
-                        productToEdit.getQuantity_in_stock(),
-                        null));
+                        price,
+                        0.0,
+                        product.getQuantity_in_stock(),
+                        null,
+                        product.getSold_amount()
+                ));
+
             }
 
             updateVariantSummaryUI();
 
-            if (productToEdit.getMedia_url() != null && !productToEdit.getMedia_url().isEmpty()) {
+            if (product.getMedia_url() != null && !product.getMedia_url().isEmpty()) {
                 selectedImageUris.clear();
-                for (String url : productToEdit.getMedia_url()) {
+                for (String url : product.getMedia_url()) {
                     try {
                         selectedImageUris.add(Uri.parse(url));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Log.e("URI_PARSE_ERROR", "Invalid URL: " + url, e);
                     }
                 }
             }
@@ -419,6 +428,7 @@ public class AgencyAddProductActivity extends AppCompatActivity {
             updateButtonState();
         }
     }
+
 
     private void updateButtonState() {
         boolean isProductNameValid = !Objects.requireNonNull(etProductName.getText()).toString().trim().isEmpty();
@@ -465,7 +475,6 @@ public class AgencyAddProductActivity extends AppCompatActivity {
                 Toast.makeText(this, "Đã đạt giới hạn " + MAX_IMAGE_COUNT + " ảnh.", Toast.LENGTH_SHORT).show();
             }
         });
-        llProductImagesContainer.addView(addImageFrame);
 
         for (Uri uri : selectedImageUris) {
             View imageItemView = LayoutInflater.from(this).inflate(R.layout.item_selected_media_thumbnail, llProductImagesContainer, false);
@@ -484,10 +493,8 @@ public class AgencyAddProductActivity extends AppCompatActivity {
             llProductImagesContainer.addView(imageItemView);
         }
 
-        if (selectedImageUris.size() >= MAX_IMAGE_COUNT) {
-            addImageFrame.setVisibility(View.GONE);
-        } else {
-            addImageFrame.setVisibility(View.VISIBLE);
+        if (selectedImageUris.size() < MAX_IMAGE_COUNT) {
+            llProductImagesContainer.addView(addImageFrame);
         }
     }
 
@@ -543,51 +550,62 @@ public class AgencyAddProductActivity extends AppCompatActivity {
     private AddNewProductRequest collectAddNewProductData(List<String> imageUrls) {
         String productName = Objects.requireNonNull(etProductName.getText()).toString().trim();
         String description = Objects.requireNonNull(etProductDescription.getText()).toString().trim();
-        if (productName.isEmpty() || description.isEmpty() || selectedCategoryId == 0 || configuredProductVariants.isEmpty() || imageUrls.isEmpty()) {
+
+        if (productName.isEmpty() || description.isEmpty() || selectedCategoryId == 0 || imageUrls.isEmpty() || configuredProductVariants.isEmpty()) {
             return null;
         }
 
-        double listPrice = 0.0;
-        double salePrice = 0.0;
+        int totalQuantity = configuredProductVariants.stream().mapToInt(v -> v.quantityInStock).sum();
 
         List<AddProductVariantsRequest> addProductVariantsRequests = new ArrayList<>();
-        if (!configuredProductVariants.isEmpty()) {
-            // THAY ĐỔI: Lấy giá từ biến thể đầu tiên để đưa vào request chính
-            listPrice = configuredProductVariants.get(0).originPrice;
-            salePrice = configuredProductVariants.get(0).salePrice;
-
-            for (ConfiguredProductVariant cpv : configuredProductVariants) {
-                addProductVariantsRequests.add(new AddProductVariantsRequest(
-                        cpv.variantName,
-                        cpv.originPrice,
-                        cpv.salePrice,
-                        cpv.quantityInStock,
-                        0 // sold_amount mặc định là 0 khi thêm mới
-                ));
-            }
+        for (ConfiguredProductVariant cpv : configuredProductVariants) {
+            addProductVariantsRequests.add(new AddProductVariantsRequest(
+                    cpv.variantName, cpv.originPrice, cpv.salePrice, cpv.quantityInStock, cpv.soldAmount));
         }
 
         return new AddNewProductRequest(
                 productName,
                 description,
                 selectedCategoryId,
+                totalQuantity,
                 imageUrls,
-                listPrice,
-                salePrice,
                 addProductVariantsRequests
         );
     }
 
+    private UpdateProductRequest collectUpdateProductData(List<String> imageUrls) {
+        String productName = Objects.requireNonNull(etProductName.getText()).toString().trim();
+        String description = Objects.requireNonNull(etProductDescription.getText()).toString().trim();
 
+        if (productName.isEmpty() || description.isEmpty() || selectedCategoryId == 0 || imageUrls.isEmpty() || configuredProductVariants.isEmpty()) {
+            return null;
+        }
+
+        List<UpdateProductVariantRequest> updateProductVariantRequests = new ArrayList<>();
+        for (ConfiguredProductVariant cpv : configuredProductVariants) {
+            updateProductVariantRequests.add(new UpdateProductVariantRequest(
+                    cpv.variantId, cpv.variantName, cpv.originPrice, cpv.salePrice, cpv.quantityInStock, cpv.soldAmount));
+        }
+
+        UpdateProductRequest request = new UpdateProductRequest();
+        request.setProduct_id(productToEdit.getProduct_id());
+        request.setProduct_name(productName);
+        request.setProduct_description(description);
+        request.setCategory_id(selectedCategoryId);
+        request.setImage_urls(imageUrls);
+        request.setProduct_variant_list(updateProductVariantRequests);
+
+        return request;
+    }
 
 
     private void observeViewModel() {
-        viewModel.isAddingProduct.observe(this, isLoading -> {
+        viewModel.isProcessing.observe(this, isLoading -> {
             btnSave.setEnabled(!isLoading);
             btnDisplay.setEnabled(!isLoading);
         });
 
-        viewModel.productAddedSuccessfully.observe(this, success -> {
+        viewModel.actionSuccessful.observe(this, success -> {
             if (success) {
                 Toast.makeText(this, "Thao tác sản phẩm thành công!", Toast.LENGTH_SHORT).show();
                 finish();
@@ -599,5 +617,21 @@ public class AgencyAddProductActivity extends AppCompatActivity {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         });
+
+        // ĐÃ SỬA LỖI: Chỉ lắng nghe một lần và lưu vào biến
+        categoryViewModel.categories.observe(this, categories -> {
+            if (categories != null) {
+                availableCategories.clear();
+                availableCategories.addAll(categories);
+                Log.d("CategoryDebug", "Categories loaded: " + categories.size());
+            }
+        });
+
+        viewModel.productToEdit.observe(this, product -> {
+            if (product != null) {
+                loadProductDataForEdit(product);
+            }
+        });
     }
+
 }

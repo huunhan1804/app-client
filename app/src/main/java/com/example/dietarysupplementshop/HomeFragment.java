@@ -86,9 +86,9 @@ public class HomeFragment extends Fragment {
         slideModels.add(new SlideModel(R.drawable.slide_2, ScaleTypes.FIT));
         imageSlider.setImageList(slideModels, ScaleTypes.FIT);
 
-        //FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
-       // rcvBestAgency.setAdapter(fakeProductAdapter);
-       // rcvBestOrder.setAdapter(fakeProductAdapter);
+        FakeProductAdapter fakeProductAdapter = new FakeProductAdapter(productViewModel.createFakeProducts(10));
+        rcvBestAgency.setAdapter(fakeProductAdapter);
+        rcvBestOrder.setAdapter(fakeProductAdapter);
 
         productViewModel.getBestAgencys().observe(getViewLifecycleOwner(), products -> {
             mBestAgencyList = products;

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.dietarysupplementshop.R;
+import com.example.dietarysupplementshop.responses.ApprovalStatusDTO;
 import com.example.dietarysupplementshop.responses.ProductInfoDTO;
 import com.example.dietarysupplementshop.viewModel.AgencyProductViewModel;
 
@@ -49,56 +50,73 @@ public class ProductAgencyAdapter extends RecyclerView.Adapter<ProductAgencyAdap
     @Override
     public void onBindViewHolder(@NonNull ProductAgencyViewHolder holder, int position) {
         ProductInfoDTO product = productList.get(position);
+        if (product == null) {
+            return;
+        }
 
+        // 1. Hiển thị ảnh sản phẩm
         if (product.getMedia_url() != null && !product.getMedia_url().isEmpty()) {
             Glide.with(context).load(product.getMedia_url().get(0)).into(holder.productImageView);
         } else {
             Glide.with(context).load(R.drawable.product_image).into(holder.productImageView);
         }
 
+        // 2. Hiển thị thông tin sản phẩm
         holder.productNameTextView.setText(product.getProduct_name());
-        holder.productPriceTextView.setText(product.getProduct_list_price());
+
+        // Lấy giá bán và giá khuyến mãi của sản phẩm
+        String productPrice = product.getProduct_price();
+
+        // Hiển thị giá: ưu tiên giá khuyến mãi nếu có
+        if (productPrice != null && !productPrice.isEmpty() && !productPrice.equals("0 ₫")) {
+            holder.productPriceTextView.setText(productPrice);
+        } else {
+            holder.productPriceTextView.setText("Chưa cập nhật giá");
+        }
+
         holder.tvStockQuantity.setText(String.valueOf(product.getQuantity_in_stock()));
-        holder.tvSold.setText(String.valueOf(product.getSoldAmount()));
-        holder.tvRecentStatus.setText(product.getApprovalStatus().getStatusCode());
+        holder.tvSold.setText(String.valueOf(product.getSold_amount()));
 
-        // Nút Sửa
+        // 3. Xử lý trạng thái sản phẩm
+        String approvalStatusCode = null;
+        String approvalStatusName = "Không rõ";
+
+        ApprovalStatusDTO statusDto = product.getApproval_status();
+        if (statusDto != null) {
+            if (statusDto.getStatusCode() != null) {
+                approvalStatusCode = statusDto.getStatusCode();
+            }
+            if (statusDto.getStatusName() != null) {
+                approvalStatusName = statusDto.getStatusName();
+            }
+        }
+
+        holder.tvRecentStatus.setText(approvalStatusName);
+
+        // 4. Ẩn/hiện nút Sửa và Xóa dựa trên mã trạng thái
+        if ("APPROVED".equals(approvalStatusCode) || "PENDING".equals(approvalStatusCode)) {
+            holder.btnActionEdit.setVisibility(View.VISIBLE);
+            holder.btnActionDelete.setVisibility(View.VISIBLE);
+        } else if ("REJECTED".equals(approvalStatusCode)) {
+            holder.btnActionEdit.setVisibility(View.GONE);
+            holder.btnActionDelete.setVisibility(View.VISIBLE);
+        } else {
+            holder.btnActionEdit.setVisibility(View.GONE);
+            holder.btnActionDelete.setVisibility(View.GONE);
+        }
+
+        // 5. Sự kiện click
+        holder.itemView.setOnClickListener(v ->
+                Toast.makeText(context, "Chi tiết: " + product.getProduct_name(), Toast.LENGTH_SHORT).show()
+        );
         holder.btnActionEdit.setOnClickListener(v -> listener.onEditProduct(product));
-
-        // Nút Thêm Tùy Chọn
-        holder.btnActionMore.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Tùy chọn");
-
-            String hideUnHideOption = product.getApprovalStatus().getStatusCode().equals("HIDDEN")
-                    ? "Hiện sản phẩm"
-                    : "Ẩn sản phẩm";
-
-            String[] options = {hideUnHideOption, "Xóa sản phẩm"};
-
-            builder.setItems(options, (dialog, which) -> {
-                if (which == 0) {
-
-                    String newStatus = product.getApprovalStatus().getStatusCode().equals("HIDDEN")
-                            ? "PENDING" // Khi hiện -> chuyển về chờ duyệt
-                            : "HIDDEN"; // Khi ẩn
-
-                    viewModel.updateProductStatus(product.getProduct_id(), newStatus);
-                }
-                else if (which == 1) {
-                    showDeleteConfirmationDialog(product);
-                }
-            });
-            builder.show();
-        });
-
-        holder.itemView.setOnClickListener(v -> Toast.makeText(context, "Chuyển đến chi tiết sản phẩm: " + product.getProduct_name(), Toast.LENGTH_SHORT).show());
+        holder.btnActionDelete.setOnClickListener(v -> showDeleteConfirmationDialog(product));
     }
 
     private void showDeleteConfirmationDialog(ProductInfoDTO product) {
         new AlertDialog.Builder(context)
                 .setTitle("Xóa sản phẩm")
-                .setMessage("Bạn có chắc chắn muốn xóa sản phẩm này không? Thao tác này không thể hoàn tác.")
+                .setMessage("Bạn có chắc chắn muốn xóa sản phẩm này không?")
                 .setPositiveButton("Xóa", (d, id) -> listener.onDeleteProduct(product))
                 .setNegativeButton("Hủy", null)
                 .show();
@@ -109,11 +127,10 @@ public class ProductAgencyAdapter extends RecyclerView.Adapter<ProductAgencyAdap
         return productList.size();
     }
 
-    // ViewHolder class
     static class ProductAgencyViewHolder extends RecyclerView.ViewHolder {
         ImageView productImageView;
         TextView productNameTextView, productPriceTextView, tvStockQuantity, tvSold, tvRecentStatus;
-        Button btnActionEdit, btnActionMore;
+        Button btnActionEdit, btnActionDelete;
 
         public ProductAgencyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -124,7 +141,7 @@ public class ProductAgencyAdapter extends RecyclerView.Adapter<ProductAgencyAdap
             tvSold = itemView.findViewById(R.id.tvSold);
             tvRecentStatus = itemView.findViewById(R.id.tvRecentStatus);
             btnActionEdit = itemView.findViewById(R.id.btnActionEdit);
-            btnActionMore = itemView.findViewById(R.id.btnActionMore);
+            btnActionDelete = itemView.findViewById(R.id.btnActionDelete);
         }
     }
 }

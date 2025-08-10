@@ -123,22 +123,6 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/shopStatusTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Online 10 phút trước"
-                        android:textColor="#888"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/shopLocationTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Bình Định"
-                        android:textColor="#888"
-                        android:textSize="12sp" />
-
                 </LinearLayout>
 
                 <Button
@@ -152,43 +136,126 @@
                     android:textColor="@color/color_app"
                     android:textStyle="bold" />
             </LinearLayout>
-            <TextView
-                android:id="@+id/textDescriptionProduct"
+            <!-- Phần Mô tả sản phẩm -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="Mô tả sản phẩm"
-                android:textSize="16dp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/productDescriptionTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:ellipsize="end"
-                android:maxLines="9999"
-                android:text="Đây là một đoạn mô tả sản phẩm rất dài và chi tiết, cung cấp tất cả thông tin cần thiết về sản phẩm từ chất liệu, công dụng, cách sử dụng cho đến những lợi ích mà nó mang lại cho người dùng. Đoạn mô tả này được viết ra để khách hàng có cái nhìn tổng quan nhất trước khi quyết định mua sản phẩm. Nó bao gồm nhiều đoạn văn khác nhau để trình bày rõ ràng các khía cạnh khác nhau của sản phẩm."
-                android:textColor="#333"
-                android:textSize="14sp" />
+                android:layout_margin="10dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#DDDDDD">
 
-            <TextView
-                android:id="@+id/readMoreTextView"
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/textDescriptionProduct"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Mô tả sản phẩm"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:textColor="#000" />
+
+                    <TextView
+                        android:id="@+id/productDescriptionTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="9999"
+                        android:text="Đây là một đoạn mô tả sản phẩm..."
+                        android:textColor="#333"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/readMoreTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="Xem thêm"
+                        android:textColor="@color/color_app"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Phần Đánh giá sản phẩm -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="Xem thêm"
-                android:textColor="@color/color_app"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                android:layout_margin="10dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#DDDDDD">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/textFeedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Đánh giá sản phẩm"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:textColor="#000" />
+                    <Button
+                        android:id="@+id/btnWriteFeedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Viết đánh giá"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/color_app"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/feedbackSummaryLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp">
+
+                        <RatingBar
+                            android:id="@+id/averageRatingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:stepSize="0.5" />
+
+                        <TextView
+                            android:id="@+id/totalFeedbackText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="(0 đánh giá)"
+                            android:textColor="#555"/>
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/feedbackRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
 
             <TextView
                 android:id="@+id/textRelatedProduct"

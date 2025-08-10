@@ -174,4 +174,9 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
+
+        <style name="RatingBarColor" parent="Widget.AppCompat.RatingBar">
+            <item name="colorControlNormal">#cccccc</item>
+            <item name="colorControlActivated">#FFD700</item>
+        </style>
 </resources>

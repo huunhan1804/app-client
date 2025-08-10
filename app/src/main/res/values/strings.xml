@@ -1,4 +1,6 @@
 <resources>
+    <string name="product_image_description">Hình ảnh sản phẩm</string>
+    <string name="sold_icon_description">Biểu tượng đã bán</string>
     <string name="app_name">CareToUShop</string>
     <string name="text_sign_in">SIGN IN</string>
     <string name="text_sign_up">SIGN UP</string>
@@ -70,7 +72,7 @@
     <string name="tiep_theo">Tiếp theo</string>
     <string name="cai_dat_van_chuyen">Cài đặt vận chuyển</string>
     <string name="thong_tin_dinh_danh">Định danh</string>
-    <string name="change_shop_name">Change shop name</string>
+    <string name="change_shop_name">Change shopInfo name</string>
     <string name="change_address">Change address</string>
     <string name="change_email">Change email</string>
     <string name="change_phone">Change phone number</string>

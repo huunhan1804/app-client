@@ -1,11 +1,11 @@
 package com.example.dietarysupplementshop.responses;
 
-import com.example.dietarysupplementshop.model.Shop;
+import com.example.dietarysupplementshop.responses.ShopInfoDTO;
 
 import java.util.List;
 
 public class ProductInformation {
-    private Shop shop;
+    private ShopInfoDTO shop_info;
     private Long product_id;
     private String product_name;
     private String product_price;
@@ -16,7 +16,12 @@ public class ProductInformation {
     private List<ProductVariantDTO> product_variant_list;
     private List<FeedbackDTO> feedback_list;
 
-    public ProductInformation(Long product_id, String product_name, String product_price, String product_description, double rating, int quantity_in_stock, List<String> media_url, List<ProductVariantDTO> product_variant_list, List<FeedbackDTO> feedback_list) {
+
+
+    public ProductInformation() {
+    }
+    public ProductInformation(ShopInfoDTO shop_info, Long product_id, String product_name, String product_price, String product_description, double rating, int quantity_in_stock, List<String> media_url, List<ProductVariantDTO> product_variant_list, List<FeedbackDTO> feedback_list){
+        this.shop_info = shop_info;
         this.product_id = product_id;
         this.product_name = product_name;
         this.product_price = product_price;
@@ -26,9 +31,6 @@ public class ProductInformation {
         this.media_url = media_url;
         this.product_variant_list = product_variant_list;
         this.feedback_list = feedback_list;
-    }
-
-    public ProductInformation() {
     }
 
     public Long getProduct_id() {
@@ -102,10 +104,11 @@ public class ProductInformation {
     public void setFeedback_list(List<FeedbackDTO> feedback_list) {
         this.feedback_list = feedback_list;
     }
-    public Shop getShop() {
-        return shop;
+    public ShopInfoDTO getShop_info() {
+        return shop_info;
     }
-    public void setShop(Shop shop) {
-        this.shop = shop;
+
+    public void setShop_info(ShopInfoDTO shop_info) {
+        this.shop_info = shop_info;
     }
 }
