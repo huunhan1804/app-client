@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private static Retrofit retrofit;
     private static final String TAG = "ApiCallLog";
-    private static final String BASE_URL = "http://10.177.166.170:8080/";
+    private static final String BASE_URL = "http://10.189.15.155:8080/";
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
             TokenAuthenticator tokenAuthenticator = new TokenAuthenticator();

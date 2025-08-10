@@ -21,32 +21,32 @@ import retrofit2.Response;
 public class CategoryRepository {
 
     private CategoryAPI categoryAPI;
-    private final Gson gson = new Gson();
+
     public CategoryRepository() {
         categoryAPI = RetrofitClient.getRetrofitInstance().create(CategoryAPI.class);
     }
-    public interface CategoryCallback {
-        void onSuccess(List<Category> categoryList);
-        void onError(Throwable t);
-    }
 
-    public void fetchCategories(CategoryCallback callback) {
+    public LiveData<List<Category>> fetchCategories() {
+        MutableLiveData<List<Category>> data = new MutableLiveData<>();
+
         categoryAPI.getCategories().enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    Type listType = new TypeToken<List<Category>>() {}.getType();
-                    List<Category> categories = gson.fromJson(gson.toJson(response.body().getData()), listType);
-                    callback.onSuccess(categories);
-                } else {
-                    callback.onError(new Exception("Empty or invalid response"));
+                if (response.isSuccessful() && response.body() != null) {
+                    Type listType = new TypeToken<List<Category>>() {
+                    }.getType();
+                    List<Category> categories = new Gson().fromJson(new Gson().toJson(response.body().getData()), listType);
+                    data.setValue(categories);
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseModel> call, Throwable t) {
-                callback.onError(t);
+                data.setValue(null);
             }
+
         });
+
+        return data;
     }
 }

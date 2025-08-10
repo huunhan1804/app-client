@@ -1,5 +1,53 @@
-// File: com/example/dietarysupplementshop/viewModel/AgencyAddProductViewModel.java
 package com.example.dietarysupplementshop.viewModel;
+
+import android.net.Uri;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import com.example.dietarysupplementshop.model.Category;
+import com.example.dietarysupplementshop.repositories.CategoryRepository;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import com.example.dietarysupplementshop.repositories.AgencyProductRepository; // Sử dụng repository mới
+import com.example.dietarysupplementshop.requests.AddNewProductRequest;
+import com.example.dietarysupplementshop.requests.AddProductVariantsRequest; // Thêm import
+import com.example.dietarysupplementshop.requests.UpdateProductRequest;
+import com.example.dietarysupplementshop.responses.ProductInfoDTO;
+import com.example.dietarysupplementshop.model.ProductAgency;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import android.net.Uri;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import com.example.dietarysupplementshop.repositories.AgencyProductRepository;
+import com.example.dietarysupplementshop.requests.AddNewProductRequest;
+import com.example.dietarysupplementshop.requests.UpdateProductRequest;
+import com.example.dietarysupplementshop.responses.ProductFullDTO;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 
 import android.net.Uri;
 import androidx.annotation.NonNull;
@@ -23,6 +71,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class AgencyAddProductViewModel extends ViewModel {
+    private final CategoryRepository categoryRepository = new CategoryRepository();
+    private final MutableLiveData<List<Category>> _categories = new MutableLiveData<>();
+    public LiveData<List<Category>> categories = _categories;
+
     private final AgencyProductRepository productRepository;
     private final FirebaseStorage storage;
 
@@ -117,6 +169,11 @@ public class AgencyAddProductViewModel extends ViewModel {
                 _errorMessage.postValue(errorMessage);
                 _isProcessing.postValue(false);
             }
+        });
+    }
+    public void loadCategories() {
+        categoryRepository.fetchCategories().observeForever(data -> {
+            _categories.setValue(data);
         });
     }
 }

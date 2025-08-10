@@ -35,13 +35,11 @@ import com.example.dietarysupplementshop.requests.UpdateProductVariantRequest;
 import com.example.dietarysupplementshop.responses.ProductFullDTO;
 import com.example.dietarysupplementshop.responses.ProductVariantDTO;
 import com.example.dietarysupplementshop.viewModel.AgencyAddProductViewModel;
-import com.example.dietarysupplementshop.viewModel.CategoryViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class AgencyAddProductActivity extends AppCompatActivity {
 
@@ -58,7 +56,6 @@ public class AgencyAddProductActivity extends AppCompatActivity {
     private TextView tvInventoryValue;
     private Button btnSave, btnDisplay;
     private TextView toolbarTitleTextView;
-    private CategoryViewModel categoryViewModel;
     private List<Category> availableCategories = new ArrayList<>(); // Danh sách danh mục động
 
     private List<Uri> selectedImageUris = new ArrayList<>();
@@ -77,15 +74,14 @@ public class AgencyAddProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_agency_add_product);
 
         viewModel = new ViewModelProvider(this).get(AgencyAddProductViewModel.class);
-        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
 
         initViews();
         initLaunchers();
         setupListeners();
         observeViewModel();
+        viewModel.loadCategories();
 
         // GỌI HÀM NÀY ĐỂ LẤY DANH MỤC
-        categoryViewModel.loadCategories();
 
         if (getIntent().hasExtra("product_id_to_edit")) {
             long productId = getIntent().getLongExtra("product_id_to_edit", -1);
@@ -617,15 +613,15 @@ public class AgencyAddProductActivity extends AppCompatActivity {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         });
-
-        // ĐÃ SỬA LỖI: Chỉ lắng nghe một lần và lưu vào biến
-        categoryViewModel.categories.observe(this, categories -> {
-            if (categories != null) {
+        viewModel.categories.observe(this, categories -> {
+            if (categories != null && !categories.isEmpty()) {
                 availableCategories.clear();
                 availableCategories.addAll(categories);
-                Log.d("CategoryDebug", "Categories loaded: " + categories.size());
+            } else {
+                Toast.makeText(this, "Không thể tải danh mục", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         viewModel.productToEdit.observe(this, product -> {
             if (product != null) {

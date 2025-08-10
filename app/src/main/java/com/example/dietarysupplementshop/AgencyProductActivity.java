@@ -121,8 +121,12 @@ public class AgencyProductActivity extends AppCompatActivity implements ProductA
     @Override
     public void onEditProduct(ProductInfoDTO product) {
         Intent intent = new Intent(this, AgencyAddProductActivity.class);
-        intent.putExtra("product_id_to_edit", product.getProduct_id());
-        startActivity(intent);
+        if (product != null && product.getProduct_id() != null) {
+            intent.putExtra("product_id_to_edit", product.getProduct_id());
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Không tìm thấy ID sản phẩm để sửa.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
