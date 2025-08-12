@@ -73,7 +73,7 @@ public class SignInActivity extends AppCompatActivity {
             if (!hasFocus) {
                 String email = editTextEmail.getText().toString();
                 if (!Validation.isValidUsernameOrEmailOrPhone(email)) {
-                    textInputLayoutEmail.setError("Invalid username or phone number or email");
+                    textInputLayoutEmail.setError("Tên đăng nhập, số điện thoại hoặc email không hợp lệ");
                 } else {
                     textInputLayoutEmail.setError(null);
                 }
@@ -85,7 +85,7 @@ public class SignInActivity extends AppCompatActivity {
             if (!hasFocus) {
                 String password = editTextPassword.getText().toString();
                 if (!Validation.isValidPassword(password)) {
-                    textInputLayoutPassword.setError("Password must be at least 8 characters long, including uppercase, lowercase, digits, and special characters.");
+                    textInputLayoutPassword.setError("Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.");
                 } else {
                     textInputLayoutPassword.setError(null);
                 }
@@ -112,14 +112,14 @@ public class SignInActivity extends AppCompatActivity {
             if (!Validation.isValidPassword(editTextPassword.getText().toString()) || !Validation.isValidUsernameOrEmailOrPhone(editTextEmail.getText().toString())) {
                 String password = editTextPassword.getText().toString();
                 if (!Validation.isValidPassword(password)) {
-                    textInputLayoutPassword.setError("Password must be at least 8 characters long, including uppercase, lowercase, digits, and special characters.");
+                    textInputLayoutPassword.setError("Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.");
                 } else {
                     textInputLayoutPassword.setError(null);
                 }
 
                 String email = editTextEmail.getText().toString();
                 if (!Validation.isValidUsernameOrEmailOrPhone(email)) {
-                    textInputLayoutEmail.setError("Invalid username or phone number or email");
+                    textInputLayoutEmail.setError("Tên đăng nhập, số điện thoại hoặc email không hợp lệ");
                 } else {
                     textInputLayoutEmail.setError(null);
                 }
@@ -141,7 +141,7 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onError(String errorMessage) {
                         hideProgressBar();
-                        Toast.makeText(getApplicationContext(), "Email or Password is not correct!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Email hoặc mật khẩu không đúng!", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

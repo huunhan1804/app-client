@@ -131,13 +131,6 @@ public class AgencyOrderFragment extends Fragment implements OrderAgencyAdapter.
             case "SHIPPING":
             case "DELIVERED":
             case "CANCELLED":
-            case "DELIVERY FAILED":
-                // Đối với các trạng thái này, nút 1 là "Xem chi tiết"
-                Toast.makeText(getContext(), "Xem chi tiết đơn: " + order.getOrder_id(), Toast.LENGTH_SHORT).show();
-                // Intent intent = new Intent(getActivity(), AgencyOrderDetailActivity.class);
-                // intent.putExtra("orderId", order.getOrder_id());
-                // startActivity(intent);
-                break;
             case "RETURNED":
                 Toast.makeText(getContext(), "Xem yêu cầu trả hàng/hoàn tiền của đơn: " + order.getOrder_id(), Toast.LENGTH_SHORT).show();
                 // Có thể mở một dialog hoặc activity mới để hiển thị chi tiết yêu cầu trả hàng

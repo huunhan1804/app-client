@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+
     android:orientation="vertical">
 
     <LinearLayout
@@ -82,10 +84,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Trả hàng/hoàn tiền" />
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Giao hàng không thành công" />
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2

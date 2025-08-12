@@ -46,9 +46,6 @@ public class AgencyOrderActivity extends AppCompatActivity {
                         case 4:
                             tab.setText("Trả hàng/hoàn tiền");
                             break;
-                        case 5:
-                            tab.setText("Giao hàng thất bại");
-                            break;
                     }
                 }).attach();
 
@@ -90,8 +87,6 @@ public class AgencyOrderActivity extends AppCompatActivity {
                 return 3;
             case "RETURNED":
                 return 4;
-            case "DELIVERY_FAILED":
-                return 5;
             default:
                 return -1;
         }

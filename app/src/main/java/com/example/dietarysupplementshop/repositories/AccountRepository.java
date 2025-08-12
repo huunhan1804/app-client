@@ -1,6 +1,8 @@
 package com.example.dietarysupplementshop.repositories;
 
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -18,10 +20,10 @@ import com.example.dietarysupplementshop.requests.AddToCartRequest;
 import com.example.dietarysupplementshop.requests.ChangePasswordRequest;
 import com.example.dietarysupplementshop.requests.CheckoutRequest;
 import com.example.dietarysupplementshop.requests.OrderRequest;
+import com.example.dietarysupplementshop.requests.ReturnOrderRequest;
 import com.example.dietarysupplementshop.requests.UpdateAccountRequest;
 import com.example.dietarysupplementshop.requests.UpdateAddressRequest;
 import com.example.dietarysupplementshop.requests.UpdateAvatarRequest;
-import com.example.dietarysupplementshop.requests.UpdateRoleRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.responses.OrderDetailResponse;
 import com.google.gson.Gson;
@@ -489,34 +491,67 @@ public class AccountRepository {
         return data;
     }
 
+//    public LiveData<Resource<List<Order>>> cancelOrder(long orderId) {
+//        MutableLiveData<Resource<List<Order>>> data = new MutableLiveData<>();
+//        data.setValue(Resource.loading(null));
+//        orderAPI.cancelOrder(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
+//            @Override
+//            public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    List<Order> orderList = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Order>>() {
+//                    }.getType());
+//                    data.setValue(Resource.success(orderList));
+//                    cachedOrders = orderList;
+//                } else {
+//                    handleErrorResponse(response, data);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+//                data.setValue(Resource.error(t.getMessage(), null));
+//            }
+//        });
+//
+//        return data;
+//    }
+// Bên trong AccountRepository.java
+
     public LiveData<Resource<List<Order>>> cancelOrder(long orderId) {
         MutableLiveData<Resource<List<Order>>> data = new MutableLiveData<>();
         data.setValue(Resource.loading(null));
+
         orderAPI.cancelOrder(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Order> orderList = new Gson().fromJson(new Gson().toJson(response.body().getData()), new TypeToken<List<Order>>() {
-                    }.getType());
-                    data.setValue(Resource.success(orderList));
-                    cachedOrders = orderList;
+                    // Yêu cầu thành công, nhưng có thể body bị rỗng hoặc định dạng sai.
+                    cachedOrders = null;
+                    data.setValue(Resource.success(response.body().getData()));
                 } else {
+                    // Khối này được gọi khi API trả về mã lỗi (ví dụ: 400, 500).
+                    // Dùng Log để xem lỗi cụ thể là gì.
+                    Log.e("OrderRepository", "Lỗi API: " + response.code() + " " + response.message());
                     handleErrorResponse(response, data);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                // Khối này được gọi khi yêu cầu thất bại hoàn toàn (mất mạng, hết thời gian chờ, v.v.).
+                // Dùng Log để kiểm tra lỗi cụ thể.
+                Log.e("OrderRepository", "Yêu cầu thất bại: " + t.getMessage(), t);
+                cachedOrders = null;
                 data.setValue(Resource.error(t.getMessage(), null));
             }
         });
-
         return data;
     }
-    public LiveData<Resource<List<Order>>> markOrderAsReceived(long orderId) {
+
+    public LiveData<Resource<List<Order>>> receiveOrder(long orderId) {
         MutableLiveData<Resource<List<Order>>> data = new MutableLiveData<>();
         data.setValue(Resource.loading(null));
-        orderAPI.markOrderAsReceived(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
+        orderAPI.receiveOrder(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -537,10 +572,15 @@ public class AccountRepository {
 
         return data;
     }
-    public LiveData<Resource<List<Order>>> requestReturnRefund(long orderId) {
+
+
+    public LiveData<Resource<List<Order>>> returnOrder(long orderId, String returnReason) {
         MutableLiveData<Resource<List<Order>>> data = new MutableLiveData<>();
         data.setValue(Resource.loading(null));
-        orderAPI.requestReturnRefund(orderId).enqueue(new Callback<ResponseModel<List<Order>>>() {
+        ReturnOrderRequest requestBody = new ReturnOrderRequest(orderId, returnReason);
+
+        // Gọi API với cả orderId và lý do trả hàng
+        orderAPI.returnOrder(orderId, requestBody).enqueue(new Callback<ResponseModel<List<Order>>>() {
             @Override
             public void onResponse(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Response<ResponseModel<List<Order>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -555,6 +595,28 @@ public class AccountRepository {
 
             @Override
             public void onFailure(@NonNull Call<ResponseModel<List<Order>>> call, @NonNull Throwable t) {
+                data.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+
+        return data;
+    }
+    public LiveData<Resource<Order>> reorderOrder(long orderId) {
+        MutableLiveData<Resource<Order>> data = new MutableLiveData<>();
+        data.setValue(Resource.loading(null));
+
+        orderAPI.reorderOrder(orderId).enqueue(new Callback<ResponseModel<Order>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<Order>> call, @NonNull Response<ResponseModel<Order>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    data.setValue(Resource.success(response.body().getData()));
+                } else {
+                    handleErrorResponse(response, data);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<Order>> call, @NonNull Throwable t) {
                 data.setValue(Resource.error(t.getMessage(), null));
             }
         });
@@ -605,30 +667,6 @@ public class AccountRepository {
 
             @Override
             public void onFailure(@NonNull Call<ResponseModel<List<OrderDetailResponse>>> call, @NonNull Throwable t) {
-                data.setValue(Resource.error(t.getMessage(), null));
-            }
-        });
-
-        return data;
-    }
-
-    public LiveData<Resource<String>> updateAgencyRole(long accountId, String roleCode) {
-        MutableLiveData<Resource<String>> data = new MutableLiveData<>();
-        data.setValue(Resource.loading(null));
-
-        UpdateRoleRequest request = new UpdateRoleRequest(accountId, roleCode);
-        accountAPI.updateRole(request).enqueue(new Callback<ResponseModel<String>>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseModel<String>> call, @NonNull Response<ResponseModel<String>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    data.setValue(Resource.success(response.body().getMessage()));
-                } else {
-                    handleErrorResponse(response, data);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseModel<String>> call, @NonNull Throwable t) {
                 data.setValue(Resource.error(t.getMessage(), null));
             }
         });

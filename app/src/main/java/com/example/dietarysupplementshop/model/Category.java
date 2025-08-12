@@ -1,8 +1,15 @@
 package com.example.dietarysupplementshop.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Category {
+    @SerializedName(value = "categoryId", alternate = {"category_id"})
     private Long category_id;
+
+    @SerializedName(value = "categoryName", alternate = {"category_name"})
     private String category_name;
+
+    @SerializedName(value = "categoryUrl", alternate = {"category_url"})
     private String category_url;
 
     public Category(Long category_id, String category_name, String category_url) {

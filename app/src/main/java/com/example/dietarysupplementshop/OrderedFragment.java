@@ -1,10 +1,15 @@
 package com.example.dietarysupplementshop;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dietarysupplementshop.adapter.OrderAdapter;
 import com.example.dietarysupplementshop.model.Order;
+import com.example.dietarysupplementshop.repositories.Resource;
 import com.example.dietarysupplementshop.viewModel.AccountViewModel;
 
 import java.util.ArrayList;
@@ -94,6 +100,12 @@ public class OrderedFragment extends Fragment implements OrderAdapter.OrderActio
                         }
                         break;
                     case ERROR:
+                        // Kiểm tra tại đây để xem lỗi có phải từ API hay lỗi mạng.
+                        // Log từ repository sẽ giúp bạn gỡ lỗi này.
+                        Log.e("OrderedFragment", "Lỗi khi cập nhật đơn hàng: " + resource.getMessage());
+                        Toast.makeText(getContext(), "Lỗi: " + resource.getMessage(), Toast.LENGTH_SHORT).show();
+
+
                         break;
                     case LOADING:
                         if (getActivity() instanceof HomepageActivity) {
@@ -138,22 +150,53 @@ public class OrderedFragment extends Fragment implements OrderAdapter.OrderActio
         builder.setTitle("Xác nhận Đã nhận đơn hàng");
         builder.setMessage("Bạn đã nhận được đơn hàng #" + order.getOrder_id() + " này chưa? Thao tác này sẽ cập nhật trạng thái đơn hàng thành 'Đã giao'.");
         builder.setPositiveButton("Đã nhận", (dialog, which) -> {
-            accountViewModel.markOrderAsReceived(order.getOrder_id());
+            accountViewModel.receiveOrder(order.getOrder_id());
         });
         builder.setNegativeButton("Chưa", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
     private void showDialogConfirmReturnRefund(Order order) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Yêu cầu Trả hàng/Hoàn tiền");
-        builder.setMessage("Bạn có chắc chắn muốn yêu cầu trả hàng/hoàn tiền cho đơn hàng #" + order.getOrder_id() + " này không? Quá trình này có thể cần liên hệ với cửa hàng.");
+
+        final EditText reasonEditText = new EditText(getContext());
+        reasonEditText.setHint("Nhập lý do trả hàng tại đây...");
+
+        LinearLayout container = new LinearLayout(getContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(50, 20, 50, 20); // Thêm padding cho đẹp hơn
+
+        TextView messageView = new TextView(getContext());
+        messageView.setText("Bạn có chắc chắn muốn yêu cầu trả hàng/hoàn tiền cho đơn hàng #" + order.getOrder_id() + " này không? Vui lòng nhập lý do.");
+        container.addView(messageView);
+        container.addView(reasonEditText);
+
+        builder.setView(container);
+
         builder.setPositiveButton("Đồng ý", (dialog, which) -> {
-            accountViewModel.requestReturnRefund(order.getOrder_id());
+            String returnReason = reasonEditText.getText().toString().trim();
+            if (!returnReason.isEmpty()) {
+                // Gọi ViewModel với orderId và lý do trả hàng
+                accountViewModel.returnOrder(order.getOrder_id(), returnReason);
+            } else {
+                Toast.makeText(getContext(), "Vui lòng nhập lý do trả hàng.", Toast.LENGTH_SHORT).show();
+            }
         });
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
-
+    @Override
+    public void onReorderClicked(Order order) {
+        accountViewModel.reorderOrder(order.getOrder_id()).observe(getViewLifecycleOwner(), resource -> {
+            if (resource.getStatus() == Resource.Status.SUCCESS) {
+                Toast.makeText(getContext(), "Đơn hàng đã được mua lại thành công! Mã đơn hàng mới: #" + resource.getData().getOrder_id(), Toast.LENGTH_LONG).show();
+                // Tải lại danh sách đơn hàng để cập nhật trạng thái mới
+                accountViewModel.loadOrderList();
+            } else if (resource.getStatus() == Resource.Status.ERROR) {
+                Toast.makeText(getContext(), "Lỗi khi mua lại đơn hàng: " + resource.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

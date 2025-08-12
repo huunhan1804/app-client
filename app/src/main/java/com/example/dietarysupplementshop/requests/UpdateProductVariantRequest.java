@@ -3,10 +3,10 @@ package com.example.dietarysupplementshop.requests;
 import java.io.Serializable;
 
 public class UpdateProductVariantRequest implements Serializable {
-    private Long product_variant_id; // Thêm trường id để cập nhật
+    private Long product_variant_id;
     private String product_variant_name;
-    private double list_price;
-    private double sale_price;
+    private Double list_price;
+    private Double sale_price;
     private int inventory_quantity;
     private int sold_amount;
 
@@ -21,7 +21,6 @@ public class UpdateProductVariantRequest implements Serializable {
         this.sold_amount = sold_amount;
     }
 
-    // Constructor cho biến thể mới
     public UpdateProductVariantRequest(String product_variant_name, double list_price, double sale_price, int inventory_quantity, int sold_amount) {
         this(null, product_variant_name, list_price, sale_price, inventory_quantity, sold_amount);
     }

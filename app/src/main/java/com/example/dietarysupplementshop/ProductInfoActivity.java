@@ -212,18 +212,6 @@ public class ProductInfoActivity extends AppCompatActivity {
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
         builder.show();
     }
-//    private void observeProductData(long productId) {
-//        productViewModel.getProductInformation(productId).observe(this, productInfo -> {
-//            if (productInfo != null) {
-//                ShopInfoDTO shopInfo = productInfo.getShop_info();
-//                // Nếu shopInfo có thể null, bạn kiểm tra trước khi dùng
-//                if (shopInfo != null) {
-//                    updateShopInfo(shopInfo);
-//                }
-//                updateUI(productInfo);
-//            }
-//        });
-//    }
 
     private void observeProductData(long productId) {
         productViewModel.getProductInformation(productId).observe(this, productInfo -> {
@@ -270,7 +258,6 @@ public class ProductInfoActivity extends AppCompatActivity {
         updateShopInfo(productInfo.getShop_info());
         setupDynamicClickListeners(productInfo);
     }
-
 
     private void updateShopInfo(ShopInfoDTO shopInfo) {
         if (shopInfo != null) {

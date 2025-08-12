@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5"
+
+    android:fitsSystemWindows="true"
     tools:context=".AgencyMainActivity">
 
     <LinearLayout
@@ -82,35 +84,38 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
-                        android:contentDescription="Shop Logo"
-                        android:src="@drawable/logo_2"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
+                        android:contentDescription="Shop Logo"
                         android:focusable="true"
-                        android:background="?attr/selectableItemBackgroundBorderless" /> <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                        android:src="@drawable/logo_2" />
 
-                    <TextView
-                        android:id="@+id/tv_shop_name"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Shop"
-                        android:textColor="#333333"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_shopee_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_link_external"
-                        android:drawablePadding="4dp"
-                        android:text="ctucare.vn/shopInfo"
-                        android:textColor="#777777"
-                        android:textSize="13sp" />
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/tv_shop_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Shop"
+                            android:textColor="#333333"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/application_id"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="ID: 123456789"
+                            android:textColor="#777777"
+                            android:textSize="14sp" />
+
+
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tv_view_shop"
@@ -500,7 +505,7 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:contentDescription="Quản Lý Cửa Hàng"
-                            android:src="@drawable/product_image" />
+                            android:src="@drawable/shop" />
 
                         <TextView
                             android:layout_width="wrap_content"

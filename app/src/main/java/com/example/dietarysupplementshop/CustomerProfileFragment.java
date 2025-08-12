@@ -125,21 +125,19 @@ public class CustomerProfileFragment extends Fragment {
 
         View btnAgencyChannel = requireView().findViewById(R.id.btn_agency_channel);
         String roleCode = accountInfo.getRole_code();
-        String status = accountInfo.getStatus(); // Lấy trường status từ backend
+        String status = accountInfo.getStatus();
 
-        // Thêm các hằng số trạng thái để so sánh
         final String ROLE_AGENCY = "agency";
         final String STATUS_PENDING = "PENDING";
         final String STATUS_APPROVED = "APPROVED";
         final String STATUS_REJECTED = "REJECTED";
-        final String STATUS_NOT_REGISTERED = "NOT_REGISTERED";
 
 
         if (roleCode != null && roleCode.equals(ROLE_AGENCY) && status != null && status.equals(STATUS_APPROVED)) {
             // Trường hợp 1: Đã là người bán và trạng thái được duyệt.
             // Chú ý: Cả hai điều kiện này phải khớp để tránh lỗi logic
             memberLevel.setText("Thành viên Bán hàng");
-            tvAgencyChannelText.setText("Quản lý ShopInfo");
+            tvAgencyChannelText.setText("Quản lý Shop");
             btnAgencyChannel.setOnClickListener(v -> {
                 // Chuyển thẳng đến màn hình quản lý shop
                 startActivity(new Intent(getActivity(), AgencyMainActivity.class));

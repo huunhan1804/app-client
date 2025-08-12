@@ -204,17 +204,32 @@ public class AccountViewModel extends ViewModel {
         accountRepository.fetchOrderList().observeForever(orderListResource::setValue);
     }
 
+    //    public void cancelOrder(Long orderId) {
+//        accountRepository.cancelOrder(orderId).observeForever(orderListResource::setValue);
+//    }
     public void cancelOrder(Long orderId) {
-        accountRepository.cancelOrder(orderId).observeForever(orderListResource::setValue);
-    }
-    public void markOrderAsReceived(Long orderId) {
-        accountRepository.markOrderAsReceived(orderId).observeForever(orderListResource::setValue);
+        accountRepository.cancelOrder(orderId).observeForever(resource -> {
+            if (resource.getStatus() == Resource.Status.SUCCESS) {
+                // Sau khi hủy thành công, tải lại danh sách đơn hàng từ server
+                loadOrderList();
+            } else if (resource.getStatus() == Resource.Status.ERROR) {
+                // Xử lý lỗi nếu có, ví dụ: hiển thị thông báo
+                // Có thể cần một MutableLiveData khác để thông báo lỗi cho View
+            }
+        });
     }
 
-    public void requestReturnRefund(Long orderId) {
-        accountRepository.requestReturnRefund(orderId).observeForever(orderListResource::setValue);
+
+    public void receiveOrder(Long orderId) {
+        accountRepository.receiveOrder(orderId).observeForever(orderListResource::setValue);
     }
 
+    public void returnOrder(long orderId, String returnReason) {
+        accountRepository.returnOrder(orderId, returnReason).observeForever(orderListResource::setValue);
+    }
+    public LiveData<Resource<Order>> reorderOrder(long orderId) {
+        return accountRepository.reorderOrder(orderId);
+    }
 
     public LiveData<Resource<Order>> getOrderInfo(long orderId) {
         return accountRepository.getOrderInfo(orderId);

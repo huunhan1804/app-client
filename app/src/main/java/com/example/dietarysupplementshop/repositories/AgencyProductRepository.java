@@ -7,6 +7,7 @@ import com.example.dietarysupplementshop.requests.AddNewProductRequest;
 import com.example.dietarysupplementshop.requests.UpdateProductRequest;
 import com.example.dietarysupplementshop.responses.ProductFullDTO;
 import com.example.dietarysupplementshop.responses.ProductInfoDTO;
+import com.example.dietarysupplementshop.responses.ShopInfoDTO;
 import com.google.gson.Gson;
 
 import retrofit2.Call;
@@ -27,6 +28,7 @@ public class AgencyProductRepository {
 
     public interface ApiCallback<T> {
         void onSuccess(T result);
+
         void onError(String errorMessage);
     }
 
@@ -43,6 +45,23 @@ public class AgencyProductRepository {
             }
         }
         callback.onError(errorMessage);
+    }
+    public void getShopInfo(ApiCallback<ShopInfoDTO> callback) {
+        agencyProductAPI.getShopInfo().enqueue(new Callback<ResponseModel<ShopInfoDTO>>() {
+            @Override
+            public void onResponse(Call<ResponseModel<ShopInfoDTO>> call, Response<ResponseModel<ShopInfoDTO>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    callback.onSuccess(response.body().getData());
+                } else {
+                    handleApiError(response, callback);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel<ShopInfoDTO>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
     }
 
     public void getAgencyProducts(String statusCode, ApiCallback<List<ProductInfoDTO>> callback) {
@@ -73,6 +92,7 @@ public class AgencyProductRepository {
                     handleApiError(response, (ApiCallback) callback);
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel<ProductFullDTO>> call, Throwable t) {
                 callback.onError(t.getMessage());
@@ -90,6 +110,7 @@ public class AgencyProductRepository {
                     handleApiError(response, (ApiCallback) callback);
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel<ProductFullDTO>> call, Throwable t) {
                 callback.onError(t.getMessage());
@@ -107,6 +128,7 @@ public class AgencyProductRepository {
                     handleApiError(response, (ApiCallback) callback);
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel<ProductFullDTO>> call, Throwable t) {
                 callback.onError(t.getMessage());
@@ -124,6 +146,7 @@ public class AgencyProductRepository {
                     handleApiError(response, (ApiCallback) callback);
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel<Void>> call, Throwable t) {
                 callback.onError(t.getMessage());
@@ -142,6 +165,7 @@ public class AgencyProductRepository {
                             handleApiError(response, apiCallback);
                         }
                     }
+
                     @Override
                     public void onFailure(Call<ResponseModel<ProductInfoDTO>> call, Throwable t) {
                         apiCallback.onError(t.getMessage());

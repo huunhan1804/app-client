@@ -40,6 +40,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class AgencyAddProductActivity extends AppCompatActivity {
 
@@ -80,9 +81,6 @@ public class AgencyAddProductActivity extends AppCompatActivity {
         setupListeners();
         observeViewModel();
         viewModel.loadCategories();
-
-        // GỌI HÀM NÀY ĐỂ LẤY DANH MỤC
-
         if (getIntent().hasExtra("product_id_to_edit")) {
             long productId = getIntent().getLongExtra("product_id_to_edit", -1);
             if (productId != -1) {
@@ -158,12 +156,10 @@ public class AgencyAddProductActivity extends AppCompatActivity {
     }
 
     private void showCategorySelectionDialog() {
-        // **SỬA LỖI**: Logic hiển thị hộp thoại phải được gọi khi dữ liệu đã có sẵn.
         if (availableCategories != null && !availableCategories.isEmpty()) {
             showCategoryDialog(availableCategories);
         } else {
             Toast.makeText(this, "Đang tải danh mục...", Toast.LENGTH_SHORT).show();
-            // Không cần return nữa, vì observeViewModel sẽ xử lý
         }
     }
 
@@ -183,16 +179,36 @@ public class AgencyAddProductActivity extends AppCompatActivity {
         builder.show();
     }
 
+
     private void uploadImagesAndSubmit() {
-        viewModel.uploadImages(selectedImageUris, new AgencyAddProductViewModel.UploadImageCallback() {
+        // Tách danh sách hình ảnh thành ảnh cũ (URL) và ảnh mới (Uri)
+        List<String> existingImageUrls = new ArrayList<>();
+        List<Uri> newImageUris = new ArrayList<>();
+
+        for (Uri uri : selectedImageUris) {
+            // Kiểm tra xem Uri có phải là URL của ảnh cũ hay không
+            // Các URL của Firebase Storage bắt đầu bằng "https"
+            if (uri.getScheme() != null && (uri.getScheme().equals("http") || uri.getScheme().equals("https"))) {
+                existingImageUrls.add(uri.toString());
+            } else {
+                // Đây là ảnh mới, cần tải lên
+                newImageUris.add(uri);
+            }
+        }
+
+        // GỌI PHƯƠNG THỨC UPLOAD ĐÃ ĐƯỢC SỬA ĐỔI
+        viewModel.uploadImages(newImageUris, existingImageUrls, new AgencyAddProductViewModel.UploadImageCallback() {
             @Override
             public void onSuccess(List<String> imageUrls) {
+                // Sau khi tất cả ảnh được xử lý, tạo request và gửi đến backend
                 if (productToEdit != null) {
                     UpdateProductRequest request = collectUpdateProductData(imageUrls);
                     if (request != null) {
                         viewModel.updateProduct(productToEdit.getProduct_id(), request);
                     } else {
                         Toast.makeText(AgencyAddProductActivity.this, "Vui lòng nhập đủ thông tin sản phẩm", Toast.LENGTH_SHORT).show();
+                        // Gọi phương thức mới để cập nhật trạng thái
+                        viewModel.setProcessing(false);
                     }
                 } else {
                     AddNewProductRequest request = collectAddNewProductData(imageUrls);
@@ -200,6 +216,8 @@ public class AgencyAddProductActivity extends AppCompatActivity {
                         viewModel.createProduct(request);
                     } else {
                         Toast.makeText(AgencyAddProductActivity.this, "Vui lòng nhập đủ thông tin sản phẩm", Toast.LENGTH_SHORT).show();
+                        // Gọi phương thức mới để cập nhật trạng thái
+                        viewModel.setProcessing(false);
                     }
                 }
             }
@@ -207,10 +225,11 @@ public class AgencyAddProductActivity extends AppCompatActivity {
             @Override
             public void onError(String error) {
                 Toast.makeText(AgencyAddProductActivity.this, "Lỗi khi upload ảnh: " + error, Toast.LENGTH_SHORT).show();
+                // Gọi phương thức mới để cập nhật trạng thái
+                viewModel.setProcessing(false);
             }
         });
     }
-
     private void showProductVariantsManagementDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Quản lý phân loại, giá và tồn kho");
@@ -366,16 +385,30 @@ public class AgencyAddProductActivity extends AppCompatActivity {
 
             configuredProductVariants.clear();
 
+            Function<String, Double> parsePrice = priceStr -> {
+                if (priceStr == null || priceStr.isEmpty()) {
+                    return 0.0;
+                }
+                try {
+                    String cleanedString = priceStr.replaceAll("[^\\d.,]", "");
+                    cleanedString = cleanedString.replace(",", ".");
+                    int lastDotIndex = cleanedString.lastIndexOf('.');
+                    if (lastDotIndex > 0) {
+                        String integerPart = cleanedString.substring(0, lastDotIndex).replace(".", "");
+                        String decimalPart = cleanedString.substring(lastDotIndex + 1);
+                        cleanedString = integerPart + "." + decimalPart;
+                    }
+                    return Double.parseDouble(cleanedString);
+                } catch (NumberFormatException e) {
+                    Log.e("ParseError", "Could not parse price: " + priceStr, e);
+                    return 0.0;
+                }
+            };
+
             if (product.getProduct_variant_list() != null && !product.getProduct_variant_list().isEmpty()) {
                 for (ProductVariantDTO variantDTO : product.getProduct_variant_list()) {
-                    double originPrice = 0.0;
-                    double salePrice = 0.0;
-                    if (variantDTO.getOrigin_price() != null) {
-                        originPrice = Double.parseDouble(variantDTO.getOrigin_price());
-                    }
-                    if (variantDTO.getSale_price() != null) {
-                        salePrice = Double.parseDouble(variantDTO.getSale_price());
-                    }
+                    double originPrice = parsePrice.apply(variantDTO.getOrigin_price());
+                    double salePrice = parsePrice.apply(variantDTO.getSale_price());
 
                     configuredProductVariants.add(new ConfiguredProductVariant(
                             variantDTO.getProduct_variant_name(),
@@ -387,15 +420,7 @@ public class AgencyAddProductActivity extends AppCompatActivity {
                     ));
                 }
             } else {
-                double price = 0.0;
-                if (product.getProduct_price() != null) {
-                    try {
-                        String priceString = product.getProduct_price().replaceAll("[^\\d,]", "").replace(",", ".");
-                        price = Double.parseDouble(priceString);
-                    } catch (NumberFormatException e) {
-                        Log.e("ParseError", "Could not parse price: " + product.getProduct_price(), e);
-                    }
-                }
+                double price = parsePrice.apply(product.getProduct_price());
 
                 configuredProductVariants.add(new ConfiguredProductVariant(
                         "",
@@ -603,7 +628,7 @@ public class AgencyAddProductActivity extends AppCompatActivity {
 
         viewModel.actionSuccessful.observe(this, success -> {
             if (success) {
-                Toast.makeText(this, "Thao tác sản phẩm thành công!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Thao tác thêm/chỉnh sửa sản phẩm thành công!", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

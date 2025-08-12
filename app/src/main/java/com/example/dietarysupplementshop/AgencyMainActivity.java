@@ -19,7 +19,6 @@ public class AgencyMainActivity extends AppCompatActivity {
     private LinearLayout agencyMarketingChannel;
     private LinearLayout llShopeeAds;
     private LinearLayout llSupportCenter;
-
     private ImageView imgShopLogo; // Khai báo ImageView cho logo shop
 
 
@@ -28,7 +27,6 @@ public class AgencyMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales_channel_agency);
         imgShopLogo = findViewById(R.id.img_shop_logo);
-
         tvViewShop = findViewById(R.id.tv_view_shop);
         tvViewOrderHistory = findViewById(R.id.tv_view_order_history);
         llMyProducts = findViewById(R.id.ll_my_products);
@@ -99,21 +97,16 @@ public class AgencyMainActivity extends AppCompatActivity {
         llSupportCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                 Intent intent = new Intent(AgencyMainActivity.this, SupportCenterActivity.class);
-//                 startActivity(intent);
+                 Intent intent = new Intent(AgencyMainActivity.this, SupportCenterActivity.class);
+                 startActivity(intent);
             }
         });
 
-        // Gán listener cho TextView "Xem ShopInfo"
         tvViewShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Truyền SHOP_ID và SHOP_NAME thực tế của người bán này
-                // Bạn cần lấy SHOP_ID và SHOP_NAME từ ViewModel hoặc Intent nếu đã được truyền vào AgencyMainActivity
-                // Ví dụ: Long currentAgencyShopId = ...; String currentAgencyShopName = ...;
-                // Để đơn giản, tôi sẽ dùng giá trị mặc định hoặc giả định.
-                long dummyShopId = 1; // Thay bằng ID shop thực tế của người bán hiện tại
-                String dummyShopName = "ShopInfo của tôi"; // Thay bằng tên shop thực tế
+                long dummyShopId = 1;
+                String dummyShopName = "ShopInfo của tôi";
                 Intent intent = new Intent(AgencyMainActivity.this, ShopAgencyActivity.class);
                 intent.putExtra("SHOP_ID", dummyShopId);
                 intent.putExtra("SHOP_NAME", dummyShopName);

@@ -1,5 +1,6 @@
 package com.example.dietarysupplementshop.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -21,13 +22,13 @@ import java.util.List;
 
 public class ChooseAddressAdapter extends RecyclerView.Adapter<ChooseAddressAdapter.ChooseAddressViewHolder> {
     private List<Address> addressList;
-    private Context context;
+    private final Context context;
 
-    private Activity activity;
+    private final Activity activity;
 
     private int selectedPosition = -1;
 
-    private OnAddressSelectedListener onAddressSelectedListener;
+    private final OnAddressSelectedListener onAddressSelectedListener;
 
 
     public ChooseAddressAdapter(Activity activity, Context context, List<Address> addressList, OnAddressSelectedListener onAddressSelectedListener) {
@@ -41,6 +42,7 @@ public class ChooseAddressAdapter extends RecyclerView.Adapter<ChooseAddressAdap
         void onAddressSelected(Address address);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(List<Address> newAddressList) {
         this.addressList = newAddressList;
         notifyDataSetChanged();
@@ -54,7 +56,7 @@ public class ChooseAddressAdapter extends RecyclerView.Adapter<ChooseAddressAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChooseAddressViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChooseAddressViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Address address = addressList.get(position);
         if (address != null) {
             holder.fullnameTextView.setText(address.getFullname());

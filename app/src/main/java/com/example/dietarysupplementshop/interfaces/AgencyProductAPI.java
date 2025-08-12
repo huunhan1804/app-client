@@ -3,8 +3,11 @@ package com.example.dietarysupplementshop.interfaces;
 import com.example.dietarysupplementshop.model.ResponseModel;
 import com.example.dietarysupplementshop.requests.AddNewProductRequest;
 import com.example.dietarysupplementshop.requests.UpdateProductRequest;
+import com.example.dietarysupplementshop.responses.AgencyInfoDTO;
 import com.example.dietarysupplementshop.responses.ProductFullDTO;
 import com.example.dietarysupplementshop.responses.ProductInfoDTO;
+import com.example.dietarysupplementshop.responses.ShopInfoDTO;
+
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -16,7 +19,11 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface AgencyProductAPI {
+    @GET("api/agency/info")
+    Call<ResponseModel<AgencyInfoDTO>> getAgencyInfo();
 
+    @GET("api/agency/shop-info") // Điểm cuối API mới cho ShopInfo
+    Call<ResponseModel<ShopInfoDTO>> getShopInfo();
     // Lấy danh sách sản phẩm theo trạng thái
     @GET("api/agency/products")
     Call<ResponseModel<List<ProductInfoDTO>>> getAgencyProductsByStatus(@Query("status_code") String statusCode);

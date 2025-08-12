@@ -31,6 +31,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         void onCancelOrderClicked(Order order);
         void onReceivedOrderClicked(Order order);
         void onReturnRefundClicked(Order order);
+        void onReorderClicked(Order order); // Thêm phương thức mới này
+
     }
 
     public OrderAdapter(List<Order> orderList, Context context, OrderActionListener listener) {
@@ -80,6 +82,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.receivedBtn.setVisibility(View.GONE);
         holder.returnRefundBtn.setVisibility(View.GONE);
         holder.viewDetailBtn.setVisibility(View.VISIBLE);
+        holder.reorderBtn.setVisibility(View.GONE);
 
         String orderStatus = order.getOrder_status().toUpperCase();
 
@@ -95,6 +98,18 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             case "DELIVERED":
                 holder.returnRefundBtn.setVisibility(View.VISIBLE);
                 holder.returnRefundBtn.setEnabled(true);
+                break;
+            case "CANCELLED":
+                holder.reorderBtn.setVisibility(View.VISIBLE);
+                holder.reorderBtn.setEnabled(true);
+                break;
+            case "RETURNED":
+                holder.reorderBtn.setVisibility(View.VISIBLE);
+                holder.reorderBtn.setEnabled(true);
+                break;
+            case "REORDER":
+                holder.reorderBtn.setVisibility(View.VISIBLE);
+                holder.reorderBtn.setEnabled(true);
                 break;
             default:
                 break;
@@ -123,6 +138,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 orderActionListener.onReturnRefundClicked(order);
             }
         });
+        holder.reorderBtn.setOnClickListener(view -> {
+            if (orderActionListener != null) {
+                orderActionListener.onReorderClicked(order);
+            }
+        });
+
     }
 
     private String getImageUrlFromOrderDetail(OrderDetailResponse orderDetail) {
@@ -142,7 +163,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
         ImageView ivOrderProduct;
         TextView tvOrderId, tvOrderDate, tvOrderStatus, tvOrderDetails;
-        Button cancelBtn, viewDetailBtn, receivedBtn, returnRefundBtn; // Thêm các nút mới
+        Button cancelBtn, viewDetailBtn, receivedBtn, returnRefundBtn,reorderBtn ; // Thêm các nút mới
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -155,6 +176,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             cancelBtn = itemView.findViewById(R.id.btn_order_cancel);
             viewDetailBtn = itemView.findViewById(R.id.btn_order_view);
             receivedBtn = itemView.findViewById(R.id.btn_order_received);
-            returnRefundBtn = itemView.findViewById(R.id.btn_order_return_refund);}
+            returnRefundBtn = itemView.findViewById(R.id.btn_order_return_refund);
+            reorderBtn = itemView.findViewById(R.id.btn_order_reorder);
+        }
     }
 }

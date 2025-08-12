@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#F0F0F0"
+    android:fitsSystemWindows="true"
+
     tools:context=".AgencyWelcomeRegistrationActivity">
 
     <ImageView

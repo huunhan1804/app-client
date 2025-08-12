@@ -98,7 +98,7 @@ public class ProductAgencyAdapter extends RecyclerView.Adapter<ProductAgencyAdap
             holder.btnActionEdit.setVisibility(View.VISIBLE);
             holder.btnActionDelete.setVisibility(View.VISIBLE);
         } else if ("REJECTED".equals(approvalStatusCode)) {
-            holder.btnActionEdit.setVisibility(View.GONE);
+            holder.btnActionEdit.setVisibility(View.VISIBLE);
             holder.btnActionDelete.setVisibility(View.VISIBLE);
         } else {
             holder.btnActionEdit.setVisibility(View.GONE);
