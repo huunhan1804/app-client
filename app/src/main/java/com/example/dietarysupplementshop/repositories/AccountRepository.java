@@ -24,6 +24,7 @@ import com.example.dietarysupplementshop.requests.ReturnOrderRequest;
 import com.example.dietarysupplementshop.requests.UpdateAccountRequest;
 import com.example.dietarysupplementshop.requests.UpdateAddressRequest;
 import com.example.dietarysupplementshop.requests.UpdateAvatarRequest;
+import com.example.dietarysupplementshop.requests.UpdateRoleRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 import com.example.dietarysupplementshop.responses.OrderDetailResponse;
 import com.google.gson.Gson;
@@ -667,6 +668,30 @@ public class AccountRepository {
 
             @Override
             public void onFailure(@NonNull Call<ResponseModel<List<OrderDetailResponse>>> call, @NonNull Throwable t) {
+                data.setValue(Resource.error(t.getMessage(), null));
+            }
+        });
+
+        return data;
+    }
+
+    public LiveData<Resource<String>> updateAgencyRole(long accountId, String roleCode) {
+        MutableLiveData<Resource<String>> data = new MutableLiveData<>();
+        data.setValue(Resource.loading(null));
+
+        UpdateRoleRequest request = new UpdateRoleRequest(accountId, roleCode);
+        accountAPI.updateRole(request).enqueue(new Callback<ResponseModel<String>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModel<String>> call, @NonNull Response<ResponseModel<String>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    data.setValue(Resource.success(response.body().getMessage()));
+                } else {
+                    handleErrorResponse(response, data);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModel<String>> call, @NonNull Throwable t) {
                 data.setValue(Resource.error(t.getMessage(), null));
             }
         });

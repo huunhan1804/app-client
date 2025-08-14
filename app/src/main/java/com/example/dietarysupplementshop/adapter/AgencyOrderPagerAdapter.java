@@ -33,9 +33,6 @@ public class AgencyOrderPagerAdapter extends FragmentStateAdapter {
             case 4:
                 status = "RETURNED";
                 break;
-            case 5:
-                status = "DELIVERY FAILED";
-                break;
         }
         return AgencyOrderFragment.newInstance(status);
     }

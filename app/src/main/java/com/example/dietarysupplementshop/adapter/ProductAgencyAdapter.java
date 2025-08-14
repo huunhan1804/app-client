@@ -54,20 +54,14 @@ public class ProductAgencyAdapter extends RecyclerView.Adapter<ProductAgencyAdap
             return;
         }
 
-        // 1. Hiển thị ảnh sản phẩm
         if (product.getMedia_url() != null && !product.getMedia_url().isEmpty()) {
             Glide.with(context).load(product.getMedia_url().get(0)).into(holder.productImageView);
         } else {
             Glide.with(context).load(R.drawable.product_image).into(holder.productImageView);
         }
-
-        // 2. Hiển thị thông tin sản phẩm
         holder.productNameTextView.setText(product.getProduct_name());
 
-        // Lấy giá bán và giá khuyến mãi của sản phẩm
         String productPrice = product.getProduct_price();
-
-        // Hiển thị giá: ưu tiên giá khuyến mãi nếu có
         if (productPrice != null && !productPrice.isEmpty() && !productPrice.equals("0 ₫")) {
             holder.productPriceTextView.setText(productPrice);
         } else {
@@ -77,7 +71,6 @@ public class ProductAgencyAdapter extends RecyclerView.Adapter<ProductAgencyAdap
         holder.tvStockQuantity.setText(String.valueOf(product.getQuantity_in_stock()));
         holder.tvSold.setText(String.valueOf(product.getSold_amount()));
 
-        // 3. Xử lý trạng thái sản phẩm
         String approvalStatusCode = null;
         String approvalStatusName = "Không rõ";
 
@@ -93,7 +86,6 @@ public class ProductAgencyAdapter extends RecyclerView.Adapter<ProductAgencyAdap
 
         holder.tvRecentStatus.setText(approvalStatusName);
 
-        // 4. Ẩn/hiện nút Sửa và Xóa dựa trên mã trạng thái
         if ("APPROVED".equals(approvalStatusCode) || "PENDING".equals(approvalStatusCode)) {
             holder.btnActionEdit.setVisibility(View.VISIBLE);
             holder.btnActionDelete.setVisibility(View.VISIBLE);
@@ -105,7 +97,6 @@ public class ProductAgencyAdapter extends RecyclerView.Adapter<ProductAgencyAdap
             holder.btnActionDelete.setVisibility(View.GONE);
         }
 
-        // 5. Sự kiện click
         holder.itemView.setOnClickListener(v ->
                 Toast.makeText(context, "Chi tiết: " + product.getProduct_name(), Toast.LENGTH_SHORT).show()
         );

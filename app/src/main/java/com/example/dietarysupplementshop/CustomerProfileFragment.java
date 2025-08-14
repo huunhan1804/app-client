@@ -131,33 +131,28 @@ public class CustomerProfileFragment extends Fragment {
         final String STATUS_PENDING = "PENDING";
         final String STATUS_APPROVED = "APPROVED";
         final String STATUS_REJECTED = "REJECTED";
+        final String STATUS_NOT_REGISTERED = "NOT_REGISTERED";
 
 
         if (roleCode != null && roleCode.equals(ROLE_AGENCY) && status != null && status.equals(STATUS_APPROVED)) {
-            // Trường hợp 1: Đã là người bán và trạng thái được duyệt.
-            // Chú ý: Cả hai điều kiện này phải khớp để tránh lỗi logic
+
             memberLevel.setText("Thành viên Bán hàng");
             tvAgencyChannelText.setText("Quản lý Shop");
             btnAgencyChannel.setOnClickListener(v -> {
-                // Chuyển thẳng đến màn hình quản lý shop
                 startActivity(new Intent(getActivity(), AgencyMainActivity.class));
             });
         } else if (status != null && (status.equals(STATUS_PENDING) || status.equals(STATUS_REJECTED))) {
-            // Trường hợp 2: Chưa là người bán, nhưng đã có đơn đăng ký đang chờ hoặc bị từ chối.
-            // Logic này cũng bao gồm cả khi role là customer nhưng status là pending/rejected
+
             memberLevel.setText("Thành viên Mua hàng");
             tvAgencyChannelText.setText("Trạng thái Đăng ký");
             btnAgencyChannel.setOnClickListener(v -> {
-                // Chuyển đến màn hình trạng thái đăng ký
                 startActivity(new Intent(getActivity(), AgencyRegistrationStatusActivity.class));
             });
         } else {
-            // Trường hợp 3: Người dùng là khách hàng bình thường (role=customer, status=NOT_REGISTERED)
-            // hoặc các trạng thái không xác định khác.
+
             memberLevel.setText("Thành viên Mua hàng");
             tvAgencyChannelText.setText("Kênh Bán Hàng");
             btnAgencyChannel.setOnClickListener(v -> {
-                // Chuyển đến màn hình bắt đầu đăng ký
                 startActivity(new Intent(getActivity(), AgencyWelcomeRegistrationActivity.class));
             });
         }
@@ -181,13 +176,13 @@ public class CustomerProfileFragment extends Fragment {
         int viewId = view.getId();
 
         if (viewId == R.id.btn_pending_confirmation) {
-            statusKey = "PENDING"; // Chờ xác nhận
+            statusKey = "PENDING";
         } else if (viewId == R.id.btn_shipping) {
-            statusKey = "SHIPPING"; // Đang giao
+            statusKey = "SHIPPING";
         } else if (viewId == R.id.btn_delivered) {
-            statusKey = "DELIVERED"; // Đã giao
+            statusKey = "DELIVERED";
         } else if (viewId == R.id.btn_cancelled) {
-            statusKey = "CANCELLED"; // Đã hủy
+            statusKey = "CANCELLED";
         }
 
         Intent intent = new Intent(getActivity(), OrdersActivity.class);

@@ -85,7 +85,7 @@ public class FilterDialogFragment extends DialogFragment {
         setupAutoSpanCount(rcvPrice, priceFilterAdapter);
 
         builder.setView(view)
-                .setPositiveButton("Apply", (dialog, which) -> {
+                .setPositiveButton("Áp dụng", (dialog, which) -> {
                     selectedItems.clear();
                     for (FilterItem item : filterCategoryList) {
                         if (item.isChecked()) {
@@ -110,7 +110,7 @@ public class FilterDialogFragment extends DialogFragment {
                     }
 
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> {
+                .setNegativeButton("Hủy", (dialog, which) -> {
                     selectedItems.clear();
                     filterDialogListener.onFiltersApplied(selectedItems);
                 });

@@ -1,6 +1,5 @@
 package com.example.dietarysupplementshop.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dietarysupplementshop.R; // Đảm bảo đúng package của bạn
+import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.model.ArticleCategory;
 
 import java.util.List;

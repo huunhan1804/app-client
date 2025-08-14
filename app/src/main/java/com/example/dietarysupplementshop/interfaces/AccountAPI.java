@@ -6,6 +6,7 @@ import com.example.dietarysupplementshop.requests.AddToCartRequest;
 import com.example.dietarysupplementshop.requests.ChangePasswordRequest;
 import com.example.dietarysupplementshop.requests.UpdateAccountRequest;
 import com.example.dietarysupplementshop.requests.UpdateAvatarRequest;
+import com.example.dietarysupplementshop.requests.UpdateRoleRequest;
 import com.example.dietarysupplementshop.responses.AccountInformation;
 
 import retrofit2.Call;
@@ -21,6 +22,8 @@ public interface AccountAPI {
 
     @GET("api/account/info")
     Call<ResponseModel<AccountInformation>> getAccountInfo();
+    @POST("api/account/update-role")
+    Call<ResponseModel<String>> updateRole(@Body UpdateRoleRequest request);
 
     @GET("/api/account/current-user")
     Call<ResponseModel<AccountInformation>> getCurrentUser();

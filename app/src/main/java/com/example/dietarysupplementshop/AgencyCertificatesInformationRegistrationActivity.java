@@ -140,10 +140,6 @@ public class AgencyCertificatesInformationRegistrationActivity extends AppCompat
         llBusinessLicenses = findViewById(R.id.ll_business_licenses);
         llProfessionalCertificates = findViewById(R.id.ll_professional_certificates);
         llDiplomaCertificates = findViewById(R.id.ll_diploma_certificates);
-        frameLayoutLoading = findViewById(R.id.frame_layout_loading);
-        animationViewLoading = findViewById(R.id.animation_view_loading);
-        animationViewLoading.setAnimation(R.raw.loading);
-        animationViewLoading.loop(true);
     }
 
     private void setupListeners() {

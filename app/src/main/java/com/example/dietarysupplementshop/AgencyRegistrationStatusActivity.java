@@ -28,7 +28,7 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
     private CardView cardStatusResultDisplay;
     private ImageView imgStatusIcon;
     private TextView tvStatusMainMessage, tvStatusSubMessage, tvErrorMessage, tvInitialLoadingMessage;
-    private Button btnViewRejectionReason, btnReapply, btnRefreshStatus, btnContactSupport;
+    private Button btnViewRejectionReason, btnReapply, btnRefreshStatus;
     // Khai báo nút mới
     private Button btnGoToHomepage, btnGoToAgencyChannel;
     private ProgressBar pbLoadingStatus;
@@ -55,11 +55,8 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
         btnViewRejectionReason = findViewById(R.id.btn_view_rejection_reason);
         btnReapply = findViewById(R.id.btn_reapply);
         btnRefreshStatus = findViewById(R.id.btn_refresh_status);
-        btnContactSupport = findViewById(R.id.btn_contact_support);
-        // Ánh xạ nút mới
         btnGoToHomepage = findViewById(R.id.btn_go_to_homepage);
         btnGoToAgencyChannel = findViewById(R.id.btn_go_to_agency_channel);
-
         tvErrorMessage = findViewById(R.id.tv_error_message);
         tvInitialLoadingMessage = findViewById(R.id.tv_initial_loading_message);
         pbLoadingStatus = findViewById(R.id.pb_loading_status);
@@ -75,10 +72,6 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
             reapplyForAgency();
         });
 
-        btnContactSupport.setOnClickListener(v -> {
-            Log.d(TAG, "Contact Support button clicked (default fallback).");
-            contactSupport();
-        });
 
         btnViewRejectionReason.setOnClickListener(v -> {
             Log.d(TAG, "View Rejection Reason button clicked. Reason: " + rejectionReasonText);
@@ -168,7 +161,6 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
         btnViewRejectionReason.setVisibility(View.GONE);
         btnReapply.setVisibility(View.GONE);
         btnRefreshStatus.setVisibility(View.GONE);
-        btnContactSupport.setVisibility(View.GONE);
         btnGoToHomepage.setVisibility(View.GONE);
 
 
@@ -177,10 +169,8 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
                 imgStatusIcon.setImageResource(R.drawable.ic_status_pending);
                 tvStatusMainMessage.setText(R.string.status_pending_title);
                 tvStatusSubMessage.setText(R.string.status_pending_message);
-
                 btnRefreshStatus.setVisibility(View.VISIBLE);
                 btnGoToHomepage.setVisibility(View.VISIBLE);
-                btnContactSupport.setVisibility(View.VISIBLE);
                 Log.i(TAG, "updateUIForStatus: Displaying PENDING status.");
                 break;
 
@@ -200,7 +190,6 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
                 btnViewRejectionReason.setVisibility(View.VISIBLE);
                 btnReapply.setVisibility(View.VISIBLE);
                 btnGoToHomepage.setVisibility(View.VISIBLE);
-                btnContactSupport.setVisibility(View.VISIBLE);
                 Log.i(TAG, "updateUIForStatus: Displaying REJECTED status. Rejection reason: " + rejectionReasonText);
                 break;
 
@@ -210,7 +199,6 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
                 tvStatusSubMessage.setText(R.string.status_unknown_message);
                 btnReapply.setVisibility(View.VISIBLE);
                 btnGoToHomepage.setVisibility(View.VISIBLE);
-                btnContactSupport.setVisibility(View.VISIBLE);
                 Log.i(TAG, "updateUIForStatus: Displaying UNKNOWN/NOT_REGISTERED status.");
                 break;
         }
@@ -227,9 +215,5 @@ public class AgencyRegistrationStatusActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AgencyWelcomeRegistrationActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    private void contactSupport() {
-        Toast.makeText(this, "Liên hệ với bộ phận hỗ trợ", Toast.LENGTH_SHORT).show();
     }
 }

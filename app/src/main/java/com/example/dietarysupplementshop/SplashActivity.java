@@ -104,8 +104,6 @@ public class SplashActivity extends AppCompatActivity {
 
         switch (status) {
             case "APPROVED":
-                // Ưu tiên kiểm tra trạng thái trước.
-                // Nếu đã được duyệt, mới tiếp tục kiểm tra vai trò để phân luồng.
                 if (roleCode.equals("agency")) {
                     if (hasAcknowledged) {
                         destinationActivity = AgencyMainActivity.class;
@@ -131,14 +129,10 @@ public class SplashActivity extends AppCompatActivity {
                 break;
             case "NOT_REGISTERED":
             default:
-                // Các trạng thái khác hoặc không xác định đều về trang chủ
                 destinationActivity = HomepageActivity.class;
                 Log.i(TAG, "handleLoginSuccess: Status " + status + " or default. Navigating to HomepageActivity.");
                 break;
         }
-
-        // Xóa khối if thừa
-        // Logic này đã được lồng vào bên trong case "APPROVED" phía trên
 
         navigateTo(destinationActivity);
     }

@@ -22,8 +22,9 @@ public interface AgencyProductAPI {
     @GET("api/agency/info")
     Call<ResponseModel<AgencyInfoDTO>> getAgencyInfo();
 
-    @GET("api/agency/shop-info") // Điểm cuối API mới cho ShopInfo
+    @GET("api/agency/shop-info")
     Call<ResponseModel<ShopInfoDTO>> getShopInfo();
+
     // Lấy danh sách sản phẩm theo trạng thái
     @GET("api/agency/products")
     Call<ResponseModel<List<ProductInfoDTO>>> getAgencyProductsByStatus(@Query("status_code") String statusCode);

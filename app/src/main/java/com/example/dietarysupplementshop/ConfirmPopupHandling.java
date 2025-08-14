@@ -106,10 +106,10 @@ public class ConfirmPopupHandling extends AppCompatActivity {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("subTotal", subTotalValueTextView.getText().toString());
         resultIntent.putExtra("totalBill", totalValueTextView.getText().toString());
-        String shippingInfo  = "Name: " + name + "\n" +
-                "Phone: " + phone + "\n" +
-                "Address: " + address;
-        resultIntent.putExtra("address", shippingInfo);
+        String shippingInfo  = "Tên: " + name + "\n" +
+                "Số Điện Thoại: " + phone + "\n" +
+                "Địa Chỉ: " + address;
+        resultIntent.putExtra("Địa Chỉ", shippingInfo);
 
         if (onActivityResultListener != null) {
             onActivityResultListener.onActivityResult(code, Activity.RESULT_OK, resultIntent);

@@ -60,7 +60,6 @@ public class AgencyProductViewModel extends ViewModel {
             @Override
             public void onSuccess(Void result) {
                 _isLoading.postValue(false);
-                // Sau khi xóa thành công, tải lại dữ liệu cho tất cả các tab
                 loadAllTabs();
             }
 

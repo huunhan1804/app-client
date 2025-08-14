@@ -102,19 +102,25 @@ public class AgencyMainActivity extends AppCompatActivity {
             }
         });
 
+//        tvViewShop.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                long dummyShopId = 1;
+//                String dummyShopName = "ShopInfo của tôi";
+//                Intent intent = new Intent(AgencyMainActivity.this, ShopAgencyActivity.class);
+//                intent.putExtra("SHOP_ID", dummyShopId);
+//                intent.putExtra("SHOP_NAME", dummyShopName);
+//                startActivity(intent);
+//            }
+//        });
         tvViewShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                long dummyShopId = 1;
-                String dummyShopName = "ShopInfo của tôi";
-                Intent intent = new Intent(AgencyMainActivity.this, ShopAgencyActivity.class);
-                intent.putExtra("SHOP_ID", dummyShopId);
-                intent.putExtra("SHOP_NAME", dummyShopName);
+                Intent intent = new Intent(AgencyMainActivity.this, HomepageActivity.class);
                 startActivity(intent);
             }
         });
 
-        // Gán listener cho ImageView logo shop (để vào Profile)
         if (imgShopLogo != null) {
             imgShopLogo.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -124,6 +130,7 @@ public class AgencyMainActivity extends AppCompatActivity {
                 }
             });
         }
+
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView tvViewCancelledOrders = findViewById(R.id.tv_view_cancelled_orders);
         tvViewCancelledOrders.setOnClickListener(new View.OnClickListener() {

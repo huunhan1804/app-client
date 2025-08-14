@@ -5,7 +5,6 @@ public class SupportCategory {
     private String supportCategoryName;
     private String supportCategoryDescription;
 
-    // Getters and Setters
     public Long getSupportCategoryId() { return supportCategoryId; }
     public void setSupportCategoryId(Long id) { this.supportCategoryId = id; }
     public String getSupportCategoryName() { return supportCategoryName; }

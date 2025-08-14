@@ -2,7 +2,7 @@ package com.example.dietarysupplementshop.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -21,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dietarysupplementshop.ProductInfoActivity;
 import com.example.dietarysupplementshop.R;
 import com.example.dietarysupplementshop.model.CartItem;
-import com.example.dietarysupplementshop.model.Product;
 import com.example.dietarysupplementshop.responses.ProductVariantDTO;
 import com.squareup.picasso.Picasso;
 

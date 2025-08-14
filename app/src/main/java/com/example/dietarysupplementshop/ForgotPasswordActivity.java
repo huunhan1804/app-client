@@ -64,7 +64,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             if (!hasFocus) {
                 String email = editTextEmail.getText().toString();
                 if (!Validation.isValidEmailOrPhone(email)) {
-                    textInputLayoutEmail.setError("Invalid email or phone number");
+                    textInputLayoutEmail.setError("Email hoặc số điện thoại không hợp lệ");
                 } else {
                     textInputLayoutEmail.setError(null);
                 }
@@ -74,7 +74,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnSendOTP.setOnClickListener(v -> {
             String email = editTextEmail.getText().toString();
             if (!isValidEmail(email)) {
-                editTextEmail.setError("Invalid email");
+                editTextEmail.setError("Email không hợp lệ");
                 return;
             }
             showProgressBar();
@@ -92,7 +92,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 public void onError(String errorMessage) {
                     hideProgressBar();
                     if (Integer.parseInt(errorMessage) == 404) {
-                        editTextEmail.setError("Account doesn't exist!");
+                        editTextEmail.setError("Tài khoản không tồn tại!");
                     }
                 }
             });
@@ -102,7 +102,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             if (!hasFocus) {
                 String password = editTextPassword.getText().toString();
                 if (!Validation.isValidPassword(password)) {
-                    textInputLayoutPassword.setError("Password must be at least 8 characters long, including uppercase, lowercase, digits, and special characters.");
+                    textInputLayoutPassword.setError("Mật khẩu phải dài ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, chữ số và ký tự đặc biệt.");
                 } else {
                     textInputLayoutPassword.setError(null);
                 }
@@ -114,7 +114,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 String password = editTextPassword.getText().toString();
                 String confirmPassword = editTextConfirmPassword.getText().toString();
                 if (!Validation.isValidPasswordMatch(password, confirmPassword)) {
-                    textInputLayoutConfirmPassword.setError("Passwords do not match.");
+                    textInputLayoutConfirmPassword.setError("Mật khẩu không khớp.");
                 } else {
                     textInputLayoutConfirmPassword.setError(null);
                 }
@@ -125,7 +125,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             if (!hasFocus) {
                 String otp = editTextOTPCode.getText().toString();
                 if (!Validation.isValidOTP(otp)) {
-                    textInputLayoutOTPCode.setError("OTP code must be 6 digits.");
+                    textInputLayoutOTPCode.setError("Mã OTP phải có 6 chữ số.");
                 } else {
                     textInputLayoutOTPCode.setError(null);
                 }
